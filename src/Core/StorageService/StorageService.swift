@@ -1,10 +1,10 @@
 import Foundation
 import IOKit
 
-/// A3：存储/固态硬盘检测。
+/// A3: Storage / SSD checks.
 enum StorageService {
 
-    // 内部稳定键（不随语言变）；输出 CheckResult 时再本地化。
+    // Stable English keys; localize when building CheckResult.
     private enum Key {
         static let model = "model"
         static let serial = "serial"
@@ -66,12 +66,7 @@ enum StorageService {
     ]
 
     private static func localizeDetails(_ raw: [String: String]) -> [String: String] {
-        var out: [String: String] = [:]
-        for (k, v) in raw {
-            let label = displayKey[k].map { L10n.t($0) } ?? k
-            out[label] = v
-        }
-        return out
+        RawDetails.localize(raw, using: displayKey)
     }
 
     // MARK: - system_profiler
@@ -85,7 +80,7 @@ enum StorageService {
         return controllers.flatMap { ($0["_items"] as? [[String: Any]]) ?? [] }
     }
 
-    // MARK: - 容量
+    // MARK: - Capacity
 
     private static func volumeCapacities() -> (total: Int64?, free: Int64?) {
         let url = URL(fileURLWithPath: "/")
@@ -109,7 +104,7 @@ enum StorageService {
         return String(format: "%.1f GB", Double(bytes) / 1_000_000_000)
     }
 
-    // MARK: - IORegistry 补充
+    // MARK: - IORegistry extras
 
     private static func registryDetails() -> [String: String] {
         var details: [String: String] = [:]
@@ -239,7 +234,7 @@ enum StorageService {
         }
     }
 
-    // MARK: - 汇总
+    // MARK: - Aggregate
 
     static func runAll() -> [CheckResult] {
         let drives = nvmeDrives()

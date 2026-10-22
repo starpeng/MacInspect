@@ -49,8 +49,8 @@ body:
     id: app-version
     attributes:
       label: MacInspect version
-      description: From the app (About / report footer) or the DMG name, e.g. 1.0.
-      placeholder: "1.0"
+      description: From the app (About / report footer) or the DMG name, e.g. 1.1.
+      placeholder: "1.1"
     validations:
       required: true
 

@@ -318,6 +318,8 @@
   "hw.model.cross.headline": "Low-level model ID disagrees with System Information — possible spoofing. Verify the model on Apple’s site with the serial.",
   "hw.model.cross.summary": "Model identifiers disagree (%@ vs %@)",
   "hw.model.cross.title": "Model Identifier Cross-Check",
+  "hw.model.sp": "system_profiler read",
+  "hw.model.sysctl": "sysctl read",
   "hw.serial.batt": "Battery serial",
   "hw.serial.board": "Board serial",
   "hw.serial.display": "Display serial",

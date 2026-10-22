@@ -18,15 +18,15 @@ enum PerformanceDuration: Int, CaseIterable, Identifiable {
     static let warmupSeconds = 4
 }
 
-/// 压测阶段：预热满载但不计入正式时长与结果采样。
+/// Stress phase: warm-up is full load but excluded from timed samples.
 enum PerformancePhase: Equatable {
     case idle
     case warming(current: Int, total: Int)
     case measuring(current: Int, total: Int)
 }
 
-/// B12：性能压力测试。多核满载计算若干秒，监测热状态（ProcessInfo.thermalState 公开 API，
-/// 无需 SMC 私有 key），识别散热异常/降频。给出相对吞吐评分。
+/// B12: Multi-core stress for N seconds; watch thermalState (public API, no private SMC keys)
+/// for cooling / throttle issues. Relative throughput score.
 @MainActor
 final class PerformanceCheckModel: ObservableObject {
     @Published var isRunning = false
@@ -38,11 +38,11 @@ final class PerformanceCheckModel: ObservableObject {
     @Published var selectedDuration: PerformanceDuration = .s60
     @Published var phase: PerformancePhase = .idle
 
-    // SMC 精确温度/风扇
+    // SMC temps / fans
     @Published var currentReading: SMCReading?
     @Published var peakTemp: Double?
     @Published var peakRPM: Double?
-    @Published var idleReading: SMCReading?   // 压测前的静置读数，用于对比升温
+    @Published var idleReading: SMCReading?   // Pre-stress baseline for delta
 
     private var task: Task<Void, Never>?
 
@@ -86,10 +86,10 @@ final class PerformanceCheckModel: ObservableObject {
 
     private func run() async {
         let measureTotal = selectedDuration.rawValue
-        // 记录静置基线温度
+        // Idle baseline temps
         idleReading = await Task.detached { SMCService.snapshot() }.value
 
-        // —— 预热：墙钟时间满载，不计入正式时长与结果采样 ——
+        // Warm-up: wall-clock full load, not scored
         let warmupTotal = PerformanceDuration.warmupSeconds
         await runTimedPhase(durationSeconds: warmupTotal, recordMetrics: false) { current, total in
             phase = .warming(current: current, total: total)
@@ -101,7 +101,7 @@ final class PerformanceCheckModel: ObservableObject {
             return
         }
 
-        // —— 正式测量：按墙钟跑满所选秒数（高性能机也会真实跑满，而非按轮次提前结束）——
+        // Timed run: wall-clock for the chosen seconds (don't end early by round count)
         await runTimedPhase(durationSeconds: measureTotal, recordMetrics: true) { current, total in
             phase = .measuring(current: current, total: total)
             elapsed = current
@@ -113,7 +113,7 @@ final class PerformanceCheckModel: ObservableObject {
         finished = !Task.isCancelled
     }
 
-    /// 按墙钟持续满载 `durationSeconds` 秒；约每秒采样一次传感器。
+    /// Full load for `durationSeconds` wall-clock; sample sensors ~1/s.
     private func runTimedPhase(
         durationSeconds: Int,
         recordMetrics: Bool,
@@ -146,7 +146,7 @@ final class PerformanceCheckModel: ObservableObject {
         onTick(durationSeconds, durationSeconds)
     }
 
-    /// 一轮全核计算负载，更新吞吐显示。
+    /// One all-core compute round; refresh throughput display.
     private func runLoadBatch(cores: Int) async {
         let start = DispatchTime.now()
         let ops = await withTaskGroup(of: Double.self) { group -> Double in
@@ -163,7 +163,7 @@ final class PerformanceCheckModel: ObservableObject {
         self.opsPerSecond = dt > 0 ? opsCount / dt : 0
     }
 
-    /// 读取热状态与 SMC；正式阶段写入峰值与热采样，预热仅刷新当前读数。
+    /// Read thermal + SMC; timed phase records peaks, warm-up only refreshes current.
     private func sampleSensors(recordMetrics: Bool) async {
         let reading = await Task.detached { SMCService.snapshot() }.value
         if let reading {
@@ -178,7 +178,7 @@ final class PerformanceCheckModel: ObservableObject {
         }
     }
 
-    /// 纯计算负载（nonisolated，跑在后台线程）。返回一个依赖结果的值防止被优化掉。
+    /// Pure compute (nonisolated). Return a result-dependent value so it isn't optimized away.
     nonisolated static func busyCompute(iterations: Int) -> Double {
         var acc = 0.0
         var x = 1.000001
@@ -194,22 +194,31 @@ final class PerformanceCheckModel: ObservableObject {
         let throttled = worst.severity >= ProcessInfo.ThermalState.serious.severity
         let mops = opsPerSecond / 1_000_000
         var details: [String: String] = [
-            L10n.t("check.perf.detail.cores"): "\(coreCount)",
-            L10n.t("check.perf.detail.duration_key"):
-                L10n.t("check.perf.detail.duration", elapsed, PerformanceDuration.warmupSeconds),
-            L10n.t("check.perf.detail.throughput"): String(format: "%.0f M ops/s", mops),
-            L10n.t("check.perf.detail.peak_thermal"): worst.label,
+            "cores": "\(coreCount)",
+            "duration": L10n.t("check.perf.detail.duration", elapsed, PerformanceDuration.warmupSeconds),
+            "throughput": String(format: "%.0f M ops/s", mops),
+            "peakThermal": worst.label,
+            "samples": thermalSamples.map(\.label).joined(separator: " → "),
         ]
-        details[L10n.t("check.perf.detail.samples")] = thermalSamples.map(\.label).joined(separator: " → ")
         if let peakTemp {
-            details[L10n.t("check.perf.detail.peak_temp")] = String(format: "%.1f °C", peakTemp)
+            details["peakTemp"] = String(format: "%.1f °C", peakTemp)
         }
         if let idle = idleReading?.maxTemp {
-            details[L10n.t("check.perf.detail.idle_temp")] = String(format: "%.1f °C", idle)
+            details["idleTemp"] = String(format: "%.1f °C", idle)
         }
         if let peakRPM {
-            details[L10n.t("check.perf.detail.peak_fan")] = String(format: "%.0f RPM", peakRPM)
+            details["peakFan"] = String(format: "%.0f RPM", peakRPM)
         }
+        let localizedDetails = RawDetails.localize(details, using: [
+            "cores": "check.perf.detail.cores",
+            "duration": "check.perf.detail.duration_key",
+            "throughput": "check.perf.detail.throughput",
+            "peakThermal": "check.perf.detail.peak_thermal",
+            "samples": "check.perf.detail.samples",
+            "peakTemp": "check.perf.detail.peak_temp",
+            "idleTemp": "check.perf.detail.idle_temp",
+            "peakFan": "check.perf.detail.peak_fan",
+        ])
 
         let tempSuffix: String = {
             guard let peakTemp else { return "" }
@@ -223,7 +232,7 @@ final class PerformanceCheckModel: ObservableObject {
                 title: L10n.t("check.perf.result.title"),
                 status: .warning,
                 summary: L10n.t("check.perf.result.hot", worst.label, tempSuffix),
-                rawDetails: details
+                rawDetails: localizedDetails
             )
         }
         return CheckResult(
@@ -231,7 +240,7 @@ final class PerformanceCheckModel: ObservableObject {
             title: L10n.t("check.perf.result.title"),
             status: .pass,
             summary: L10n.t("check.perf.result.ok", elapsed, worst.label, tempSuffix),
-            rawDetails: details
+            rawDetails: localizedDetails
         )
     }
 }
@@ -346,7 +355,7 @@ struct PerformanceCheckView: View {
             }
             ProgressView(value: model.progress)
 
-            // SMC 精确温度 / 风扇
+            // SMC temps / fans
             if model.smcAvailable {
                 DS.Divider()
                 HStack(spacing: DS.Spacing.xl) {

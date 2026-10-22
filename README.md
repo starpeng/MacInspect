@@ -67,10 +67,10 @@ Release builds, signing, and notarization: [docs/BUILD.md](docs/BUILD.md).
 Release checklist: [docs/RELEASE.md](docs/RELEASE.md).  
 Manual test list: [docs/TESTING.md](docs/TESTING.md).
 
-Tag a version to publish via GitHub Actions (`v1.0` → notes `docs/RELEASE_NOTES_1.0.md` + three DMGs):
+Tag a version to publish via GitHub Actions (`v1.1` → notes `docs/RELEASE_NOTES_1.1.md` + three DMGs):
 
 ```bash
-git tag v1.0 && git push origin v1.0
+git tag v1.1 && git push origin v1.1
 ```
 
 ```text

@@ -1,7 +1,7 @@
 import Foundation
 import IOKit
 
-/// SMC 读数快照：精确温度（°C）与风扇转速（RPM）。
+/// SMC snapshot: temps (°C) and fan RPMs.
 struct SMCReading: Sendable {
     var cpuTemp: Double?
     var gpuTemp: Double?
@@ -13,12 +13,12 @@ struct SMCReading: Sendable {
     }
 }
 
-/// 通过 AppleSMC 读取温度与风扇。
-/// 结构体用扁平字段 + 显式 padding 逐字节对齐内核 SMCKeyData_t（80 字节），
-/// 嵌套结构体会因对齐规则少 4 字节导致调用失败——这是最易踩的坑。
+/// Read temps/fans via AppleSMC.
+/// Flat fields + explicit padding to match kernel SMCKeyData_t (80 bytes).
+/// Nested structs shrink by 4 under Swift alignment and the call fails.
 enum SMCService {
 
-    // 80 字节，已在 Apple Silicon(M1 Pro) 上验证读到真实温度/转速
+    // 80 bytes; verified on Apple Silicon (M1 Pro)
     private struct Param {
         var key: UInt32 = 0
         var versMajor: UInt8 = 0
@@ -48,18 +48,18 @@ enum SMCService {
                      UInt8(0),UInt8(0),UInt8(0),UInt8(0),UInt8(0),UInt8(0),UInt8(0),UInt8(0))
     }
 
-    // CPU / GPU / 电池温度候选键（读取存在的取最大）。
-    // Apple Silicon 用 Tp*/Tg*，Intel 用 TC*/TG*，两套 key 在同一台机器上互不冲突。
+    // Candidate temp keys; take max of keys that exist.
+    // Apple Silicon: Tp*/Tg*; Intel: TC*/TG* — both can coexist on one machine.
     private static let cpuKeys = [
-        // Apple Silicon P 核
+        // Apple Silicon P-cores
         "Tp01","Tp05","Tp09","Tp0D","Tp0T","Tp0X","Tp0b","Tp0f","Tp0j","Tp0n",
-        // Intel：接近 CPU / 核心 / 封装温度
+        // Intel: near-CPU / core / package
         "TC0P","TC0D","TC0E","TC0F","TC0H","TC0J","TCXC","TC1C","TC2C"
     ]
     private static let gpuKeys = [
         // Apple Silicon
         "Tg05","Tg0D","Tg0L","Tg0T",
-        // Intel：核显 / 独显
+        // Intel: iGPU / dGPU
         "TG0P","TG0D","TG0H","TG0T"
     ]
     private static let batteryKeys = ["TB1T","TB2T","TB0T"]
@@ -117,7 +117,7 @@ enum SMCService {
         keys.compactMap { number(conn, $0) }.filter { $0 > 5 && $0 < 130 }.max()
     }
 
-    /// 读一次完整快照（打开→读→关闭）。nonisolated，可在任意线程调用；耗时亚毫秒级。
+    /// One open→read→close snapshot. nonisolated; sub-ms.
     static func snapshot() -> SMCReading? {
         guard let conn = openConnection() else { return nil }
         defer { IOServiceClose(conn) }
@@ -130,7 +130,7 @@ enum SMCService {
                 if let rpm = number(conn, "F\(i)Ac"), rpm >= 0 { reading.fanRPMs.append(rpm) }
             }
         }
-        // 台式机/无风扇机型也能返回温度，fanRPMs 为空即可
+        // Fanless / desktop: temps OK with empty fanRPMs
         if reading.cpuTemp == nil && reading.gpuTemp == nil && reading.fanRPMs.isEmpty {
             return nil
         }

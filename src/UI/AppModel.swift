@@ -1,11 +1,10 @@
 import Foundation
 
-/// 侧边栏导航项。概览 + 系统自动检测分类 + 硬件交互测试。
 enum SidebarItem: String, CaseIterable, Identifiable, Hashable {
     case overview
-    // 系统自动检测
+    // Auto checks
     case specs, battery, security, storage, network, ports
-    // 硬件交互测试
+    // Interactive hardware tests
     case keyboard, screen, audio, microphone, camera, touchID, trackpad, performance, diskSpeed, portsLive
     case aiModels
     case settings
@@ -67,10 +66,8 @@ enum SidebarItem: String, CaseIterable, Identifiable, Hashable {
         }
     }
 
-    /// 需要全屏接管的测试（其余交互测试在详情面板内进行）。
     var needsFullscreen: Bool { self == .keyboard || self == .screen }
 
-    /// 该分类对应的结果 id（用于聚合状态与详情展示）。
     var resultIDs: [String] {
         switch self {
         case .overview, .specs: return []
@@ -164,7 +161,7 @@ final class AppModel: ObservableObject {
         item.resultIDs.compactMap { result(id: $0) }
     }
 
-    /// 分类聚合状态：取该分类下最严重的一项；无结果返回 nil（交互测试尚未进行）。
+    /// Worst status in the category; nil if no results yet.
     func status(for item: SidebarItem) -> CheckStatus? {
         let statuses = results(for: item).map(\.status)
         guard !statuses.isEmpty else { return nil }

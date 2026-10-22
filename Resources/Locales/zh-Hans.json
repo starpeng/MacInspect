@@ -318,6 +318,8 @@
   "hw.model.cross.headline": "⛔ 底层机型标识与系统信息报告不一致，存在改码/环境异常风险，建议用序列号在 Apple 官网核对机型。",
   "hw.model.cross.summary": "机型标识不一致（%@ vs %@）",
   "hw.model.cross.title": "机型标识交叉核对",
+  "hw.model.sp": "system_profiler 读取",
+  "hw.model.sysctl": "sysctl 读取",
   "hw.serial.batt": "电池序列号",
   "hw.serial.board": "主机序列号",
   "hw.serial.display": "屏幕序列号",

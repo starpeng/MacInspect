@@ -1,7 +1,7 @@
 import SwiftUI
 import AppKit
 
-/// 报告导出：把 ReportDocumentView 渲染成 PNG 长图或 PDF，走 NSSavePanel 让用户选择保存位置。
+/// Export ReportDocumentView as PNG or PDF via NSSavePanel.
 @MainActor
 enum ReportExporter {
 
@@ -10,7 +10,7 @@ enum ReportExporter {
     static func export(profile: DeviceProfile?, report: MacInspectReport, format: Format) {
         let doc = ReportDocumentView(profile: profile, report: report)
         let renderer = ImageRenderer(content: doc)
-        renderer.scale = 2.0   // Retina 清晰度
+        renderer.scale = 2.0   // Retina
 
         let base = L10n.t("report.file_prefix", AppBrand.name, fileTimestamp(report.generatedAt))
 

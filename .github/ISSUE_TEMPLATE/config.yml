@@ -4,5 +4,5 @@ contact_links:
     url: https://github.com/starpeng/MacInspect/blob/main/README.md
     about: Install, build, and usage notes before filing an issue.
   - name: Release notes
-    url: https://github.com/starpeng/MacInspect/blob/main/docs/RELEASE_NOTES_1.0.md
+    url: https://github.com/starpeng/MacInspect/blob/main/docs/RELEASE_NOTES_1.1.md
     about: Check whether the problem is already called out in the current release.

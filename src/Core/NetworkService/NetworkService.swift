@@ -1,8 +1,40 @@
 import Foundation
 import CoreWLAN
 
-/// A8/B7-8：无线连接。Wi-Fi 当前连接信息走 CoreWLAN（原生框架），蓝牙控制器状态走 system_profiler。
+/// A8/B7-8: Wi-Fi via CoreWLAN; Bluetooth controller via system_profiler.
 enum NetworkService {
+
+    private enum Key {
+        static let power = "power"
+        static let mac = "mac"
+        static let ssid = "ssid"
+        static let rssi = "rssi"
+        static let rate = "rate"
+        static let band = "band"
+        static let note = "note"
+        static let btState = "btState"
+        static let btChip = "btChip"
+        static let btAddress = "btAddress"
+        static let btDevices = "btDevices"
+    }
+
+    private static let displayKey: [String: String] = [
+        Key.power: "net.wifi.power",
+        Key.mac: "net.wifi.mac",
+        Key.ssid: "net.wifi.ssid",
+        Key.rssi: "net.wifi.rssi",
+        Key.rate: "net.wifi.rate",
+        Key.band: "net.wifi.band",
+        Key.note: "net.wifi.note",
+        Key.btState: "net.bt.state",
+        Key.btChip: "net.bt.chip",
+        Key.btAddress: "net.bt.address",
+        Key.btDevices: "net.bt.devices",
+    ]
+
+    private static func localizeDetails(_ raw: [String: String]) -> [String: String] {
+        RawDetails.localize(raw, using: displayKey)
+    }
 
     // MARK: - Wi-Fi
 
@@ -18,39 +50,39 @@ enum NetworkService {
 
         var details: [String: String] = [:]
         let powerOn = iface.powerOn()
-        details[L10n.t("net.wifi.power")] = powerOn ? L10n.t("net.wifi.on") : L10n.t("net.wifi.off")
-        if let hw = iface.hardwareAddress() { details[L10n.t("net.wifi.mac")] = hw }
+        details[Key.power] = powerOn ? L10n.t("net.wifi.on") : L10n.t("net.wifi.off")
+        if let hw = iface.hardwareAddress() { details[Key.mac] = hw }
 
         let ssid = iface.ssid()
         let rssi = iface.rssiValue()
         if let ssid {
-            details[L10n.t("net.wifi.ssid")] = ssid
-            details[L10n.t("net.wifi.rssi")] = "\(rssi) dBm"
-            details[L10n.t("net.wifi.rate")] = "\(iface.transmitRate()) Mbps"
-            details[L10n.t("net.wifi.band")] = phyModeString(iface.activePHYMode())
+            details[Key.ssid] = ssid
+            details[Key.rssi] = "\(rssi) dBm"
+            details[Key.rate] = "\(iface.transmitRate()) Mbps"
+            details[Key.band] = phyModeString(iface.activePHYMode())
             let quality = signalQuality(rssi)
             return CheckResult(
                 id: "network.wifi",
                 title: L10n.t("net.wifi.title"),
                 status: .pass,
                 summary: L10n.t("net.wifi.summary.ssid", ssid, rssi, quality),
-                rawDetails: details
+                rawDetails: localizeDetails(details)
             )
         }
 
         if powerOn, rssi < 0 {
-            details[L10n.t("net.wifi.ssid")] = L10n.t("net.wifi.ssid_hidden")
-            details[L10n.t("net.wifi.rssi")] = "\(rssi) dBm"
-            details[L10n.t("net.wifi.rate")] = "\(iface.transmitRate()) Mbps"
-            details[L10n.t("net.wifi.band")] = phyModeString(iface.activePHYMode())
-            details[L10n.t("net.wifi.note")] = L10n.t("net.wifi.note_location")
+            details[Key.ssid] = L10n.t("net.wifi.ssid_hidden")
+            details[Key.rssi] = "\(rssi) dBm"
+            details[Key.rate] = "\(iface.transmitRate()) Mbps"
+            details[Key.band] = phyModeString(iface.activePHYMode())
+            details[Key.note] = L10n.t("net.wifi.note_location")
             let quality = signalQuality(rssi)
             return CheckResult(
                 id: "network.wifi",
                 title: L10n.t("net.wifi.title"),
                 status: .pass,
                 summary: L10n.t("net.wifi.summary.hidden", rssi, quality),
-                rawDetails: details
+                rawDetails: localizeDetails(details)
             )
         }
 
@@ -59,7 +91,7 @@ enum NetworkService {
             title: L10n.t("net.wifi.title"),
             status: powerOn ? .pass : .warning,
             summary: powerOn ? L10n.t("net.wifi.summary.idle") : L10n.t("net.wifi.summary.off"),
-            rawDetails: details
+            rawDetails: localizeDetails(details)
         )
     }
 
@@ -85,7 +117,7 @@ enum NetworkService {
         }
     }
 
-    // MARK: - 蓝牙
+    // MARK: - Bluetooth
 
     private static func bluetoothResult() -> CheckResult {
         let output = ShellRunner.run("/usr/sbin/system_profiler", ["SPBluetoothDataType", "-json"])
@@ -109,12 +141,12 @@ enum NetworkService {
         let isOn = state.contains("on")
 
         var details: [String: String] = [
-            L10n.t("net.bt.state"): isOn ? L10n.t("net.wifi.on") : L10n.t("net.wifi.off"),
-            L10n.t("net.bt.chip"): chipset,
-            L10n.t("net.bt.address"): address,
+            Key.btState: isOn ? L10n.t("net.wifi.on") : L10n.t("net.wifi.off"),
+            Key.btChip: chipset,
+            Key.btAddress: address,
         ]
         if let connected = first["device_connected"] as? [[String: Any]] {
-            details[L10n.t("net.bt.devices")] = "\(connected.count)"
+            details[Key.btDevices] = "\(connected.count)"
         }
 
         return CheckResult(
@@ -122,7 +154,7 @@ enum NetworkService {
             title: L10n.t("net.bt.title"),
             status: isOn ? .pass : .warning,
             summary: isOn ? L10n.t("net.bt.summary.on", chipset) : L10n.t("net.bt.summary.off"),
-            rawDetails: details
+            rawDetails: localizeDetails(details)
         )
     }
 

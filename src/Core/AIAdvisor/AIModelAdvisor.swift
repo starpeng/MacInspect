@@ -1,11 +1,11 @@
 import Foundation
 
-/// 单个大模型的可跑性判定。
+/// Whether a given LLM can run on this machine.
 enum AIVerdict: String, Sendable {
-    case smooth   // 流畅
-    case runnable // 可跑
-    case tight    // 勉强
-    case no       // 不建议
+    case smooth   // Comfortable
+    case runnable // Runnable
+    case tight    // Tight / slow
+    case no       // Not recommended
 
     var label: String {
         switch self {
@@ -28,16 +28,16 @@ enum AIVerdict: String, Sendable {
 struct AIModelSuggestion: Identifiable, Sendable {
     var id: String { name }
     let name: String
-    let params: Double        // 十亿参数
-    let footprintGB: Double    // Q4 量化 + 少量上下文的显存/内存占用估算
+    let params: Double        // Billions of parameters
+    let footprintGB: Double    // Est. VRAM/RAM for Q4 + light context
     let verdict: AIVerdict
 }
 
-/// 评估所用的本机算力上下文。
+/// Local hardware context for the advisor.
 struct AIHardwareContext: Sendable {
     var ramGB: Double
     var appleSilicon: Bool
-    /// 独显专用显存（GB）；无独显为 0。
+    /// Discrete VRAM (GB); 0 if none.
     var discreteVramGB: Double
     var discreteGPUName: String?
 
@@ -54,28 +54,27 @@ struct AIHardwareContext: Sendable {
     }
 }
 
-/// 本地大模型可跑性顾问。
+/// Local LLM fit advisor.
 ///
-/// - Apple Silicon：统一内存，GPU/ANE 可共享大部分内存做推理。
-/// - Intel + 独显：系统内存与显存分离，**优先按独显 VRAM** 判断能否 GPU 加速；
-///   超出显存但仍在系统内存 offload 范围内 → 降为「勉强」。
-/// - Intel 仅核显：有效预算走系统内存的一小部分，并强力降档。
+/// - Apple Silicon: unified memory shared by GPU/ANE.
+/// - Intel + discrete GPU: prefer discrete VRAM; over VRAM but within offload → tight.
+/// - Intel iGPU-only: small fraction of system RAM, heavily demoted.
 enum AIModelAdvisor {
 
-    /// 展示用的主预算（GB）：统一内存 / 独显显存 / 无独显时的 CPU 有效预算。
+    /// Primary budget (GB): unified / discrete VRAM / CPU-only effective.
     static func budgetGB(_ ctx: AIHardwareContext) -> Double {
         if ctx.appleSilicon {
             return max(2, ctx.ramGB - 8)
         }
         if ctx.hasDiscreteGPU {
-            // 独显：权重优先放进 VRAM，预留约 1GB 给运行时/驱动。
+            // Discrete: keep weights in VRAM; reserve ~1GB for runtime/driver.
             return max(1.5, ctx.discreteVramGB - 1)
         }
-        // 仅核显 / 无可用独显：不能把整机 RAM 当显存。
+        // iGPU / no discrete: don't treat whole-system RAM as VRAM.
         return max(1.5, (ctx.ramGB - 10) * 0.4)
     }
 
-    /// Intel 独显场景下，允许部分层 offload 到系统内存的上限（仍很慢）。
+    /// Intel discrete: max footprint if some layers offload to system RAM (still slow).
     private static func offloadCeilingGB(_ ctx: AIHardwareContext) -> Double {
         guard !ctx.appleSilicon, ctx.hasDiscreteGPU else { return budgetGB(ctx) }
         let vram = max(0, ctx.discreteVramGB - 1)
@@ -83,12 +82,12 @@ enum AIModelAdvisor {
         return vram + ramPart
     }
 
-    /// Q4_K_M 量化经验值：约 0.55 GB / 十亿参数，再加 ~1.5GB 上下文与运行时开销。
+    /// Q4_K_M rule of thumb: ~0.55 GB / B params + ~1.5 GB context/runtime.
     static func footprintGB(params: Double) -> Double {
         params * 0.55 + 1.5
     }
 
-    /// 主流开源模型目录（2026，覆盖从小到大的常见档位）。
+    /// Common open models (2026), small → large.
     static let catalog: [(name: String, params: Double)] = [
         ("Llama 3.2 3B", 3),
         ("Gemma 3 4B", 4),
@@ -120,7 +119,7 @@ enum AIModelAdvisor {
                 else if fp <= primary * 1.1 { verdict = .tight }
                 else { verdict = .no }
             } else if ctx.hasDiscreteGPU {
-                // 能放进独显 → 按显存余量分档；略超显存但可 offload → 最多勉强。
+                // Fits VRAM → tier by headroom; slight over + offload → at most tight.
                 if fp <= primary * 0.6 { verdict = .smooth }
                 else if fp <= primary * 0.9 { verdict = .runnable }
                 else if fp <= primary * 1.05 { verdict = .tight }
@@ -139,7 +138,7 @@ enum AIModelAdvisor {
         }
     }
 
-    /// Intel 算力降档：有较大独显时放宽，仅核显时收紧。
+    /// Extra demotion on Intel: looser with big dGPU, tighter on iGPU.
     private static func demoteForIntel(verdict: AIVerdict, params: Double, vramGB: Double) -> AIVerdict {
         if vramGB >= 8 {
             if params > 32 { return .no }
@@ -152,7 +151,7 @@ enum AIModelAdvisor {
             if params > 4 { return min(verdict, .runnable) }
             return verdict
         }
-        // 无独显 / 核显：大模型即使塞进内存也极慢
+        // No discrete / iGPU: large models are glacial even in RAM
         if params > 14 { return .no }
         if params > 8 { return min(verdict, .tight) }
         if params > 4 { return min(verdict, .runnable) }

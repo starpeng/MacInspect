@@ -1,26 +1,30 @@
 import SwiftUI
 
-/// 侧边栏：概览 + 系统检测 + 硬件测试三段分组，每行显示 SF Symbol 与状态圆点。
+/// Sidebar: overview, system checks, hardware tests; status dots per row.
 struct SidebarView: View {
     @EnvironmentObject private var model: AppModel
 
     var body: some View {
-        List(selection: $model.selection) {
-            row(.overview)
-            row(.settings)
+        // Stack list + footer so rows don't paint through a transparent inset.
+        VStack(spacing: 0) {
+            List(selection: $model.selection) {
+                row(.overview)
+                row(.settings)
 
-            Section(L10n.t("sidebar.section.system")) {
-                ForEach(SidebarItem.autoCategories) { row($0) }
-                row(.aiModels)
-            }
+                Section(L10n.t("sidebar.section.system")) {
+                    ForEach(SidebarItem.autoCategories) { row($0) }
+                    row(.aiModels)
+                }
 
-            Section(L10n.t("sidebar.section.hardware")) {
-                ForEach(SidebarItem.interactiveTests) { row($0) }
+                Section(L10n.t("sidebar.section.hardware")) {
+                    ForEach(SidebarItem.interactiveTests) { row($0) }
+                }
             }
+            .listStyle(.sidebar)
+
+            rescanBar
         }
-        .listStyle(.sidebar)
         .navigationSplitViewColumnWidth(min: 220, ideal: 240, max: 280)
-        .safeAreaInset(edge: .bottom) { rescanBar }
     }
 
     private func row(_ item: SidebarItem) -> some View {
@@ -65,6 +69,11 @@ struct SidebarView: View {
             }
             .padding(.horizontal, DS.Spacing.md)
             .padding(.vertical, DS.Spacing.sm)
+        }
+        .background {
+            Rectangle()
+                .fill(Color(nsColor: .windowBackgroundColor))
+                .ignoresSafeArea(edges: .bottom)
         }
     }
 }

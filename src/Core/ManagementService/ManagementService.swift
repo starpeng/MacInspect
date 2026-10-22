@@ -1,10 +1,29 @@
 import Foundation
 
-/// A7：监管与锁定检测——二手交易里最容易被忽视、后果最重的一类问题。
-/// 命中任意一项即产生红旗，因为这些问题"重装系统也解决不了"。
+/// A7: MDM / Activation Lock / Find My Mac — red-flag if any hit (reinstall won't fix).
 enum ManagementService {
 
-    // MARK: - MDM 监管
+    private enum Key {
+        static let dep = "dep"
+        static let enrolled = "enrolled"
+        static let profiles = "profiles"
+        static let icloud = "icloud"
+        static let lockRaw = "lockRaw"
+    }
+
+    private static let displayKey: [String: String] = [
+        Key.dep: "mgmt.mdm.dep",
+        Key.enrolled: "mgmt.mdm.enrolled",
+        Key.profiles: "mgmt.mdm.profiles_count",
+        Key.icloud: "mgmt.appleid.icloud",
+        Key.lockRaw: "mgmt.lock.raw",
+    ]
+
+    private static func localizeDetails(_ raw: [String: String]) -> [String: String] {
+        RawDetails.localize(raw, using: displayKey)
+    }
+
+    // MARK: - MDM
 
     private struct MDMEnrollmentStatus {
         var enrolledViaDEP: Bool?
@@ -41,21 +60,21 @@ enum ManagementService {
         return (profileLines.count, output)
     }
 
-    // MARK: - Apple ID / 查找我的 Mac
+    // MARK: - Apple ID / Find My Mac
 
     private static func isICloudAccountSignedIn() -> Bool {
         let output = ShellRunner.run("/usr/bin/defaults", ["read", "MobileMeAccounts", "Accounts"])
         return !output.isEmpty && output.contains("AccountID")
     }
 
-    // MARK: - 激活锁
+    // MARK: - Activation Lock
 
     private static func activationLockStatus() -> String {
         let sp = HardwareProbe.systemProfilerHardwareJSON()
         return (sp["activation_lock_status"] as? String) ?? ""
     }
 
-    // MARK: - 汇总检测
+    // MARK: - Aggregate checks
 
     static func runAll() -> [CheckResult] {
         var results: [CheckResult] = []
@@ -63,16 +82,17 @@ enum ManagementService {
         let mdm = mdmEnrollmentStatus()
         let profiles = installedConfigurationProfilesSummary()
         var mdmDetails: [String: String] = [
-            L10n.t("mgmt.mdm.dep"): mdm.enrolledViaDEP.map { $0 ? L10n.t("common.yes") : L10n.t("common.no") }
+            Key.dep: mdm.enrolledViaDEP.map { $0 ? L10n.t("common.yes") : L10n.t("common.no") }
                 ?? L10n.t("common.unknown"),
-            L10n.t("mgmt.mdm.enrolled"): mdm.mdmEnrolled.map { $0 ? L10n.t("common.yes") : L10n.t("common.no") }
+            Key.enrolled: mdm.mdmEnrolled.map { $0 ? L10n.t("common.yes") : L10n.t("common.no") }
                 ?? L10n.t("common.unknown"),
         ]
         if let count = profiles.count {
-            mdmDetails[L10n.t("mgmt.mdm.profiles_count")] = "\(count)"
+            mdmDetails[Key.profiles] = "\(count)"
         } else {
-            mdmDetails[L10n.t("mgmt.mdm.profiles_count")] = L10n.t("mgmt.mdm.profiles_denied")
+            mdmDetails[Key.profiles] = L10n.t("mgmt.mdm.profiles_denied")
         }
+        let localizedMDM = localizeDetails(mdmDetails)
 
         if mdm.mdmEnrolled == true {
             results.append(CheckResult(
@@ -80,7 +100,7 @@ enum ManagementService {
                 title: L10n.t("mgmt.mdm.title"),
                 status: .redFlag,
                 summary: L10n.t("mgmt.mdm.summary.active"),
-                rawDetails: mdmDetails,
+                rawDetails: localizedMDM,
                 isRedFlagHeadline: L10n.t("mgmt.mdm.headline.active")
             ))
         } else if mdm.enrolledViaDEP == true {
@@ -89,7 +109,7 @@ enum ManagementService {
                 title: L10n.t("mgmt.mdm.title"),
                 status: .warning,
                 summary: L10n.t("mgmt.mdm.summary.dep"),
-                rawDetails: mdmDetails,
+                rawDetails: localizedMDM,
                 isRedFlagHeadline: L10n.t("mgmt.mdm.headline.dep")
             ))
         } else if mdm.mdmEnrolled == nil {
@@ -98,7 +118,7 @@ enum ManagementService {
                 title: L10n.t("mgmt.mdm.title"),
                 status: .warning,
                 summary: L10n.t("mgmt.mdm.summary.unknown"),
-                rawDetails: mdmDetails
+                rawDetails: localizedMDM
             ))
         } else {
             results.append(CheckResult(
@@ -106,7 +126,7 @@ enum ManagementService {
                 title: L10n.t("mgmt.mdm.title"),
                 status: .pass,
                 summary: L10n.t("mgmt.mdm.summary.ok"),
-                rawDetails: mdmDetails
+                rawDetails: localizedMDM
             ))
         }
 
@@ -116,11 +136,11 @@ enum ManagementService {
             title: L10n.t("mgmt.appleid.title"),
             status: signedIn ? .warning : .pass,
             summary: signedIn ? L10n.t("mgmt.appleid.signed_in") : L10n.t("mgmt.appleid.signed_out"),
-            rawDetails: [
-                L10n.t("mgmt.appleid.icloud"): signedIn
+            rawDetails: localizeDetails([
+                Key.icloud: signedIn
                     ? L10n.t("mgmt.appleid.logged_in")
                     : L10n.t("mgmt.appleid.logged_out"),
-            ],
+            ]),
             isRedFlagHeadline: signedIn ? L10n.t("mgmt.appleid.headline") : nil
         ))
 
@@ -132,7 +152,7 @@ enum ManagementService {
                 title: L10n.t("mgmt.lock.title"),
                 status: isLocked ? .redFlag : .pass,
                 summary: isLocked ? L10n.t("mgmt.lock.on") : L10n.t("mgmt.lock.off"),
-                rawDetails: [L10n.t("mgmt.lock.raw"): lockStatus],
+                rawDetails: localizeDetails([Key.lockRaw: lockStatus]),
                 isRedFlagHeadline: isLocked ? L10n.t("mgmt.lock.headline") : nil
             ))
         }

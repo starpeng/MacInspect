@@ -1,6 +1,6 @@
 import Foundation
 
-/// A8：安全芯片档位识别。用大白话解释含义，避免用户误以为"没有 T2 = 有问题"。
+/// A8: Security chip tier. Plain-language copy so "no T2" isn't read as a defect.
 enum SecurityChipTier: Sendable {
     case appleSilicon
     case intelWithT2
@@ -54,7 +54,10 @@ enum SecurityChipService {
             title: L10n.t("security.chip.title"),
             status: .pass,
             summary: L10n.t("security.chip.summary", tier.label, tier.explanation),
-            rawDetails: [L10n.t("security.chip.tier"): tier.label]
+            rawDetails: RawDetails.localize(
+                ["tier": tier.label],
+                using: ["tier": "security.chip.tier"]
+            )
         )]
     }
 }

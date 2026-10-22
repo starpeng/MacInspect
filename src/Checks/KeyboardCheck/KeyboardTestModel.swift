@@ -36,8 +36,8 @@ final class KeyboardTestModel: ObservableObject {
     private var suppressResignTeardown = false
     private static var didRequestAccessibilityPrompt = false
 
-    /// 合法组合：hideDock / hideMenuBar + 各项 disable*。
-    /// hideDock 会连带禁用 Spotlight 菜单，disableProcessSwitching 会禁用 Cmd+Tab 与 Exposé。
+    /// Allowed combo: hideDock / hideMenuBar + disable* flags.
+    /// hideDock also kills the Spotlight menu; disableProcessSwitching kills Cmd+Tab / Exposé.
     private static let kioskOptions: NSApplication.PresentationOptions = [
         .hideDock,
         .hideMenuBar,
@@ -105,7 +105,7 @@ final class KeyboardTestModel: ObservableObject {
         deactivateKioskMode()
     }
 
-    // MARK: - 系统热键屏蔽
+    // MARK: - Suppress system hotkeys
 
     private func activateKioskMode() {
         if savedPresentationOptions == nil {
@@ -264,7 +264,7 @@ final class KeyboardTestModel: ObservableObject {
         eventTap = nil
         globalHotkeyBlockingActive = false
     }
-    /// 系统因超时或用户输入临时禁用了 tap，需要重新启用。
+    /// System disabled the tap (timeout / user input) — re-enable.
     fileprivate func reenableEventTap() {
         guard let eventTap else { return }
         CGEvent.tapEnable(tap: eventTap, enable: true)
@@ -279,7 +279,7 @@ final class KeyboardTestModel: ObservableObject {
         }
     }
 
-    /// 局部监听和 CGEventTap 共用的入口；只传原始键码，避免跨并发域传递 CGEvent/NSEvent。
+    /// Shared entry for local monitor + CGEventTap; pass raw keycodes only (no CGEvent/NSEvent across isolation).
     fileprivate func handle(kind: KeyboardEventKind, keyCode code: UInt16) {
         switch kind {
         case .down:
@@ -302,7 +302,7 @@ final class KeyboardTestModel: ObservableObject {
             stuckKeyCodes.remove(code)
 
         case .flagsChanged:
-            // 修饰键没有干净的 down/up 配对，用"是否已按下"做翻转判断。
+            // Modifiers lack clean down/up pairs — toggle on "already down".
             testedKeyCodes.insert(code)
             if pressedKeyCodes.contains(code) {
                 pressedKeyCodes.remove(code)
@@ -322,31 +322,38 @@ final class KeyboardTestModel: ObservableObject {
         }
     }
 
-    /// 生成本项检测结果：完全测过且无卡键 → pass；有卡键 → warning；未测完就退出 → 按已测覆盖率降级。
+    /// Result: all keys + no stuck → pass; stuck → warning; early exit → grade by coverage.
     func buildResult() -> CheckResult {
         var details: [String: String] = [
-            L10n.t("check.keyboard.detail.tested"): "\(testedKeyCodes.count) / \(totalKeyCount)",
+            "tested": "\(testedKeyCodes.count) / \(totalKeyCount)",
         ]
         if !stuckKeyCodes.isEmpty {
             let names = stuckKeyCodes.compactMap { code in
                 KeyboardLayout.allKeys.first { $0.keyCode == code }?.label
             }.joined(separator: ", ")
-            details[L10n.t("check.keyboard.detail.stuck")] = names
+            details["stuck"] = names
             return CheckResult(
                 id: "keyboard",
                 title: L10n.t("check.keyboard.title"),
                 status: .warning,
                 summary: L10n.t("check.keyboard.result.stuck", names),
-                rawDetails: details
+                rawDetails: RawDetails.localize(details, using: [
+                    "tested": "check.keyboard.detail.tested",
+                    "stuck": "check.keyboard.detail.stuck",
+                ])
             )
         }
+        let localized = RawDetails.localize(details, using: [
+            "tested": "check.keyboard.detail.tested",
+            "stuck": "check.keyboard.detail.stuck",
+        ])
         if isComplete {
             return CheckResult(
                 id: "keyboard",
                 title: L10n.t("check.keyboard.title"),
                 status: .pass,
                 summary: L10n.t("check.keyboard.result.ok", totalKeyCount),
-                rawDetails: details
+                rawDetails: localized
             )
         }
         return CheckResult(
@@ -354,12 +361,12 @@ final class KeyboardTestModel: ObservableObject {
             title: L10n.t("check.keyboard.title"),
             status: .warning,
             summary: L10n.t("check.keyboard.result.partial", testedKeyCodes.count, totalKeyCount),
-            rawDetails: details
+            rawDetails: localized
         )
     }
 }
 
-/// CGEventTap 的 C 回调：在系统把按键分发给其它 App（包括注册了 F1 全局热键的截图工具）之前拦截。
+/// CGEventTap C callback — intercept before other apps (incl. F1 global hotkeys) see the key.
 private func keyboardEventTapCallback(
     proxy: CGEventTapProxy,
     type: CGEventType,
@@ -389,7 +396,7 @@ private func keyboardEventTapCallback(
             }
         }
     }
-    // 吞掉所有按键（含 NX_SYSDEFINED 媒体键），第三方全局热键收不到。
+    // Swallow all keys (incl. NX_SYSDEFINED media) so third-party global hotkeys don't fire.
     return nil
 }
 

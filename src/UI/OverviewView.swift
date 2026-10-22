@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// 概览页：小白验机结论卡片 + 机器档案 + 红旗 + 分类一览。
+/// Overview: verdict, machine profile, red flags, category summary.
 struct OverviewView: View {
     @EnvironmentObject private var model: AppModel
 
@@ -36,7 +36,7 @@ struct OverviewView: View {
         }
     }
 
-    // MARK: - 小白模式：验机结论卡片
+    // MARK: - Verdict card
 
     private var verdictCard: some View {
         let verdict = Self.verdict(for: model)
@@ -150,7 +150,7 @@ struct OverviewView: View {
         )
     }
 
-    // MARK: - 机器档案头部
+    // MARK: - Machine profile
 
     private var deviceHeader: some View {
         Card {
@@ -217,7 +217,7 @@ struct OverviewView: View {
         return "macbook"
     }
 
-    // MARK: - 红旗区
+    // MARK: - Red flags
 
     private var redFlagSection: some View {
         VStack(alignment: .leading, spacing: DS.Spacing.md) {
@@ -238,7 +238,7 @@ struct OverviewView: View {
         }
     }
 
-    // MARK: - 分类状态一览
+    // MARK: - Category status
 
     private var categorySummary: some View {
         VStack(alignment: .leading, spacing: DS.Spacing.sm) {
@@ -295,7 +295,7 @@ struct OverviewView: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - 底部
+    // MARK: - Footer
 
     private var footer: some View {
         VStack(alignment: .leading, spacing: DS.Spacing.xs) {

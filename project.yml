@@ -33,8 +33,8 @@ targets:
         CFBundleDisplayName: MacInspect
         CFBundleDevelopmentRegion: en
         CFBundleLocalizations: [en, zh-Hans, zh-Hant]
-        CFBundleShortVersionString: "1.0"
-        CFBundleVersion: "4"
+        CFBundleShortVersionString: "1.1"
+        CFBundleVersion: "5"
         NSCameraUsageDescription: Used for the camera check to verify a clear image without dead pixels.
         NSMicrophoneUsageDescription: Used for the microphone check to verify recording works.
         NSBluetoothAlwaysUsageDescription: Used for the Bluetooth check to scan nearby devices and verify the radio.

@@ -1,8 +1,8 @@
 import SwiftUI
 import Foundation
 
-/// A3+：硬盘读写测速。顺序写入再读取 512MB，测 MB/s。
-/// 读取用 `F_NOCACHE` 绕过系统页缓存，测的是真实盘速而非内存缓存。
+/// A3+: Sequential write then read 512MB (MB/s).
+/// Reads use `F_NOCACHE` so we measure disk, not page cache.
 @MainActor
 final class DiskSpeedCheckModel: ObservableObject {
     @Published var isRunning = false
@@ -14,7 +14,7 @@ final class DiskSpeedCheckModel: ObservableObject {
     @Published var errorText: String?
 
     private let totalBytes = 1024 * 1024 * 1024   // 1 GB
-    private let chunkBytes = 32 * 1024 * 1024      // 32 MB（较大块吞吐更稳）
+    private let chunkBytes = 32 * 1024 * 1024      // 32 MB chunks (steadier throughput)
     private var task: Task<Void, Never>?
 
     func start() {
@@ -33,7 +33,7 @@ final class DiskSpeedCheckModel: ObservableObject {
         let path = NSTemporaryDirectory() + "macinspect_speedtest_\(UUID().uuidString).bin"
         let total = totalBytes, chunk = chunkBytes
 
-        // 进度用 AsyncStream 回传，detached 任务不捕获 self（避免 Swift 6 数据竞争）。
+        // Progress via AsyncStream; detached task must not capture self (Swift 6).
         let (stream, cont) = AsyncStream.makeStream(of: (String, Double).self)
 
         let work = Task.detached { () -> Result<(Double, Double), DiskError> in
@@ -82,7 +82,7 @@ final class DiskSpeedCheckModel: ObservableObject {
         }
     }
 
-    /// 阻塞式 POSIX 读写，返回 MB/s。nonisolated：在后台线程执行。
+    /// Blocking POSIX I/O → MB/s. nonisolated; run off the main thread.
     nonisolated static func measure(path: String, total: Int, chunk: Int, writing: Bool, progress: (Double) -> Void) throws -> Double {
         let buffer = UnsafeMutableRawPointer.allocate(byteCount: chunk, alignment: 4096)
         defer { buffer.deallocate() }
@@ -92,7 +92,7 @@ final class DiskSpeedCheckModel: ObservableObject {
         let fd = open(path, flags, 0o644)
         guard fd >= 0 else { throw DiskError.open }
         defer { close(fd) }
-        // 读写都绕过页缓存：否则读会命中刚写入的缓存，测出虚高的"内存速度"而非真实盘速。
+        // Bypass page cache on R/W — else read hits the just-written cache.
         _ = fcntl(fd, F_NOCACHE, 1)
 
         let start = DispatchTime.now()
@@ -104,7 +104,7 @@ final class DiskSpeedCheckModel: ObservableObject {
             done += moved
             progress(Double(done) / Double(total))
         }
-        if writing { fsync(fd) }   // 确保真正落盘再停表
+        if writing { fsync(fd) }   // Flush before stopping the clock
         let elapsed = Double(DispatchTime.now().uptimeNanoseconds - start.uptimeNanoseconds) / 1_000_000_000
         let mb = Double(done) / (1024 * 1024)
         return elapsed > 0 ? mb / elapsed : 0
@@ -113,12 +113,17 @@ final class DiskSpeedCheckModel: ObservableObject {
     func buildResult() -> CheckResult {
         let w = writeMBps ?? 0, r = readMBps ?? 0
         let low = (w > 0 && w < 200) || (r > 0 && r < 200)
-        let details: [String: String] = [
-            L10n.t("check.disk.write"): String(format: "%.0f MB/s", w),
-            L10n.t("check.disk.read"): String(format: "%.0f MB/s", r),
-            L10n.t("check.disk.size"): L10n.t("check.disk.size_val"),
-            L10n.t("check.disk.method"): L10n.t("check.disk.method_val"),
-        ]
+        let details = RawDetails.localize([
+            "write": String(format: "%.0f MB/s", w),
+            "read": String(format: "%.0f MB/s", r),
+            "size": L10n.t("check.disk.size_val"),
+            "method": L10n.t("check.disk.method_val"),
+        ], using: [
+            "write": "check.disk.write",
+            "read": "check.disk.read",
+            "size": "check.disk.size",
+            "method": "check.disk.method",
+        ])
         return CheckResult(
             id: "diskSpeed",
             title: L10n.t("check.disk.title"),

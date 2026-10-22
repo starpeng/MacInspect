@@ -1,16 +1,16 @@
 import Foundation
 
-/// 一块 GPU 的摘要信息（来自 system_profiler SPDisplaysDataType）。
+/// One GPU summary from system_profiler SPDisplaysDataType.
 struct GPUInfo: Sendable, Equatable {
     let name: String
-    /// 显存 GB。独显为专用 VRAM；核显为系统共享显存（不宜当独显预算）。
+    /// VRAM GB. Discrete = dedicated; iGPU = shared (don't treat as discrete budget).
     let vramGB: Double
     let isDiscrete: Bool
     let metalSupported: Bool
 }
 
-/// 读取本机显卡与显存。Intel 评估本地大模型时，有独显应优先看 VRAM。
-/// `system_profiler` 较慢，结果按进程生命周期缓存，避免进出 AI 页反复卡住。
+/// List GPUs / VRAM. On Intel, prefer discrete VRAM for local LLM sizing.
+/// `system_profiler` is slow — cache for process lifetime.
 enum GraphicsProbe {
     private final class Cache: @unchecked Sendable {
         let lock = NSLock()
@@ -34,7 +34,7 @@ enum GraphicsProbe {
         return fetched
     }
 
-    /// 最大的独显专用显存（GB）；无独显则 nil。
+    /// Largest discrete dedicated VRAM (GB); nil if none.
     static func primaryDiscreteGPU() -> GPUInfo? {
         allGPUs()
             .filter(\.isDiscrete)
@@ -61,7 +61,7 @@ enum GraphicsProbe {
             let vendor = ((card["spdisplays_vendor"] as? String) ?? "").lowercased()
             let metal = (card["spdisplays_metal"] as? String)?.contains("supported") == true
 
-            // 独显：有专用 VRAM 字段，或挂在 PCIe 上（AMD/NVIDIA 常见）。
+            // Discrete: dedicated VRAM field, or PCIe-attached (AMD/NVIDIA).
             let looksPCIe = bus.contains("pcie")
             let looksIntelIGPU = name.localizedCaseInsensitiveContains("Intel UHD")
                 || name.localizedCaseInsensitiveContains("Intel Iris")
@@ -72,7 +72,7 @@ enum GraphicsProbe {
             var vramGB: Double = 0
 
             if let dedicatedRaw, let gb = parseMemoryGB(dedicatedRaw), gb > 0 {
-                // 同时存在 shared 且是 Intel 核显 → 仍算共享
+                // Shared + Intel iGPU → still shared
                 if looksIntelIGPU, sharedRaw != nil, !looksPCIe {
                     isDiscrete = false
                     vramGB = parseMemoryGB(sharedRaw!) ?? gb
@@ -122,7 +122,7 @@ enum GraphicsProbe {
         }
     }
 
-    /// 解析 "8 GB" / "1536 MB" / "8192 MB" → GB。
+    /// Parse "8 GB" / "1536 MB" / "8192 MB" → GB.
     static func parseMemoryGB(_ raw: String) -> Double? {
         let lowered = raw.lowercased().replacingOccurrences(of: ",", with: "")
         let number = lowered.filter { $0.isNumber || $0 == "." }
@@ -130,7 +130,7 @@ enum GraphicsProbe {
         if lowered.contains("mb") {
             return value / 1024.0
         }
-        // 默认按 GB
+        // Default unit: GB
         return value
     }
 }

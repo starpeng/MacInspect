@@ -1,7 +1,7 @@
 import Foundation
 
-/// 统一的本地命令执行封装。app 不联网，这是唯一的外部交互面，
-/// 所有调用方都应把输出当作"不可信输入"处理（解析失败要降级而不是崩溃）。
+/// Local process runner. App is offline; this is the only external I/O surface.
+/// Treat stdout as untrusted — degrade on parse failure, don't crash.
 enum ShellRunner {
     static func run(_ launchPath: String, _ arguments: [String]) -> String {
         let process = Process()
@@ -10,7 +10,7 @@ enum ShellRunner {
 
         let stdout = Pipe()
         process.standardOutput = stdout
-        // stderr 不参与解析，直接丢弃。若接上 Pipe 又不读取，子进程写满缓冲区后同样会阻塞。
+        // Drop stderr. Attaching a Pipe and never reading it can still deadlock the child.
         process.standardError = FileHandle.nullDevice
 
         do {
@@ -19,8 +19,8 @@ enum ShellRunner {
             return ""
         }
 
-        // 必须先读到 EOF，再 waitUntilExit：`ioreg -ar -k product-name` 在本机实测输出约 1.8 MB，
-        // 远超管道缓冲区。若先等子进程退出，子进程会在写满管道后阻塞，父进程又在等它退出，双方死锁。
+        // Read to EOF before waitUntilExit — large output (e.g. ioreg ~1.8 MB) fills the pipe
+        // and deadlocks if we wait on the child first.
         let data = stdout.fileHandleForReading.readDataToEndOfFile()
         process.waitUntilExit()
         return String(data: data, encoding: .utf8) ?? ""

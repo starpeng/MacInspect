@@ -1,7 +1,7 @@
 import Foundation
 import CryptoKit
 
-/// 报告轻量防伪摘要：本地可复算，便于买卖双方核对截图是否与本机当次检测一致。
+/// Lightweight report fingerprint — locally recomputable so buyer/seller can match a screenshot to this run.
 enum ReportFingerprint {
     static func make(profile: DeviceProfile?, report: MacInspectReport) -> String {
         let serial = profile?.serialNumber ?? ""

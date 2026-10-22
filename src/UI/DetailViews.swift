@@ -1,7 +1,7 @@
 import SwiftUI
 import AppKit
 
-/// 详情面板路由：概览 / 硬件规格 / 各检测分类 / 交互测试。
+/// Detail pane router.
 struct DetailRouter: View {
     @EnvironmentObject private var model: AppModel
 
@@ -45,7 +45,7 @@ struct DetailRouter: View {
     }
 }
 
-// MARK: - 硬件规格（基础信息 · 系统 · 购买与保修）
+// MARK: - Specs
 
 struct SpecsView: View {
     @EnvironmentObject private var model: AppModel
@@ -69,7 +69,7 @@ struct SpecsView: View {
         .navigationTitle(L10n.t("sidebar.specs"))
     }
 
-    // 基础信息
+    // Basics
     private func basicInfoCard(_ p: DeviceProfile) -> some View {
         Card {
             cardHeader(icon: "laptopcomputer", title: L10n.t("specs.basic"))
@@ -107,7 +107,7 @@ struct SpecsView: View {
         }
     }
 
-    // 系统
+    // System
     private func systemCard(_ p: DeviceProfile) -> some View {
         Card {
             cardHeader(icon: "gearshape", title: L10n.t("specs.system"))
@@ -117,7 +117,7 @@ struct SpecsView: View {
         }
     }
 
-    // 购买与保修
+    // Purchase / warranty
     private func warrantyCard(_ p: DeviceProfile) -> some View {
         let lock = model.result(id: "management.activationLock")
         return Card {
@@ -175,7 +175,6 @@ struct SpecsView: View {
     }
 }
 
-/// 优雅的键值列表：图标 + 名称在左，值在右，行间发丝分隔。
 struct KeyValueList<Content: View>: View {
     @ViewBuilder let content: Content
     var body: some View {
@@ -227,7 +226,7 @@ struct KVRow: View {
     }
 }
 
-// MARK: - 通用分类详情（电池 / 安全 / 存储 / 网络 / 接口）
+// MARK: - Category detail
 
 struct CategoryDetailView: View {
     @EnvironmentObject private var model: AppModel
@@ -280,9 +279,10 @@ struct CategoryDetailView: View {
             }
             if !result.rawDetails.isEmpty {
                 DS.Divider()
+                let pairs = result.rawDetails.sorted(by: { $0.key < $1.key })
                 VStack(alignment: .leading, spacing: DS.Spacing.xs) {
-                    ForEach(result.rawDetails.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
-                        InfoRow(key: key, value: value, mono: true)
+                    ForEach(Array(pairs.enumerated()), id: \.element.key) { index, pair in
+                        InfoRow(key: pair.key, value: pair.value, mono: true, index: index)
                     }
                 }
             }
@@ -290,7 +290,6 @@ struct CategoryDetailView: View {
     }
 }
 
-/// 小型状态药丸标签。
 struct StatusPill: View {
     let status: CheckStatus
     var body: some View {
@@ -303,7 +302,7 @@ struct StatusPill: View {
     }
 }
 
-// MARK: - 全屏测试启动面板（键盘 / 屏幕）
+// MARK: - Fullscreen test launch
 
 struct FullscreenLaunchPane: View {
     @EnvironmentObject private var model: AppModel

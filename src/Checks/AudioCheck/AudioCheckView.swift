@@ -1,10 +1,10 @@
 import SwiftUI
 import AVFoundation
 
-/// B3：扬声器/耳机口测试。分别播放左右声道扫频音，用户确认左右是否都正常。
+/// B3: Speaker/headphone — play L/R sweep; user confirms both channels.
 @MainActor
 final class AudioCheckModel: ObservableObject {
-    @Published var playingChannel: Int? = nil   // 0 = 左, 1 = 右, nil = 停止
+    @Published var playingChannel: Int? = nil   // 0 = left, 1 = right, nil = stop
 
     private let engine = AVAudioEngine()
     private let player = AVAudioPlayerNode()
@@ -83,15 +83,23 @@ struct AudioCheckView: View {
                     model.teardown()
                     onComplete(CheckResult(id: "audio", title: L10n.t("check.audio.item"), status: .pass,
                         summary: L10n.t("check.audio.ok"),
-                        rawDetails: [L10n.t("check.audio.ch_left"): L10n.t("check.audio.normal"),
-                                     L10n.t("check.audio.ch_right"): L10n.t("check.audio.normal")]))
+                        rawDetails: RawDetails.localize([
+                            "left": L10n.t("check.audio.normal"),
+                            "right": L10n.t("check.audio.normal"),
+                        ], using: [
+                            "left": "check.audio.ch_left",
+                            "right": "check.audio.ch_right",
+                        ])))
                 }
                 .buttonStyle(.borderedProminent)
                 Button(L10n.t("check.audio.bad_btn")) {
                     model.teardown()
                     onComplete(CheckResult(id: "audio", title: L10n.t("check.audio.item"), status: .warning,
                         summary: L10n.t("check.audio.bad"),
-                        rawDetails: [L10n.t("check.audio.user_judge"): L10n.t("check.audio.abnormal")]))
+                        rawDetails: RawDetails.localize(
+                            ["judge": L10n.t("check.audio.abnormal")],
+                            using: ["judge": "check.audio.user_judge"]
+                        )))
                 }
                 .buttonStyle(.bordered)
             }

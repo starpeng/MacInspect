@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// 键盘可视化测试：按一下键，对应键位立刻在屏幕上亮起并保持"已测"状态——不是打字框。
+/// Visual keyboard test: press a key → light it and keep "tested". Not a typing field.
 struct KeyboardCheckView: View {
     @StateObject private var model = KeyboardTestModel()
     let onFinish: (CheckResult) -> Void

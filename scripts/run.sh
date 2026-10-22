@@ -33,13 +33,24 @@ for arg in "$@"; do
   esac
 done
 
+# Always regenerate on --rebuild/--clean so new sources under src/ enter the target.
+# Otherwise only generate when the .xcodeproj is missing.
+need_xcodegen=0
 if [ ! -d "$PROJECT" ]; then
+  need_xcodegen=1
+elif [ "$REBUILD" -eq 1 ]; then
+  need_xcodegen=1
+fi
+
+if [ "$need_xcodegen" -eq 1 ]; then
   if command -v xcodegen >/dev/null; then
     echo "▸ Generate Xcode project"
     xcodegen generate
-  else
+  elif [ ! -d "$PROJECT" ]; then
     echo "❌ Missing $PROJECT and xcodegen is not installed" >&2
     exit 1
+  else
+    echo "⚠️  xcodegen not installed; rebuilding with existing $PROJECT" >&2
   fi
 fi
 

@@ -1,9 +1,9 @@
 import Foundation
 
-/// 从 `Resources/Locales/*.json` 加载文案。应用内切换语言无需重启；缺省回退英文。
+/// Loads copy from `Resources/Locales/*.json`. In-app language switch needs no restart; falls back to English.
 ///
-/// 新增语言：在 `Resources/Locales/` 增加 `{code}.json`（可复制 `en.json` 再翻译），
-/// 并写上 `_meta.language_name`；设置页会自动出现该语言。
+/// To add a locale: drop `{code}.json` under `Resources/Locales/` (copy `en.json`), set `_meta.language_name`;
+/// it shows up in Settings automatically.
 enum L10n {
     private static let fallbackCode = "en"
     private static let catalog = LocaleCatalog.shared
@@ -22,7 +22,7 @@ enum L10n {
     }
 }
 
-/// 语言包目录：扫描 Bundle 内 `*.json`（排除 `_meta.*` 键以外的业务文案）。
+/// Locale catalog: scans Bundle `*.json` files.
 final class LocaleCatalog: @unchecked Sendable {
     static let shared = LocaleCatalog()
 
@@ -30,7 +30,7 @@ final class LocaleCatalog: @unchecked Sendable {
     private var cache: [String: [String: String]] = [:]
     private var bundledCodesCache: [String]?
 
-    /// Bundle 中已打包的语言码（文件名，如 `en`、`zh-Hans`），按稳定顺序。
+    /// Bundled locale codes (filenames like `en`, `zh-Hans`), stable order.
     var bundledCodes: [String] {
         lock.lock()
         defer { lock.unlock() }

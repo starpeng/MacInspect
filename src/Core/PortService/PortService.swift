@@ -1,7 +1,17 @@
 import Foundation
 
-/// B5：接口枚举。列出当前通过 USB / 雷雳(Thunderbolt) 接口连接的设备，帮助用户逐口验证接口连通性。
+/// B5: Enumerate devices on USB / Thunderbolt ports for per-port connectivity checks.
 enum PortService {
+
+    private enum Key {
+        static let usb = "usb"
+        static let tb = "thunderbolt"
+    }
+
+    private static let displayKey: [String: String] = [
+        Key.usb: "ports.usb",
+        Key.tb: "ports.tb",
+    ]
 
     private static func flatten(_ items: [[String: Any]], into names: inout [String]) {
         for item in items {
@@ -49,9 +59,10 @@ enum PortService {
         let tb = thunderboltDevices()
         let sep = AppLanguage.current.resolvedCode.hasPrefix("zh") ? "、" : ", "
 
-        var details: [String: String] = [:]
-        details[L10n.t("ports.usb")] = usb.isEmpty ? L10n.t("ports.none") : usb.joined(separator: sep)
-        details[L10n.t("ports.tb")] = tb.isEmpty ? L10n.t("ports.none") : tb.joined(separator: sep)
+        let details: [String: String] = [
+            Key.usb: usb.isEmpty ? L10n.t("ports.none") : usb.joined(separator: sep),
+            Key.tb: tb.isEmpty ? L10n.t("ports.none") : tb.joined(separator: sep),
+        ]
 
         let total = usb.count + tb.count
         let summary = total == 0
@@ -63,7 +74,7 @@ enum PortService {
             title: L10n.t("ports.title"),
             status: .pass,
             summary: summary,
-            rawDetails: details
+            rawDetails: RawDetails.localize(details, using: displayKey)
         )]
     }
 }

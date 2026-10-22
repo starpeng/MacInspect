@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 enum AppTheme: String, CaseIterable, Identifiable {
@@ -23,11 +24,115 @@ enum AppTheme: String, CaseIterable, Identifiable {
         }
     }
 
-    var colorScheme: ColorScheme? {
+    /// System dark mode from AppleInterfaceStyle (ignores NSApp.appearance override).
+    static var systemInterfaceIsDark: Bool {
+        UserDefaults.standard.string(forKey: "AppleInterfaceStyle") == "Dark"
+    }
+
+    /// Always a concrete scheme. On macOS, preferredColorScheme(nil) often sticks after light/dark.
+    var resolvedColorScheme: ColorScheme {
         switch self {
-        case .system: return nil
         case .light: return .light
         case .dark: return .dark
+        case .system: return Self.systemInterfaceIsDark ? .dark : .light
+        }
+    }
+
+    /// Sync AppKit. For system: clear NSApp.appearance, set each window to effectiveAppearance
+    /// (window.appearance = nil leaves the previous lock until focus changes).
+    @MainActor
+    func applyToApp() {
+        switch self {
+        case .light:
+            Self.apply(NSAppearance(named: .aqua))
+        case .dark:
+            Self.apply(NSAppearance(named: .darkAqua))
+        case .system:
+            NSApp.appearance = nil
+            Self.applyWindows(NSApp.effectiveAppearance)
+        }
+    }
+
+    @MainActor
+    private static func apply(_ appearance: NSAppearance?) {
+        NSApp.appearance = appearance
+        applyWindows(appearance)
+    }
+
+    @MainActor
+    private static func applyWindows(_ appearance: NSAppearance?) {
+        for window in NSApp.windows {
+            window.appearance = appearance
+        }
+    }
+}
+
+/// Pins theme onto the host NSWindow; re-applies when the system appearance changes.
+struct WindowAppearanceBridge: NSViewRepresentable {
+    let theme: AppTheme
+
+    func makeNSView(context: Context) -> TrackerView {
+        let view = TrackerView()
+        context.coordinator.attach(view: view, theme: theme)
+        return view
+    }
+
+    func updateNSView(_ nsView: TrackerView, context: Context) {
+        context.coordinator.apply(theme: theme)
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator() }
+
+    final class TrackerView: NSView {
+        var onMoveToWindow: (() -> Void)?
+        override func viewDidMoveToWindow() {
+            super.viewDidMoveToWindow()
+            onMoveToWindow?()
+        }
+    }
+
+    @MainActor
+    final class Coordinator {
+        private weak var view: TrackerView?
+        private var theme: AppTheme = .system
+        private var systemThemeObserver: NSObjectProtocol?
+
+        func attach(view: TrackerView, theme: AppTheme) {
+            self.view = view
+            view.onMoveToWindow = { [weak self] in
+                self?.apply(theme: self?.theme ?? .system)
+            }
+            if systemThemeObserver == nil {
+                // Avoid KVO on effectiveAppearance (Swift 6 isolation).
+                systemThemeObserver = DistributedNotificationCenter.default().addObserver(
+                    forName: Notification.Name("AppleInterfaceThemeChangedNotification"),
+                    object: nil,
+                    queue: .main
+                ) { [weak self] _ in
+                    // Notification can arrive before prefs update; apply on next turn.
+                    DispatchQueue.main.async { self?.onSystemThemeChanged() }
+                }
+            }
+            apply(theme: theme)
+        }
+
+        func apply(theme: AppTheme) {
+            self.theme = theme
+            theme.applyToApp()
+            guard let window = view?.window else { return }
+            switch theme {
+            case .light:
+                window.appearance = NSAppearance(named: .aqua)
+            case .dark:
+                window.appearance = NSAppearance(named: .darkAqua)
+            case .system:
+                window.appearance = NSApp.effectiveAppearance
+            }
+        }
+
+        private func onSystemThemeChanged() {
+            guard theme == .system else { return }
+            apply(theme: .system)
         }
     }
 }

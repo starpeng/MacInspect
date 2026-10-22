@@ -1,12 +1,12 @@
 import Foundation
 
-/// 单项检测结果的状态。红旗项会被提升到报告顶部单独展示。
+/// Per-check status. Red flags surface at the top of the report.
 enum CheckStatus: String, Codable, Sendable {
-    case pass          // 绿色，正常
-    case warning       // 黄色，需要注意但不是硬伤
-    case redFlag       // 红色，一票否决级问题（监管/锁定/疑似篡改）
-    case skipped       // 用户主动跳过
-    case unsupported   // 本机型/本次运行环境不支持该项检测
+    case pass          // OK
+    case warning       // Worth attention, not a deal-breaker
+    case redFlag       // Hard fail (MDM / lock / tamper suspicion)
+    case skipped       // User skipped
+    case unsupported   // Not available on this machine/run
 
     var emoji: String {
         switch self {
@@ -19,14 +19,14 @@ enum CheckStatus: String, Codable, Sendable {
     }
 }
 
-/// 一项检测的完整结果：人话结论 + 可展开的专业原始数据。
+/// One check result: plain summary + expandable raw details.
 struct CheckResult: Identifiable, Codable, Sendable {
-    let id: String                  // 稳定 ID，如 "battery.cycleCount"
-    let title: String               // 人话标题，如 "电池健康"
+    let id: String                  // Stable id, e.g. "battery.cycleCount"
+    let title: String               // Display title
     let status: CheckStatus
-    let summary: String              // 一句人话结论，如 "循环次数 47 次，约等于轻度使用 3 个月"
-    var rawDetails: [String: String] = [:]   // 专业详情折叠区：原始键值
-    var isRedFlagHeadline: String? = nil      // 非空时会被提升到报告顶部红旗区，用大白话完整解释后果
+    let summary: String              // One-line conclusion
+    var rawDetails: [String: String] = [:]   // Collapsible raw key/values
+    var isRedFlagHeadline: String? = nil      // Non-nil → promoted to report red-flag section
 
     init(
         id: String,
@@ -51,21 +51,21 @@ struct DeviceGraphicsInfo: Codable, Sendable, Equatable {
     var detail: String
 }
 
-/// 结构化机器档案，供首页头部直接展示（打开 App 即可见，无需任何操作）。
+/// Structured machine profile for the home header (shown on launch).
 struct DeviceProfile: Codable, Sendable {
-    var marketingName: String    // "MacBook Pro（14 英寸，2021）"
+    var marketingName: String    // e.g. "MacBook Pro (14-inch, 2021)"
     var modelIdentifier: String  // "MacBookPro18,3"
     var chip: String             // "Apple M1 Pro"
     var memory: String           // "32 GB"
     var macOSVersion: String     // "macOS 15.3.2 (24D...)"
     var serialNumber: String
     var architecture: String
-    var modelYear: String        // "2021"（从营销名解析）
-    var productionDate: String   // 生产日期估算或随机化说明
+    var modelYear: String        // "2021" parsed from marketing name
+    var productionDate: String   // Estimated date, or randomized-serial note
     var graphics: [DeviceGraphicsInfo] = []
 }
 
-/// 完整验机报告。
+/// Full inspection report.
 struct MacInspectReport: Codable, Sendable {
     var generatedAt: Date
     var appVersion: String

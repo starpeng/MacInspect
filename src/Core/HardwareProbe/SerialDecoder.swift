@@ -1,8 +1,8 @@
 import Foundation
 
-/// 序列号生产日期解码。
-/// 2021 年前 Apple 使用 11/12 位序列号，其中第 4、5 位编码了生产年份与周次，可本地解码。
-/// 2021 年起 Apple 改用随机化序列号（通常 10 位），**无法**本地推算日期——诚实告知，不臆造。
+/// Decode manufacture date from serial.
+/// Pre-2021 11/12-char serials encode year/week in positions 4–5.
+/// From 2021, randomized (often 10-char) serials can't be dated locally — say so, don't invent.
 enum SerialDecoder {
 
     struct Manufacture {
@@ -27,7 +27,7 @@ enum SerialDecoder {
         return Manufacture(year: year, week: min(week, 53))
     }
 
-    /// 给出人话的生产日期结论。随机化序列号返回明确说明而非空。
+    /// Plain-language date result; randomized serials get an explicit note, not empty.
     static func productionDescription(serial: String) -> String {
         guard !serial.isEmpty else { return L10n.t("serial.prod.unknown") }
         if let m = manufacture(from: serial) {

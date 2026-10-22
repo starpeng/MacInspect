@@ -25,7 +25,7 @@ final class ScreenCheckModel: ObservableObject {
 
     let stages = ScreenStage.allCases
 
-    /// 屏幕测试期间按 Esc 的退出回调（由 View 绑定到 finish）。
+    /// Esc-to-exit during screen test (View binds this to finish).
     var onEscape: (() -> Void)?
     private var keyMonitor: Any?
 
@@ -90,11 +90,15 @@ final class ScreenCheckModel: ObservableObject {
     func buildResult(exitedEarly: Bool) -> CheckResult {
         let stageNames = flaggedStages.sorted().map { stages[$0].title }
         var details: [String: String] = [
-            L10n.t("check.screen.detail.stages"): "\(exitedEarly ? currentIndex : stages.count) / \(stages.count)",
+            "stages": "\(exitedEarly ? currentIndex : stages.count) / \(stages.count)",
         ]
         if !stageNames.isEmpty {
-            details[L10n.t("check.screen.detail.flagged")] = stageNames.joined(separator: "; ")
+            details["flagged"] = stageNames.joined(separator: "; ")
         }
+        let localized = RawDetails.localize(details, using: [
+            "stages": "check.screen.detail.stages",
+            "flagged": "check.screen.detail.flagged",
+        ])
 
         if !flaggedStages.isEmpty {
             let sep = AppLanguage.current.resolvedCode.hasPrefix("zh") ? "、" : ", "
@@ -103,7 +107,7 @@ final class ScreenCheckModel: ObservableObject {
                 title: L10n.t("check.screen.title"),
                 status: .warning,
                 summary: L10n.t("check.screen.result.flagged", stageNames.joined(separator: sep)),
-                rawDetails: details
+                rawDetails: localized
             )
         }
         if exitedEarly {
@@ -112,7 +116,7 @@ final class ScreenCheckModel: ObservableObject {
                 title: L10n.t("check.screen.title"),
                 status: .warning,
                 summary: L10n.t("check.screen.result.partial", currentIndex, stages.count),
-                rawDetails: details
+                rawDetails: localized
             )
         }
         return CheckResult(
@@ -120,7 +124,7 @@ final class ScreenCheckModel: ObservableObject {
             title: L10n.t("check.screen.title"),
             status: .pass,
             summary: L10n.t("check.screen.result.ok", stages.count),
-            rawDetails: details
+            rawDetails: localized
         )
     }
 }

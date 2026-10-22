@@ -9,8 +9,8 @@ struct RootView: View {
     @State private var enteredFullScreenForTest = false
     @State private var screenTestWindow: NSWindow?
 
-    private var preferredScheme: ColorScheme? {
-        (AppTheme(rawValue: themeRawValue) ?? .system).colorScheme
+    private var currentTheme: AppTheme {
+        AppTheme(rawValue: themeRawValue) ?? .system
     }
 
     private var appLocale: Locale {
@@ -33,9 +33,10 @@ struct RootView: View {
                     .zIndex(1)
             }
         }
+        .preferredColorScheme(currentTheme.resolvedColorScheme)
+        .background(WindowAppearanceBridge(theme: currentTheme).frame(width: 0, height: 0))
         .environmentObject(model)
         .environment(\.locale, appLocale)
-        .preferredColorScheme(preferredScheme)
         .animation(.easeInOut(duration: 0.2), value: model.fullscreenTest?.id)
         .task { await model.scanIfNeeded() }
         .onChange(of: languageRawValue) { _, _ in
@@ -44,8 +45,7 @@ struct RootView: View {
         .onChange(of: model.fullscreenTest?.id) { _, newID in
             switch newID {
             case "screen":
-                // 屏幕测试不复用主窗口的全屏状态：单独开一个无边框、覆盖全屏的测试窗口，
-                // 这样无论主窗口当前是不是全屏，测试区域都保证覆盖整个屏幕。
+                // Own borderless window so coverage isn't tied to main-window fullscreen.
                 exitTestFullScreenIfNeeded()
                 presentScreenTestWindow()
             case "keyboard":
@@ -60,7 +60,7 @@ struct RootView: View {
         }
     }
 
-    /// 键盘/屏幕测试使用系统原生全屏，真正覆盖整个屏幕（含菜单栏与 Dock 区域）。
+    /// Native fullscreen for keyboard test (covers menu bar / Dock).
     @MainActor
     private func enterTestFullScreenIfNeeded() {
         guard !enteredFullScreenForTest else { return }
@@ -82,7 +82,7 @@ struct RootView: View {
         }
     }
 
-    // MARK: - 屏幕测试：独立的无边框全屏窗口
+    // MARK: - Screen test (borderless fullscreen window)
 
     @MainActor
     private func presentScreenTestWindow() {
@@ -98,7 +98,7 @@ struct RootView: View {
             backing: .buffered,
             defer: false
         )
-        // screenSaver 层级可以盖住菜单栏、Dock 和其它 App 窗口，保证整块屏幕都是测试区域。
+        // Above menu bar / Dock / other apps.
         window.level = .screenSaver
         window.isOpaque = true
         window.backgroundColor = .black
@@ -136,12 +136,12 @@ struct RootView: View {
                 model.fullscreenTest = nil
             }
         case .screen:
-            EmptyView() // 屏幕测试走独立的 BorderlessTestWindow
+            EmptyView() // Screen test uses BorderlessTestWindow
         }
     }
 }
 
-/// 无边框窗口默认不能成为 key window；重写后才能接收键盘事件。
+/// Borderless NSWindow must opt in to key/main to get keyboard events.
 private final class BorderlessTestWindow: NSWindow {
     override var canBecomeKey: Bool { true }
     override var canBecomeMain: Bool { true }

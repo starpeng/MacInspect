@@ -1,7 +1,7 @@
 import SwiftUI
 import AppKit
 
-/// AI 大模型可跑性建议：显卡探测与评估在后台异步完成，避免进出菜单卡住主线程。
+/// AI model fit suggestions; GPU probe runs off the main thread.
 struct AIModelsView: View {
     @EnvironmentObject private var model: AppModel
 
@@ -205,7 +205,7 @@ struct AIModelsView: View {
 
     @MainActor
     private func loadEvaluation() async {
-        // 已有缓存结果时不闪 loading，后台静默刷新（通常命中 GraphicsProbe 缓存，很快）
+        // Keep cached UI; refresh quietly in the background.
         let showLoading = ctx == nil
         if showLoading { isLoading = true }
 

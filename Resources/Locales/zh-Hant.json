@@ -318,6 +318,8 @@
   "hw.model.cross.headline": "⛔ 底層機型標識與系統資訊報告不一致，存在改碼/環境異常風險，建議用序號在 Apple 官網核對機型。",
   "hw.model.cross.summary": "機型標識不一致（%@ vs %@）",
   "hw.model.cross.title": "機型標識交叉核對",
+  "hw.model.sp": "system_profiler 讀取",
+  "hw.model.sysctl": "sysctl 讀取",
   "hw.serial.batt": "電池序號",
   "hw.serial.board": "主機序號",
   "hw.serial.display": "螢幕序號",

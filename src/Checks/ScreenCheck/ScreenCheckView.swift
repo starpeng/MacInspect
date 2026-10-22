@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// 屏幕坏点/色带/残影测试：真正的全屏轮播纯色与图案。
-/// 提示面板可按住拖动，避免长时间遮挡同一块屏幕区域影响判断。
+/// Dead pixel / banding / burn-in: real fullscreen color & pattern cycle.
+/// Hint panel is draggable so it doesn't hide one spot forever.
 struct ScreenCheckView: View {
     @StateObject private var model = ScreenCheckModel()
     let onFinish: (CheckResult) -> Void
@@ -24,13 +24,13 @@ struct ScreenCheckView: View {
                             Color.clear.preference(key: PanelSizeKey.self, value: proxy.size)
                         }
                     )
-                    // 只改 offset（渲染层位移），不每帧重算 position（触发布局），拖动才跟手。
+                    // Move via offset only — don't recompute position each frame (avoids layout thrash).
                     .position(defaultPanelCenter(in: geo.size))
                     .offset(panelOffset)
             }
             .coordinateSpace(.named("screenTest"))
             .onPreferenceChange(PanelSizeKey.self) { size in
-                // 忽略布局初期的零尺寸，避免把默认位置算到屏幕外。
+                // Ignore zero size during early layout (keeps default on-screen).
                 if size.width > 0 && size.height > 0 { panelSize = size }
             }
         }
@@ -99,16 +99,16 @@ struct ScreenCheckView: View {
         }
         .padding(16)
         .frame(width: min(560, max(320, containerSize.width - 48)))
-        // 固定深色面板 + 白字：无论当前是纯白、纯绿还是棋盘格，对比度都稳定。
+        // Dark panel + white text — readable on white, green, or checkerboard.
         .background(RoundedRectangle(cornerRadius: 12).fill(Color.black.opacity(0.72)))
         .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(Color.white.opacity(0.16)))
         .foregroundStyle(.white)
     }
 
-    // MARK: - 面板拖动
+    // MARK: - Panel drag
 
     private func panelDragGesture(in containerSize: CGSize) -> some Gesture {
-        // 用固定的容器坐标系取 translation：面板自身移动不会反过来影响手势数值。
+        // Translation in fixed container coords so panel motion doesn't feed back into the gesture.
         DragGesture(minimumDistance: 1, coordinateSpace: .named("screenTest"))
             .onChanged { value in
                 let start = dragStartOffset ?? panelOffset

@@ -1,10 +1,10 @@
 import Foundation
 
-/// 应用语言偏好。`system` 跟随系统；其余值为 Bundle 内语言包 code（如 `en`、`zh-Hans`）。
+/// App language preference. `system` follows the OS; otherwise a bundled locale code (`en`, `zh-Hans`, …).
 ///
-/// 存储兼容旧版枚举值：`english` / `simplifiedChinese` / `traditionalChinese`。
+/// Storage also accepts legacy enum values: `english` / `simplifiedChinese` / `traditionalChinese`.
 struct AppLanguage: Hashable, Identifiable, Sendable {
-    /// `"system"` 或语言包 code。
+    /// `"system"` or a bundled locale code.
     let rawValue: String
 
     var id: String { rawValue }
@@ -17,12 +17,12 @@ struct AppLanguage: Hashable, Identifiable, Sendable {
         return AppLanguage(stored: raw)
     }
 
-    /// 设置页选项：跟随系统 + 所有已打包语言。
+    /// Settings choices: follow system + every bundled locale.
     static var choices: [AppLanguage] {
         [system] + LocaleCatalog.shared.bundledCodes.map { AppLanguage(rawValue: $0) }
     }
 
-    /// 解析后的 BCP-47 语言码（`system` 时映射到受支持语言包）。
+    /// Resolved BCP-47 code (`system` maps onto a supported bundled locale).
     var resolvedCode: String {
         if rawValue == "system" {
             return Self.mapSystemToSupported(
@@ -45,7 +45,7 @@ struct AppLanguage: Hashable, Identifiable, Sendable {
         self.rawValue = rawValue
     }
 
-    /// 从 UserDefaults 读取，并迁移旧枚举值。
+    /// Load from UserDefaults, migrating legacy enum values.
     init(stored raw: String) {
         let normalized = Self.normalize(raw)
         if normalized != raw {
@@ -77,7 +77,7 @@ struct AppLanguage: Hashable, Identifiable, Sendable {
         if lower.hasPrefix("zh"), bundled.contains("zh-Hans") {
             return "zh-Hans"
         }
-        // 精确或前缀匹配已打包语言
+        // Exact or prefix match against bundled codes
         if bundled.contains(where: { lower == $0.lowercased() || lower.hasPrefix($0.lowercased() + "-") }) {
             return bundled.first { lower == $0.lowercased() || lower.hasPrefix($0.lowercased() + "-") }!
         }

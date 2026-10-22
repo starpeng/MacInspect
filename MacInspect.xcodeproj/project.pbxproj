@@ -47,6 +47,7 @@
 		D352C70790E769C0811052B4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E26BBCD600E8B6AB66435DBE /* InfoPlist.strings */; };
 		D587E407BAC55285B9B8B1D0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0FB12865C6E262E8EABA2217 /* Assets.xcassets */; };
 		D7F20B5944D0CAB0E5A66952 /* ShellRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AF6298B9FDE790A3635030 /* ShellRunner.swift */; };
+		DB17242ABC6B610C8B828AD4 /* RawDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22EF221A343C912A87574ED /* RawDetails.swift */; };
 		DC7854A3FD53E087E137CCF9 /* SerialDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543020D7B63305639B5421B4 /* SerialDecoder.swift */; };
 		E98CA041BF261B8B8D29B961 /* KeyboardCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC1F0CA0DA4FAC42A2008D2 /* KeyboardCheckView.swift */; };
 		EFEABCBA385338E3B98D7D88 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2440F43134E4628D4D5994F9 /* StorageService.swift */; };
@@ -98,6 +99,7 @@
 		BA325455CF877E7EB8A26AF0 /* ManagementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagementService.swift; sourceTree = "<group>"; };
 		BA386A8C9E458A859B7355BB /* OverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverviewView.swift; sourceTree = "<group>"; };
 		BCD2CD1499A6CA4542D8B3F1 /* KeyboardTestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardTestModel.swift; sourceTree = "<group>"; };
+		C22EF221A343C912A87574ED /* RawDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawDetails.swift; sourceTree = "<group>"; };
 		CC36297D512FCA6410F138F8 /* AIModelAdvisor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIModelAdvisor.swift; sourceTree = "<group>"; };
 		D57CE7BD7AD360F8784A9645 /* ReportModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportModel.swift; sourceTree = "<group>"; };
 		DC60F63171C236FBE78490FE /* MacInspect.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacInspect.entitlements; sourceTree = "<group>"; };
@@ -182,6 +184,7 @@
 		4F24756C605B338BF6D46363 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				C22EF221A343C912A87574ED /* RawDetails.swift */,
 				58AF6298B9FDE790A3635030 /* ShellRunner.swift */,
 				DDFC95974C98D997830BC164 /* AIAdvisor */,
 				648ABCC709BEBB6DF88E49DF /* BatteryService */,
@@ -486,6 +489,7 @@
 				B8BE73756EEF498224070134 /* PerformanceCheckView.swift in Sources */,
 				84DF74AB3537CA4EFBB1DE3D /* PortLiveCheckView.swift in Sources */,
 				FA226FB084DFF38E830B8AB5 /* PortService.swift in Sources */,
+				DB17242ABC6B610C8B828AD4 /* RawDetails.swift in Sources */,
 				AE8A364BA932C5D2E82C411E /* ReportDocumentView.swift in Sources */,
 				1FBD0F90F7F7D0710E6E57B9 /* ReportExporter.swift in Sources */,
 				47A16458C80B7084603BD79A /* ReportFingerprint.swift in Sources */,
