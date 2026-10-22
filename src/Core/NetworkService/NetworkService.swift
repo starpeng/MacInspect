@@ -77,12 +77,11 @@ enum NetworkService {
         case .mode11n: return "802.11n (Wi-Fi 4)"
         case .mode11ac: return "802.11ac (Wi-Fi 5)"
         case .mode11ax: return "802.11ax (Wi-Fi 6/6E)"
-        // mode11be exists only in the arm64 CoreWLAN SDK; omit for x86_64 CI builds.
-        #if arch(arm64)
-        case .mode11be: return "802.11be (Wi-Fi 7)"
-        #endif
         case .modeNone: return L10n.t("net.wifi.phy.none")
-        @unknown default: return L10n.t("common.unknown")
+        @unknown default:
+            // kCWPHYMode11be = 7; not in macOS 15 SDK (CI Xcode 16.4), present in macOS 26+.
+            if mode.rawValue == 7 { return "802.11be (Wi-Fi 7)" }
+            return L10n.t("common.unknown")
         }
     }
 
