@@ -128,7 +128,7 @@ jobs:
         with:
           tag_name: ${{ steps.ver.outputs.tag }}
           name: MacInspect ${{ steps.ver.outputs.version }}
-          body_file: ${{ steps.ver.outputs.notes }}
+          body_path: ${{ steps.ver.outputs.notes }}
           draft: false
           prerelease: ${{ contains(steps.ver.outputs.version, '-') || contains(steps.ver.outputs.version, 'beta') || contains(steps.ver.outputs.version, 'rc') }}
           fail_on_unmatched_files: true

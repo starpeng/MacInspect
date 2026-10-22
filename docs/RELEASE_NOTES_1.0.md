@@ -56,7 +56,7 @@ sudo xattr -rd com.apple.quarantine /Applications/MacInspect.app
 
 ## Credits
 - Prototype lineage: [MacCheck](https://github.com/andyhuo520/MacCheck)
-- App icon generated with Google Gemini — prompt in [design/README.md](../design/README.md)
+- App icon generated with Google Gemini — prompt in [design/README.md](https://github.com/starpeng/MacInspect/blob/main/design/README.md)
 
 ## Feedback
 Issues: [github.com/starpeng/MacInspect/issues](https://github.com/starpeng/MacInspect/issues)
