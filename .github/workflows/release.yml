@@ -124,11 +124,10 @@ jobs:
             | tee SHA256SUMS.txt
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.4.1
         with:
           tag_name: ${{ steps.ver.outputs.tag }}
           name: MacInspect ${{ steps.ver.outputs.version }}
-          body_path: ${{ steps.ver.outputs.notes }}
           draft: false
           prerelease: ${{ contains(steps.ver.outputs.version, '-') || contains(steps.ver.outputs.version, 'beta') || contains(steps.ver.outputs.version, 'rc') }}
           fail_on_unmatched_files: true
@@ -139,3 +138,24 @@ jobs:
             artifacts/dist/SHA256SUMS.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # softprops body_path is unreliable when updating an existing release that already
+      # has a short tag-annotation body; force the notes file via gh.
+      - name: Publish release notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          NOTES="${{ steps.ver.outputs.notes }}"
+          TAG="${{ steps.ver.outputs.tag }}"
+          test -f "$NOTES"
+          gh release edit "$TAG" \
+            --repo "${{ github.repository }}" \
+            --title "MacInspect ${{ steps.ver.outputs.version }}" \
+            --notes-file "$NOTES"
+          BODY_LEN=$(gh release view "$TAG" --repo "${{ github.repository }}" --json body -q '.body | length')
+          echo "Release notes body length: $BODY_LEN"
+          if [[ "$BODY_LEN" -lt 100 ]]; then
+            echo "Release notes still too short after edit" >&2
+            exit 1
+          fi
