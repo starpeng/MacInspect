@@ -1,0 +1,4 @@
+CFBundleDisplayName = "MacInspect 驗機寶";
+NSCameraUsageDescription = "用於攝影機體檢項，檢查畫面是否清晰、有無壞點。";
+NSMicrophoneUsageDescription = "用於麥克風體檢項，檢查錄音是否正常。";
+NSBluetoothAlwaysUsageDescription = "用於藍牙體檢項，掃描周邊裝置驗證射頻是否正常。";

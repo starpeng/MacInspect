@@ -1,0 +1,4 @@
+CFBundleDisplayName = "MacInspect";
+NSCameraUsageDescription = "Used for the camera check to verify a clear image without dead pixels.";
+NSMicrophoneUsageDescription = "Used for the microphone check to verify recording works.";
+NSBluetoothAlwaysUsageDescription = "Used for the Bluetooth check to scan nearby devices and verify the radio.";

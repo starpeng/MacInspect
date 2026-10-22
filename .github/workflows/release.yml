@@ -1,0 +1,141 @@
+# Publish MacInspect when a version tag is pushed.
+# Tag: v1.0  →  notes: docs/RELEASE_NOTES_1.0.md  →  three DMGs + SHA256SUMS
+#
+# Example:
+#   git tag v1.0 && git push origin v1.0
+#
+# CFBundleShortVersionString in src/App/Info.plist (and project.yml) must match the tag
+# without the leading "v". Without Apple signing secrets, DMGs are ad-hoc (right-click Open).
+
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build & publish
+    runs-on: macos-15
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve version from tag
+        id: ver
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME}"
+          case "$TAG" in
+            v*) VERSION="${TAG#v}" ;;
+            *)
+              echo "Tag must look like v1.0 (got: $TAG)" >&2
+              exit 1
+              ;;
+          esac
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+([.-][0-9A-Za-z.+-]+)?$ ]]; then
+            echo "Unexpected version from tag: $VERSION" >&2
+            exit 1
+          fi
+
+          NOTES="docs/RELEASE_NOTES_${VERSION}.md"
+          if [[ ! -f "$NOTES" ]]; then
+            echo "Missing release notes: $NOTES" >&2
+            exit 1
+          fi
+
+          PLIST_VER=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" src/App/Info.plist)
+          if [[ "$PLIST_VER" != "$VERSION" ]]; then
+            echo "Info.plist CFBundleShortVersionString ($PLIST_VER) != tag version ($VERSION)" >&2
+            echo "Bump src/App/Info.plist and project.yml before tagging." >&2
+            exit 1
+          fi
+
+          {
+            echo "tag=$TAG"
+            echo "version=$VERSION"
+            echo "notes=$NOTES"
+          } >> "$GITHUB_OUTPUT"
+          echo "Publishing MacInspect $VERSION (tag $TAG)"
+
+      - name: Select Xcode
+        run: |
+          set -euo pipefail
+          # Prefer a recent stable Xcode on the runner image.
+          if [[ -d /Applications/Xcode_16.4.app ]]; then
+            sudo xcode-select -s /Applications/Xcode_16.4.app
+          elif [[ -d /Applications/Xcode.app ]]; then
+            sudo xcode-select -s /Applications/Xcode.app
+          fi
+          xcodebuild -version
+          xcode-select -p
+
+      - name: Install xcodegen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build intel / apple-silicon / universal DMGs
+        run: |
+          set -euo pipefail
+          chmod +x scripts/release.sh
+          for arch in intel apple-silicon universal; do
+            echo "::group::release.sh $arch"
+            ./scripts/release.sh "$arch"
+            echo "::endgroup::"
+          done
+          ls -lh artifacts/dist/
+
+      - name: Verify DMGs and architectures
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.ver.outputs.version }}"
+          APP_NAME="MacInspect"
+          for arch in intel apple-silicon universal; do
+            DMG="artifacts/dist/${APP_NAME}-${VERSION}-${arch}.dmg"
+            test -f "$DMG"
+            hdiutil verify "$DMG"
+          done
+
+          # Spot-check binaries via mounting is heavy; lipo already ran inside release.sh.
+          # Confirm expected filenames exist for the release upload.
+          ls -lh artifacts/dist/"${APP_NAME}-${VERSION}"-*.dmg
+
+      - name: SHA-256 checksums
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.ver.outputs.version }}"
+          cd artifacts/dist
+          shasum -a 256 \
+            "MacInspect-${VERSION}-intel.dmg" \
+            "MacInspect-${VERSION}-apple-silicon.dmg" \
+            "MacInspect-${VERSION}-universal.dmg" \
+            | tee SHA256SUMS.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          name: MacInspect ${{ steps.ver.outputs.version }}
+          body_file: ${{ steps.ver.outputs.notes }}
+          draft: false
+          prerelease: ${{ contains(steps.ver.outputs.version, '-') || contains(steps.ver.outputs.version, 'beta') || contains(steps.ver.outputs.version, 'rc') }}
+          fail_on_unmatched_files: true
+          files: |
+            artifacts/dist/MacInspect-${{ steps.ver.outputs.version }}-intel.dmg
+            artifacts/dist/MacInspect-${{ steps.ver.outputs.version }}-apple-silicon.dmg
+            artifacts/dist/MacInspect-${{ steps.ver.outputs.version }}-universal.dmg
+            artifacts/dist/SHA256SUMS.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

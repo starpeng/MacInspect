@@ -1,0 +1,58 @@
+name: Feature request
+description: Suggest an improvement or new check for MacInspect.
+title: "[Feature]: "
+labels: ["enhancement"]
+type: feature
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the problem you want solved. MacInspect stays local and offline by default — proposals that require cloud upload or Apple account login need a strong justification.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What pain point or gap are you hitting today?
+      placeholder: e.g. Specs page does not show display resolution / refresh rate.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How should MacInspect behave?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Workarounds or other tools you already use (optional).
+    validations:
+      required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Automatic scan / overview
+        - Hardware specs
+        - Interactive checks
+        - Report export
+        - Localization
+        - Packaging / install
+        - Other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues for a similar request.
+          required: true

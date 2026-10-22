@@ -1,0 +1,24 @@
+name: Question
+description: Ask about usage, permissions, builds, or expected behavior.
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For install / Gatekeeper / Accessibility, also see [README](https://github.com/starpeng/MacInspect/blob/main/README.md) and [docs/BUILD.md](https://github.com/starpeng/MacInspect/blob/main/docs/BUILD.md).
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: MacInspect version, macOS version, chip, and what you already tried.
+    validations:
+      required: false

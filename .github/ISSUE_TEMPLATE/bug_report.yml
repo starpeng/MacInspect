@@ -1,0 +1,130 @@
+name: Bug report
+description: Something does not work as expected in MacInspect.
+title: "[Bug]: "
+labels: ["bug"]
+type: bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. MacInspect runs fully local — please **redact serial numbers** and other personal data in screenshots and logs.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong in one or two sentences?
+      placeholder: e.g. Keyboard test still shows Accessibility missing after granting permission.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps someone else can follow.
+      placeholder: |
+        1. Launch MacInspect 1.0
+        2. Open Keyboard Test → Start
+        3. …
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include error text, wrong UI state, or crash symptoms.
+    validations:
+      required: true
+
+  - type: input
+    id: app-version
+    attributes:
+      label: MacInspect version
+      description: From the app (About / report footer) or the DMG name, e.g. 1.0.
+      placeholder: "1.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: build-arch
+    attributes:
+      label: App build architecture
+      options:
+        - Apple Silicon (arm64)
+        - Intel (x86_64)
+        - Universal
+        - Built from source (unknown / local)
+        - Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      description: e.g. macOS 15.3 (24D60)
+      placeholder: macOS 15.x
+    validations:
+      required: true
+
+  - type: dropdown
+    id: chip
+    attributes:
+      label: Mac chip
+      options:
+        - Apple Silicon (M-series)
+        - Intel
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      multiple: true
+      options:
+        - Overview / auto scan
+        - Hardware specs / graphics
+        - Battery / storage / network / ports
+        - Security / MDM / Activation Lock
+        - Keyboard test
+        - Display test
+        - Audio / microphone / camera
+        - Touch ID / trackpad
+        - Performance / disk speed
+        - Port live test
+        - AI model hints
+        - Report export (PDF / PNG)
+        - Localization / appearance
+        - Install / Gatekeeper / signing
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: extras
+    attributes:
+      label: Screenshots / extra context
+      description: Paste redacted screenshots or notes. Do not include full serial numbers.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues for a duplicate.
+          required: true
+        - label: I redacted serial numbers and personal data.
+          required: true

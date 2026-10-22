@@ -1,0 +1,51 @@
+name: MacInspect
+options:
+  bundleIdPrefix: cn.starpeng.macinspect
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+  knownRegions: [en, Base, zh-Hans, zh-Hant]
+  developmentLanguage: en
+
+settings:
+  base:
+    SWIFT_VERSION: 6.0
+    SWIFT_STRICT_CONCURRENCY: complete
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    ENABLE_APP_SANDBOX: NO
+    ENABLE_HARDENED_RUNTIME: YES
+    CODE_SIGN_STYLE: Automatic
+
+targets:
+  MacInspect:
+    type: application
+    platform: macOS
+    sources:
+      - path: src
+      - path: Resources/Locales
+        type: folder
+        buildPhase: resources
+        excludes:
+          - README.md
+    info:
+      path: src/App/Info.plist
+      properties:
+        CFBundleDisplayName: MacInspect
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations: [en, zh-Hans, zh-Hant]
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "4"
+        NSCameraUsageDescription: Used for the camera check to verify a clear image without dead pixels.
+        NSMicrophoneUsageDescription: Used for the microphone check to verify recording works.
+        NSBluetoothAlwaysUsageDescription: Used for the Bluetooth check to scan nearby devices and verify the radio.
+        LSApplicationCategoryType: public.app-category.utilities
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: cn.starpeng.macinspect
+        PRODUCT_NAME: MacInspect
+        INFOPLIST_FILE: src/App/Info.plist
+        GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGN_ENTITLEMENTS: src/App/MacInspect.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        SWIFT_OBJC_BRIDGING_HEADER: src/Core/StorageService/Storage-Bridging-Header.h
+        OTHER_LDFLAGS: ["-framework", "IOKit", "-framework", "CoreFoundation"]

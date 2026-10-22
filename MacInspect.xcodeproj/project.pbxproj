@@ -1,0 +1,725 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		019472AA6C1370693C47ED6F /* TrackpadCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1EB8A3EA2E3AB8E16B25E0B /* TrackpadCheckView.swift */; };
+		06DE01AB6050B356122FCB77 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B782B3CF2FBBBE61EADCD9D1 /* SettingsView.swift */; };
+		07D607FD11A3548E44A55487 /* ReportModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D57CE7BD7AD360F8784A9645 /* ReportModel.swift */; };
+		0E5B55A132F2562A44732DEF /* MacInspectApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D6BD22CCEFA7CBC2E2720 /* MacInspectApp.swift */; };
+		0F8C2BF29451FDA248A68BC7 /* ScreenCheckModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED88898622398568189B0ED6 /* ScreenCheckModel.swift */; };
+		1B8E336485A59AB1370028E8 /* DeviceNaming.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430B830FD21C5F4964F66321 /* DeviceNaming.swift */; };
+		1DA43F6F89E10B43DD23827D /* Locales in Resources */ = {isa = PBXBuildFile; fileRef = B1B63D69397D962EA2458C07 /* Locales */; };
+		1FBD0F90F7F7D0710E6E57B9 /* ReportExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E8570C405FB96E5DBE2184 /* ReportExporter.swift */; };
+		22148FBCA6F24E9A2957953D /* BatteryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77CA0DBF8142F33712B3144B /* BatteryService.swift */; };
+		33EC5917F88D0D7B173FC225 /* ManagementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA325455CF877E7EB8A26AF0 /* ManagementService.swift */; };
+		3C2304254AA103A26676AA3D /* AppBrand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92C357F5E00E30B017CDEFC3 /* AppBrand.swift */; };
+		400C72E15B703B34405F0D33 /* DiskSpeedCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32269573A9E536841521FF5 /* DiskSpeedCheckView.swift */; };
+		41518E3258143E66DD63F564 /* ScreenCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C281FC71B7C29EA66799D5C /* ScreenCheckView.swift */; };
+		437E390E86CB8CFD954B26EB /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0DD37BBD9ECBAD79C268F /* SidebarView.swift */; };
+		47A16458C80B7084603BD79A /* ReportFingerprint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 087AFF6FA45426AF2F46F565 /* ReportFingerprint.swift */; };
+		68C5C18E86AA90A46DE0D07E /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 393ECD94BC037A7172F8207B /* DesignSystem.swift */; };
+		6B295057F11D8AE8B6F37D28 /* AudioCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A109585FBC7AEA5CFB73915 /* AudioCheckView.swift */; };
+		6C55AD65DAC3745B47B695CE /* OverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA386A8C9E458A859B7355BB /* OverviewView.swift */; };
+		6FDF8B7CC1B1A159D9C7F0C7 /* MicrophoneCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3757A18DE9ECDAA86B3BD9 /* MicrophoneCheckView.swift */; };
+		72F43C24704CC335B465CAB0 /* CameraCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A780BB520FD36AB7CA753B /* CameraCheckView.swift */; };
+		77C16D41CA9D629D9BCBA2B5 /* KeyboardTestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD2CD1499A6CA4542D8B3F1 /* KeyboardTestModel.swift */; };
+		7F7C085367CDD25C77767B18 /* NVMeSMARTBridge.c in Sources */ = {isa = PBXBuildFile; fileRef = 31B9AABA59BC981A0651C7DF /* NVMeSMARTBridge.c */; };
+		84DF74AB3537CA4EFBB1DE3D /* PortLiveCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42E2A50D927AC0E0B22E47F /* PortLiveCheckView.swift */; };
+		903B13A8A130061BEC395332 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B37228058295B484485CD1E /* RootView.swift */; };
+		99A8BB2ED87DA2CA7A0C80B6 /* DetailViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F7A3AE2C6726943CCC247A /* DetailViews.swift */; };
+		9C9CA22D152AEF378A87DAA4 /* L10n.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E7936D69AA5344405D06AFC /* L10n.swift */; };
+		AC79C5DB2FE192ADD3BFD081 /* GraphicsProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B751DDD8998D3C77D35DC9D /* GraphicsProbe.swift */; };
+		AD13E813B59929A387B05FB2 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BC285F6693815594C3B9031 /* NetworkService.swift */; };
+		AE8A364BA932C5D2E82C411E /* ReportDocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4DB4FBDD00A4BF547F89D6 /* ReportDocumentView.swift */; };
+		B1AFECFB1F3111560E38D90B /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4319E97D890B8021CC22AFBE /* AppModel.swift */; };
+		B3B9D13756DB8A2316957B90 /* TouchIDCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 319BDD53BE95F26912E267A8 /* TouchIDCheckView.swift */; };
+		B8BE73756EEF498224070134 /* PerformanceCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73C7B23BD12C41C31AA99755 /* PerformanceCheckView.swift */; };
+		BCCA242A5D9BA8174E8A4656 /* HardwareProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7608D759EB77C62619D856E4 /* HardwareProbe.swift */; };
+		C5DC341614845B2DE26B56C6 /* AIModelAdvisor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC36297D512FCA6410F138F8 /* AIModelAdvisor.swift */; };
+		C5F8BF2C1A81351F8AC3A0F6 /* SecurityChipService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AEA68359BCF342C9039C8D /* SecurityChipService.swift */; };
+		C9328F40857D69C695E1A7CC /* AIModelsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F217CE04F2E8F6FBD0531606 /* AIModelsView.swift */; };
+		D17DBAA15CFF959E2BF5089D /* KeyboardLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B62BE165A6C426948DD5D5C /* KeyboardLayout.swift */; };
+		D352C70790E769C0811052B4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E26BBCD600E8B6AB66435DBE /* InfoPlist.strings */; };
+		D587E407BAC55285B9B8B1D0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0FB12865C6E262E8EABA2217 /* Assets.xcassets */; };
+		D7F20B5944D0CAB0E5A66952 /* ShellRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AF6298B9FDE790A3635030 /* ShellRunner.swift */; };
+		DC7854A3FD53E087E137CCF9 /* SerialDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543020D7B63305639B5421B4 /* SerialDecoder.swift */; };
+		E98CA041BF261B8B8D29B961 /* KeyboardCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC1F0CA0DA4FAC42A2008D2 /* KeyboardCheckView.swift */; };
+		EFEABCBA385338E3B98D7D88 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2440F43134E4628D4D5994F9 /* StorageService.swift */; };
+		F7251E3230BD8B99290C4675 /* SMCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BAAF7FDE08868F3477071B4 /* SMCService.swift */; };
+		FA226FB084DFF38E830B8AB5 /* PortService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53C027F377B18FAF89E8326 /* PortService.swift */; };
+		FE4109AF0C458C3CF183BA3C /* AppLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB43833D0895A13F379D155B /* AppLanguage.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		087AFF6FA45426AF2F46F565 /* ReportFingerprint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportFingerprint.swift; sourceTree = "<group>"; };
+		0A3757A18DE9ECDAA86B3BD9 /* MicrophoneCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophoneCheckView.swift; sourceTree = "<group>"; };
+		0BC285F6693815594C3B9031 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		0FB12865C6E262E8EABA2217 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1A4DB4FBDD00A4BF547F89D6 /* ReportDocumentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportDocumentView.swift; sourceTree = "<group>"; };
+		1B62BE165A6C426948DD5D5C /* KeyboardLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardLayout.swift; sourceTree = "<group>"; };
+		1C5D6BD22CCEFA7CBC2E2720 /* MacInspectApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacInspectApp.swift; sourceTree = "<group>"; };
+		1CDD5FD20B0EA8F2A6E3BF75 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		1E7936D69AA5344405D06AFC /* L10n.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = L10n.swift; sourceTree = "<group>"; };
+		2440F43134E4628D4D5994F9 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
+		26E8570C405FB96E5DBE2184 /* ReportExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportExporter.swift; sourceTree = "<group>"; };
+		30A780BB520FD36AB7CA753B /* CameraCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraCheckView.swift; sourceTree = "<group>"; };
+		319BDD53BE95F26912E267A8 /* TouchIDCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchIDCheckView.swift; sourceTree = "<group>"; };
+		31B9AABA59BC981A0651C7DF /* NVMeSMARTBridge.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = NVMeSMARTBridge.c; sourceTree = "<group>"; };
+		393ECD94BC037A7172F8207B /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
+		430B830FD21C5F4964F66321 /* DeviceNaming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceNaming.swift; sourceTree = "<group>"; };
+		4319E97D890B8021CC22AFBE /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		43AEA68359BCF342C9039C8D /* SecurityChipService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityChipService.swift; sourceTree = "<group>"; };
+		4BAAF7FDE08868F3477071B4 /* SMCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMCService.swift; sourceTree = "<group>"; };
+		543020D7B63305639B5421B4 /* SerialDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialDecoder.swift; sourceTree = "<group>"; };
+		58AF6298B9FDE790A3635030 /* ShellRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellRunner.swift; sourceTree = "<group>"; };
+		5ADC0A3CC7A261B449BAAF11 /* NVMeSMARTBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVMeSMARTBridge.h; sourceTree = "<group>"; };
+		5B1C9F54008B284ECFC485F3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		5B751DDD8998D3C77D35DC9D /* GraphicsProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphicsProbe.swift; sourceTree = "<group>"; };
+		61F7A3AE2C6726943CCC247A /* DetailViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViews.swift; sourceTree = "<group>"; };
+		6D7BA58D31D1C51FE95699D4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		73C7B23BD12C41C31AA99755 /* PerformanceCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceCheckView.swift; sourceTree = "<group>"; };
+		7608D759EB77C62619D856E4 /* HardwareProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HardwareProbe.swift; sourceTree = "<group>"; };
+		77CA0DBF8142F33712B3144B /* BatteryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryService.swift; sourceTree = "<group>"; };
+		7A109585FBC7AEA5CFB73915 /* AudioCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCheckView.swift; sourceTree = "<group>"; };
+		7C281FC71B7C29EA66799D5C /* ScreenCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenCheckView.swift; sourceTree = "<group>"; };
+		7EFD54C500E6CC2E4C6B0187 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		8B37228058295B484485CD1E /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		92C357F5E00E30B017CDEFC3 /* AppBrand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBrand.swift; sourceTree = "<group>"; };
+		A32269573A9E536841521FF5 /* DiskSpeedCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskSpeedCheckView.swift; sourceTree = "<group>"; };
+		AD5F5BB80236BA4A9AD6CEE6 /* MacInspect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacInspect.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1B63D69397D962EA2458C07 /* Locales */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Locales; path = Resources/Locales; sourceTree = SOURCE_ROOT; };
+		B1EB8A3EA2E3AB8E16B25E0B /* TrackpadCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackpadCheckView.swift; sourceTree = "<group>"; };
+		B782B3CF2FBBBE61EADCD9D1 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		BA325455CF877E7EB8A26AF0 /* ManagementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagementService.swift; sourceTree = "<group>"; };
+		BA386A8C9E458A859B7355BB /* OverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverviewView.swift; sourceTree = "<group>"; };
+		BCD2CD1499A6CA4542D8B3F1 /* KeyboardTestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardTestModel.swift; sourceTree = "<group>"; };
+		CC36297D512FCA6410F138F8 /* AIModelAdvisor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIModelAdvisor.swift; sourceTree = "<group>"; };
+		D57CE7BD7AD360F8784A9645 /* ReportModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportModel.swift; sourceTree = "<group>"; };
+		DC60F63171C236FBE78490FE /* MacInspect.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacInspect.entitlements; sourceTree = "<group>"; };
+		DCFB0732449DA43A7D60C132 /* Storage-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Storage-Bridging-Header.h"; sourceTree = "<group>"; };
+		E53C027F377B18FAF89E8326 /* PortService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortService.swift; sourceTree = "<group>"; };
+		EB43833D0895A13F379D155B /* AppLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguage.swift; sourceTree = "<group>"; };
+		ED88898622398568189B0ED6 /* ScreenCheckModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenCheckModel.swift; sourceTree = "<group>"; };
+		F217CE04F2E8F6FBD0531606 /* AIModelsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIModelsView.swift; sourceTree = "<group>"; };
+		F42E2A50D927AC0E0B22E47F /* PortLiveCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortLiveCheckView.swift; sourceTree = "<group>"; };
+		FAC0DD37BBD9ECBAD79C268F /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
+		FBC1F0CA0DA4FAC42A2008D2 /* KeyboardCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardCheckView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		05BCADA3CD86D7DE64D1AF8B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B1B63D69397D962EA2458C07 /* Locales */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		1000F4BB6DE2BD452CE1B318 /* KeyboardCheck */ = {
+			isa = PBXGroup;
+			children = (
+				FBC1F0CA0DA4FAC42A2008D2 /* KeyboardCheckView.swift */,
+				1B62BE165A6C426948DD5D5C /* KeyboardLayout.swift */,
+				BCD2CD1499A6CA4542D8B3F1 /* KeyboardTestModel.swift */,
+			);
+			path = KeyboardCheck;
+			sourceTree = "<group>";
+		};
+		1151F46E18A966DB74B01F11 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AD5F5BB80236BA4A9AD6CEE6 /* MacInspect.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1222D9AD0DF70F7A2930CB0A /* ReportEngine */ = {
+			isa = PBXGroup;
+			children = (
+				1A4DB4FBDD00A4BF547F89D6 /* ReportDocumentView.swift */,
+				26E8570C405FB96E5DBE2184 /* ReportExporter.swift */,
+				087AFF6FA45426AF2F46F565 /* ReportFingerprint.swift */,
+				D57CE7BD7AD360F8784A9645 /* ReportModel.swift */,
+			);
+			path = ReportEngine;
+			sourceTree = "<group>";
+		};
+		1892C35B61B3A68CC5F70942 /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				EB43833D0895A13F379D155B /* AppLanguage.swift */,
+				1E7936D69AA5344405D06AFC /* L10n.swift */,
+			);
+			path = Localization;
+			sourceTree = "<group>";
+		};
+		32567D5C026DF44A795D0770 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				92C357F5E00E30B017CDEFC3 /* AppBrand.swift */,
+				6D7BA58D31D1C51FE95699D4 /* Info.plist */,
+				DC60F63171C236FBE78490FE /* MacInspect.entitlements */,
+				1C5D6BD22CCEFA7CBC2E2720 /* MacInspectApp.swift */,
+				E26BBCD600E8B6AB66435DBE /* InfoPlist.strings */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		469C8F12D76BF2DB91AA3E37 /* ScreenCheck */ = {
+			isa = PBXGroup;
+			children = (
+				ED88898622398568189B0ED6 /* ScreenCheckModel.swift */,
+				7C281FC71B7C29EA66799D5C /* ScreenCheckView.swift */,
+			);
+			path = ScreenCheck;
+			sourceTree = "<group>";
+		};
+		4F24756C605B338BF6D46363 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				58AF6298B9FDE790A3635030 /* ShellRunner.swift */,
+				DDFC95974C98D997830BC164 /* AIAdvisor */,
+				648ABCC709BEBB6DF88E49DF /* BatteryService */,
+				77E8A54D8CFFFAB157E2F77D /* HardwareProbe */,
+				C0348D1840DFEAB80BF67E3F /* ManagementService */,
+				D7E79C4906817084651D73D1 /* NetworkService */,
+				82EB2402B89D894DC9CEAFE2 /* PortService */,
+				1222D9AD0DF70F7A2930CB0A /* ReportEngine */,
+				79F5236A64A1C94EF28E765D /* SMCService */,
+				7EF8E9B8181A45BD22773DDB /* StorageService */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		4F8EAC01C73521DB54CC70EF /* DiskSpeedCheck */ = {
+			isa = PBXGroup;
+			children = (
+				A32269573A9E536841521FF5 /* DiskSpeedCheckView.swift */,
+			);
+			path = DiskSpeedCheck;
+			sourceTree = "<group>";
+		};
+		648ABCC709BEBB6DF88E49DF /* BatteryService */ = {
+			isa = PBXGroup;
+			children = (
+				77CA0DBF8142F33712B3144B /* BatteryService.swift */,
+			);
+			path = BatteryService;
+			sourceTree = "<group>";
+		};
+		77E8A54D8CFFFAB157E2F77D /* HardwareProbe */ = {
+			isa = PBXGroup;
+			children = (
+				430B830FD21C5F4964F66321 /* DeviceNaming.swift */,
+				5B751DDD8998D3C77D35DC9D /* GraphicsProbe.swift */,
+				7608D759EB77C62619D856E4 /* HardwareProbe.swift */,
+				43AEA68359BCF342C9039C8D /* SecurityChipService.swift */,
+				543020D7B63305639B5421B4 /* SerialDecoder.swift */,
+			);
+			path = HardwareProbe;
+			sourceTree = "<group>";
+		};
+		79F5236A64A1C94EF28E765D /* SMCService */ = {
+			isa = PBXGroup;
+			children = (
+				4BAAF7FDE08868F3477071B4 /* SMCService.swift */,
+			);
+			path = SMCService;
+			sourceTree = "<group>";
+		};
+		7EF8E9B8181A45BD22773DDB /* StorageService */ = {
+			isa = PBXGroup;
+			children = (
+				31B9AABA59BC981A0651C7DF /* NVMeSMARTBridge.c */,
+				5ADC0A3CC7A261B449BAAF11 /* NVMeSMARTBridge.h */,
+				DCFB0732449DA43A7D60C132 /* Storage-Bridging-Header.h */,
+				2440F43134E4628D4D5994F9 /* StorageService.swift */,
+			);
+			path = StorageService;
+			sourceTree = "<group>";
+		};
+		82EB2402B89D894DC9CEAFE2 /* PortService */ = {
+			isa = PBXGroup;
+			children = (
+				E53C027F377B18FAF89E8326 /* PortService.swift */,
+			);
+			path = PortService;
+			sourceTree = "<group>";
+		};
+		85B65C88DA2D199C97BCF85B /* PortLiveCheck */ = {
+			isa = PBXGroup;
+			children = (
+				F42E2A50D927AC0E0B22E47F /* PortLiveCheckView.swift */,
+			);
+			path = PortLiveCheck;
+			sourceTree = "<group>";
+		};
+		8D5AC159F99A54F88F62DD9E /* MicrophoneCheck */ = {
+			isa = PBXGroup;
+			children = (
+				0A3757A18DE9ECDAA86B3BD9 /* MicrophoneCheckView.swift */,
+			);
+			path = MicrophoneCheck;
+			sourceTree = "<group>";
+		};
+		8EB8C32C2A67168FAD389D55 /* TouchIDCheck */ = {
+			isa = PBXGroup;
+			children = (
+				319BDD53BE95F26912E267A8 /* TouchIDCheckView.swift */,
+			);
+			path = TouchIDCheck;
+			sourceTree = "<group>";
+		};
+		AEABC498E65AD3714D8038E9 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				0FB12865C6E262E8EABA2217 /* Assets.xcassets */,
+				32567D5C026DF44A795D0770 /* App */,
+				C20797F9A3C48FD5E8087F6C /* Checks */,
+				4F24756C605B338BF6D46363 /* Core */,
+				1892C35B61B3A68CC5F70942 /* Localization */,
+				E0AD7E5174D42371DEF92CF1 /* UI */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		C0348D1840DFEAB80BF67E3F /* ManagementService */ = {
+			isa = PBXGroup;
+			children = (
+				BA325455CF877E7EB8A26AF0 /* ManagementService.swift */,
+			);
+			path = ManagementService;
+			sourceTree = "<group>";
+		};
+		C20797F9A3C48FD5E8087F6C /* Checks */ = {
+			isa = PBXGroup;
+			children = (
+				C285FE9486C23B6200C268B6 /* AudioCheck */,
+				E91E79215BD71C1F68AB9024 /* CameraCheck */,
+				4F8EAC01C73521DB54CC70EF /* DiskSpeedCheck */,
+				1000F4BB6DE2BD452CE1B318 /* KeyboardCheck */,
+				8D5AC159F99A54F88F62DD9E /* MicrophoneCheck */,
+				EE317E3B04B6E1FF8ECFF4CC /* PerformanceCheck */,
+				85B65C88DA2D199C97BCF85B /* PortLiveCheck */,
+				469C8F12D76BF2DB91AA3E37 /* ScreenCheck */,
+				8EB8C32C2A67168FAD389D55 /* TouchIDCheck */,
+				F714D7D390FDE9CD1EB36FBF /* TrackpadCheck */,
+			);
+			path = Checks;
+			sourceTree = "<group>";
+		};
+		C285FE9486C23B6200C268B6 /* AudioCheck */ = {
+			isa = PBXGroup;
+			children = (
+				7A109585FBC7AEA5CFB73915 /* AudioCheckView.swift */,
+			);
+			path = AudioCheck;
+			sourceTree = "<group>";
+		};
+		C5727AF3E74761F422480A56 = {
+			isa = PBXGroup;
+			children = (
+				05BCADA3CD86D7DE64D1AF8B /* Resources */,
+				AEABC498E65AD3714D8038E9 /* src */,
+				1151F46E18A966DB74B01F11 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D7E79C4906817084651D73D1 /* NetworkService */ = {
+			isa = PBXGroup;
+			children = (
+				0BC285F6693815594C3B9031 /* NetworkService.swift */,
+			);
+			path = NetworkService;
+			sourceTree = "<group>";
+		};
+		DDFC95974C98D997830BC164 /* AIAdvisor */ = {
+			isa = PBXGroup;
+			children = (
+				CC36297D512FCA6410F138F8 /* AIModelAdvisor.swift */,
+			);
+			path = AIAdvisor;
+			sourceTree = "<group>";
+		};
+		E0AD7E5174D42371DEF92CF1 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				F217CE04F2E8F6FBD0531606 /* AIModelsView.swift */,
+				4319E97D890B8021CC22AFBE /* AppModel.swift */,
+				393ECD94BC037A7172F8207B /* DesignSystem.swift */,
+				61F7A3AE2C6726943CCC247A /* DetailViews.swift */,
+				BA386A8C9E458A859B7355BB /* OverviewView.swift */,
+				8B37228058295B484485CD1E /* RootView.swift */,
+				B782B3CF2FBBBE61EADCD9D1 /* SettingsView.swift */,
+				FAC0DD37BBD9ECBAD79C268F /* SidebarView.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		E91E79215BD71C1F68AB9024 /* CameraCheck */ = {
+			isa = PBXGroup;
+			children = (
+				30A780BB520FD36AB7CA753B /* CameraCheckView.swift */,
+			);
+			path = CameraCheck;
+			sourceTree = "<group>";
+		};
+		EE317E3B04B6E1FF8ECFF4CC /* PerformanceCheck */ = {
+			isa = PBXGroup;
+			children = (
+				73C7B23BD12C41C31AA99755 /* PerformanceCheckView.swift */,
+			);
+			path = PerformanceCheck;
+			sourceTree = "<group>";
+		};
+		F714D7D390FDE9CD1EB36FBF /* TrackpadCheck */ = {
+			isa = PBXGroup;
+			children = (
+				B1EB8A3EA2E3AB8E16B25E0B /* TrackpadCheckView.swift */,
+			);
+			path = TrackpadCheck;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B490C7E837BE992847DB63DC /* MacInspect */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5457D709FCD8D4E547207AEE /* Build configuration list for PBXNativeTarget "MacInspect" */;
+			buildPhases = (
+				FEDB8B5028E0933D34719C07 /* Sources */,
+				D80B436753F6609D9B8E522A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MacInspect;
+			packageProductDependencies = (
+			);
+			productName = MacInspect;
+			productReference = AD5F5BB80236BA4A9AD6CEE6 /* MacInspect.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B6A79CC8304364EB15C25541 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					B490C7E837BE992847DB63DC = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 59F08ADCB8F01F736EF39191 /* Build configuration list for PBXProject "MacInspect" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+				"zh-Hans",
+				"zh-Hant",
+			);
+			mainGroup = C5727AF3E74761F422480A56;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 1151F46E18A966DB74B01F11 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B490C7E837BE992847DB63DC /* MacInspect */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D80B436753F6609D9B8E522A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D587E407BAC55285B9B8B1D0 /* Assets.xcassets in Resources */,
+				D352C70790E769C0811052B4 /* InfoPlist.strings in Resources */,
+				1DA43F6F89E10B43DD23827D /* Locales in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FEDB8B5028E0933D34719C07 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C5DC341614845B2DE26B56C6 /* AIModelAdvisor.swift in Sources */,
+				C9328F40857D69C695E1A7CC /* AIModelsView.swift in Sources */,
+				3C2304254AA103A26676AA3D /* AppBrand.swift in Sources */,
+				FE4109AF0C458C3CF183BA3C /* AppLanguage.swift in Sources */,
+				B1AFECFB1F3111560E38D90B /* AppModel.swift in Sources */,
+				6B295057F11D8AE8B6F37D28 /* AudioCheckView.swift in Sources */,
+				22148FBCA6F24E9A2957953D /* BatteryService.swift in Sources */,
+				72F43C24704CC335B465CAB0 /* CameraCheckView.swift in Sources */,
+				68C5C18E86AA90A46DE0D07E /* DesignSystem.swift in Sources */,
+				99A8BB2ED87DA2CA7A0C80B6 /* DetailViews.swift in Sources */,
+				1B8E336485A59AB1370028E8 /* DeviceNaming.swift in Sources */,
+				400C72E15B703B34405F0D33 /* DiskSpeedCheckView.swift in Sources */,
+				AC79C5DB2FE192ADD3BFD081 /* GraphicsProbe.swift in Sources */,
+				BCCA242A5D9BA8174E8A4656 /* HardwareProbe.swift in Sources */,
+				E98CA041BF261B8B8D29B961 /* KeyboardCheckView.swift in Sources */,
+				D17DBAA15CFF959E2BF5089D /* KeyboardLayout.swift in Sources */,
+				77C16D41CA9D629D9BCBA2B5 /* KeyboardTestModel.swift in Sources */,
+				9C9CA22D152AEF378A87DAA4 /* L10n.swift in Sources */,
+				0E5B55A132F2562A44732DEF /* MacInspectApp.swift in Sources */,
+				33EC5917F88D0D7B173FC225 /* ManagementService.swift in Sources */,
+				6FDF8B7CC1B1A159D9C7F0C7 /* MicrophoneCheckView.swift in Sources */,
+				7F7C085367CDD25C77767B18 /* NVMeSMARTBridge.c in Sources */,
+				AD13E813B59929A387B05FB2 /* NetworkService.swift in Sources */,
+				6C55AD65DAC3745B47B695CE /* OverviewView.swift in Sources */,
+				B8BE73756EEF498224070134 /* PerformanceCheckView.swift in Sources */,
+				84DF74AB3537CA4EFBB1DE3D /* PortLiveCheckView.swift in Sources */,
+				FA226FB084DFF38E830B8AB5 /* PortService.swift in Sources */,
+				AE8A364BA932C5D2E82C411E /* ReportDocumentView.swift in Sources */,
+				1FBD0F90F7F7D0710E6E57B9 /* ReportExporter.swift in Sources */,
+				47A16458C80B7084603BD79A /* ReportFingerprint.swift in Sources */,
+				07D607FD11A3548E44A55487 /* ReportModel.swift in Sources */,
+				903B13A8A130061BEC395332 /* RootView.swift in Sources */,
+				F7251E3230BD8B99290C4675 /* SMCService.swift in Sources */,
+				0F8C2BF29451FDA248A68BC7 /* ScreenCheckModel.swift in Sources */,
+				41518E3258143E66DD63F564 /* ScreenCheckView.swift in Sources */,
+				C5F8BF2C1A81351F8AC3A0F6 /* SecurityChipService.swift in Sources */,
+				DC7854A3FD53E087E137CCF9 /* SerialDecoder.swift in Sources */,
+				06DE01AB6050B356122FCB77 /* SettingsView.swift in Sources */,
+				D7F20B5944D0CAB0E5A66952 /* ShellRunner.swift in Sources */,
+				437E390E86CB8CFD954B26EB /* SidebarView.swift in Sources */,
+				EFEABCBA385338E3B98D7D88 /* StorageService.swift in Sources */,
+				B3B9D13756DB8A2316957B90 /* TouchIDCheckView.swift in Sources */,
+				019472AA6C1370693C47ED6F /* TrackpadCheckView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		E26BBCD600E8B6AB66435DBE /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5B1C9F54008B284ECFC485F3 /* en */,
+				1CDD5FD20B0EA8F2A6E3BF75 /* zh-Hans */,
+				7EFD54C500E6CC2E4C6B0187 /* zh-Hant */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		A0C7307EC86C78E0D7B604AE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = src/App/MacInspect.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = src/App/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"-framework",
+					IOKit,
+					"-framework",
+					CoreFoundation,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = cn.starpeng.macinspect;
+				PRODUCT_NAME = MacInspect;
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "src/Core/StorageService/Storage-Bridging-Header.h";
+			};
+			name = Release;
+		};
+		BF72C1D3D49B4E0A3B5064B6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = src/App/MacInspect.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = src/App/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"-framework",
+					IOKit,
+					"-framework",
+					CoreFoundation,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = cn.starpeng.macinspect;
+				PRODUCT_NAME = MacInspect;
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "src/Core/StorageService/Storage-Bridging-Header.h";
+			};
+			name = Debug;
+		};
+		E822DF5A124A12AF80634C54 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		EE13AB52D7695398AC393353 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5457D709FCD8D4E547207AEE /* Build configuration list for PBXNativeTarget "MacInspect" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF72C1D3D49B4E0A3B5064B6 /* Debug */,
+				A0C7307EC86C78E0D7B604AE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		59F08ADCB8F01F736EF39191 /* Build configuration list for PBXProject "MacInspect" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E822DF5A124A12AF80634C54 /* Debug */,
+				EE13AB52D7695398AC393353 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B6A79CC8304364EB15C25541 /* Project object */;
+}

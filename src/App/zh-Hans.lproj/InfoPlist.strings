@@ -1,0 +1,4 @@
+CFBundleDisplayName = "MacInspect 验机宝";
+NSCameraUsageDescription = "用于摄像头体检项，检查画面是否清晰、有无坏点。";
+NSMicrophoneUsageDescription = "用于麦克风体检项，检查录音是否正常。";
+NSBluetoothAlwaysUsageDescription = "用于蓝牙体检项，扫描周边设备验证射频是否正常。";
