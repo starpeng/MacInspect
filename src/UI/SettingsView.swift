@@ -201,12 +201,78 @@ struct SettingsView: View {
                         .padding(.top, DS.Spacing.xs)
                     }
                 }
+
+                aboutCard
             }
             .padding(DS.Spacing.xl)
             .frame(maxWidth: 720)
             .frame(maxWidth: .infinity, alignment: .center)
         }
         .navigationTitle(L10n.t("settings.title"))
+    }
+
+    private var aboutCard: some View {
+        Card {
+            settingsRow(
+                icon: "info.circle.fill",
+                title: L10n.t("settings.about.title"),
+                hint: L10n.t("settings.about.blurb", AppBrand.name)
+            ) {
+                VStack(alignment: .leading, spacing: DS.Spacing.sm) {
+                    aboutMetaRow(
+                        label: L10n.t("settings.about.version"),
+                        value: AppBrand.versionLabel
+                    )
+                    aboutMetaRow(
+                        label: L10n.t("settings.about.repo"),
+                        value: AppBrand.repositoryURL.absoluteString,
+                        url: AppBrand.repositoryURL
+                    )
+
+                    Text(L10n.t("settings.about.dev_notes"))
+                        .font(DS.Font.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.top, DS.Spacing.xs)
+
+                    HStack(spacing: DS.Spacing.md) {
+                        Link(destination: AppBrand.repositoryURL) {
+                            Label(L10n.t("settings.about.open_repo"), systemImage: "safari")
+                        }
+                        .buttonStyle(.bordered)
+                        Link(destination: AppBrand.releasesURL) {
+                            Label(L10n.t("settings.about.open_releases"), systemImage: "arrow.down.app")
+                        }
+                        .buttonStyle(.bordered)
+                        Link(destination: AppBrand.issuesURL) {
+                            Label(L10n.t("settings.about.open_issues"), systemImage: "exclamationmark.bubble")
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                    .padding(.top, DS.Spacing.xs)
+                }
+                .padding(.top, DS.Spacing.xs)
+            }
+        }
+    }
+
+    private func aboutMetaRow(label: String, value: String, url: URL? = nil) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: DS.Spacing.sm) {
+            Text(label)
+                .font(DS.Font.caption)
+                .foregroundStyle(.secondary)
+                .frame(width: 72, alignment: .leading)
+            if let url {
+                Link(value, destination: url)
+                    .font(DS.Font.mono)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+            } else {
+                Text(value)
+                    .font(DS.Font.mono)
+            }
+            Spacer(minLength: 0)
+        }
     }
 
     @ViewBuilder

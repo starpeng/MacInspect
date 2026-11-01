@@ -105,5 +105,6 @@ tmbootpicker.efi
 # Local / CI build products
 artifacts/
 DerivedData/
+.derivedData/
 *.xcuserstate
 xcuserdata/

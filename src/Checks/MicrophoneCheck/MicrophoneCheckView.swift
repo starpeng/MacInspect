@@ -114,8 +114,12 @@ final class MicrophoneCheckModel: ObservableObject {
 }
 
 struct MicrophoneCheckView: View {
+    @EnvironmentObject private var appModel: AppModel
     @StateObject private var model = MicrophoneCheckModel()
+    @State private var sessionActive = false
     let onComplete: (CheckResult) -> Void
+
+    private var existingResult: CheckResult? { appModel.result(id: "microphone") }
 
     var body: some View {
         VStack(alignment: .leading, spacing: DS.Spacing.lg) {
@@ -125,62 +129,113 @@ struct MicrophoneCheckView: View {
                 subtitle: L10n.t("check.mic.subtitle")
             )
 
-            if model.permissionDenied {
-                VStack(alignment: .leading, spacing: DS.Spacing.md) {
-                    InlineNotice(icon: "exclamationmark.triangle.fill", tint: .orange,
-                        text: model.errorText ?? L10n.t("check.mic.denied", AppBrand.name))
-                    HStack(spacing: DS.Spacing.md) {
-                        Button {
-                            model.openPrivacySettings()
-                        } label: {
-                            Label(L10n.t("check.mic.open_settings"), systemImage: "gearshape")
-                        }
-                        .buttonStyle(.borderedProminent)
-
-                        Button {
-                            model.retry()
-                        } label: {
-                            Label(L10n.t("common.recheck"), systemImage: "arrow.clockwise")
-                        }
-                        .buttonStyle(.bordered)
-                    }
-                }
-            } else {
-                levelMeter
-                if let error = model.errorText {
-                    InlineNotice(icon: "exclamationmark.triangle.fill", tint: .orange, text: error)
-                }
-            }
-
-            DS.Divider()
-
-            HStack(spacing: DS.Spacing.md) {
-                Text(L10n.t("result.label")).font(DS.Font.body).foregroundStyle(.secondary)
-                Button(L10n.t("check.mic.result_ok_btn")) {
-                    model.stop()
-                    onComplete(CheckResult(id: "microphone", title: L10n.t("check.mic.item"), status: .pass,
-                        summary: L10n.t("check.mic.result_ok")))
+            if sessionActive {
+                activeSession
+            } else if let result = existingResult {
+                PreviousResultCard(result: result, showDetails: false)
+                Button {
+                    beginSession()
+                } label: {
+                    Label(L10n.t("detail.retest"), systemImage: "arrow.clockwise")
+                        .frame(minWidth: 160)
                 }
                 .buttonStyle(.borderedProminent)
-                Button(L10n.t("check.mic.result_bad_btn")) {
-                    model.stop()
-                    onComplete(CheckResult(id: "microphone", title: L10n.t("check.mic.item"), status: .warning,
-                        summary: L10n.t("check.mic.result_bad")))
+                .controlSize(.large)
+            } else {
+                Button {
+                    beginSession()
+                } label: {
+                    Label(L10n.t("detail.start_test"), systemImage: "play.fill")
+                        .frame(minWidth: 160)
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
             }
 
             Button(L10n.t("common.skip")) {
-                model.stop()
-                onComplete(CheckResult(id: "microphone", title: L10n.t("check.mic.item"), status: .skipped,
-                    summary: L10n.t("check.mic.skip_summary")))
+                finish(CheckResult(
+                    id: "microphone",
+                    title: L10n.t("check.mic.item"),
+                    status: .skipped,
+                    summary: L10n.t("check.mic.skip_summary")
+                ))
             }
             .buttonStyle(.bordered)
         }
         .padding(DS.Spacing.xl)
         .checkPane(L10n.t("check.mic.item"))
-        .onAppear { model.start() }
-        .onDisappear { model.stop() }
+        .onAppear {
+            if existingResult == nil { beginSession() }
+        }
+        .onDisappear {
+            model.stop()
+            sessionActive = false
+        }
+    }
+
+    @ViewBuilder
+    private var activeSession: some View {
+        if model.permissionDenied {
+            VStack(alignment: .leading, spacing: DS.Spacing.md) {
+                InlineNotice(icon: "exclamationmark.triangle.fill", tint: .orange,
+                    text: model.errorText ?? L10n.t("check.mic.denied", AppBrand.name))
+                HStack(spacing: DS.Spacing.md) {
+                    Button {
+                        model.openPrivacySettings()
+                    } label: {
+                        Label(L10n.t("check.mic.open_settings"), systemImage: "gearshape")
+                    }
+                    .buttonStyle(.borderedProminent)
+
+                    Button {
+                        model.retry()
+                    } label: {
+                        Label(L10n.t("common.recheck"), systemImage: "arrow.clockwise")
+                    }
+                    .buttonStyle(.bordered)
+                }
+            }
+        } else {
+            levelMeter
+            if let error = model.errorText {
+                InlineNotice(icon: "exclamationmark.triangle.fill", tint: .orange, text: error)
+            }
+        }
+
+        DS.Divider()
+
+        HStack(spacing: DS.Spacing.md) {
+            Text(L10n.t("result.label")).font(DS.Font.body).foregroundStyle(.secondary)
+            Button(L10n.t("check.mic.result_ok_btn")) {
+                finish(CheckResult(
+                    id: "microphone",
+                    title: L10n.t("check.mic.item"),
+                    status: .pass,
+                    summary: L10n.t("check.mic.result_ok")
+                ))
+            }
+            .buttonStyle(.borderedProminent)
+            Button(L10n.t("check.mic.result_bad_btn")) {
+                finish(CheckResult(
+                    id: "microphone",
+                    title: L10n.t("check.mic.item"),
+                    status: .warning,
+                    summary: L10n.t("check.mic.result_bad")
+                ))
+            }
+            .buttonStyle(.bordered)
+        }
+    }
+
+    private func beginSession() {
+        sessionActive = true
+        model.retry()
+    }
+
+    private func finish(_ result: CheckResult) {
+        model.stop()
+        sessionActive = false
+        onComplete(result)
     }
 
     private var levelMeter: some View {

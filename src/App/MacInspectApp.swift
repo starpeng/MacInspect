@@ -9,5 +9,12 @@ struct MacInspectApp: App {
         }
         .windowResizability(.automatic)
         .defaultSize(width: 1040, height: 720)
+        .commands {
+            CommandGroup(replacing: .appInfo) {
+                Button(L10n.t("menu.about", AppBrand.name)) {
+                    AppAbout.show()
+                }
+            }
+        }
     }
 }

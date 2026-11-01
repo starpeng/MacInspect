@@ -194,87 +194,59 @@ enum HardwareProbe {
         let battSerial = batterySerialNumber()
         let displaySerial = displaySerialNumber()
 
-        // Serial mismatch IOKit vs system_profiler → red flag
-        if ioSerial.isEmpty && spSerial.isEmpty {
-            results.append(CheckResult(
-                id: "hardware.serial",
-                title: L10n.t("hw.serial.title"),
-                status: .warning,
-                summary: L10n.t("hw.serial.missing"),
-                rawDetails: localizeDetails([
-                    Key.iokit: ioSerial,
-                    Key.sp: spSerial,
-                ])
-            ))
-        } else if !ioSerial.isEmpty && !spSerial.isEmpty && ioSerial != spSerial {
-            results.append(CheckResult(
-                id: "hardware.serial",
-                title: L10n.t("hw.serial.title"),
-                status: .redFlag,
-                summary: L10n.t("hw.serial.mismatch"),
-                rawDetails: localizeDetails([
-                    Key.iokit: ioSerial,
-                    Key.sp: spSerial,
-                ]),
-                isRedFlagHeadline: L10n.t("hw.serial.mismatch.headline")
-            ))
-        } else {
-            let serial = ioSerial.isEmpty ? spSerial : ioSerial
-            let cross = model == spModel || spModel.isEmpty
-                ? L10n.t("hw.serial.match")
-                : L10n.t("hw.serial.mismatch_fmt", model, spModel)
-            var details: [String: String] = [
-                Key.board: serial,
-                Key.modelId: model,
-                Key.modelCross: cross,
-            ]
-            if !uuid.isEmpty { details[Key.uuid] = uuid }
-            results.append(CheckResult(
-                id: "hardware.serial",
-                title: L10n.t("hw.serial.title"),
-                status: .pass,
-                summary: L10n.t("hw.serial.ok", serial),
-                rawDetails: localizeDetails(details)
-            ))
+        // One card: board serial cross-check + component serials (battery / display / UUID).
+        var serialDetails: [String: String] = [:]
+        if !ioSerial.isEmpty { serialDetails[Key.iokit] = ioSerial }
+        if !spSerial.isEmpty { serialDetails[Key.sp] = spSerial }
+        let boardSerial = !ioSerial.isEmpty ? ioSerial : spSerial
+        if !boardSerial.isEmpty { serialDetails[Key.board] = boardSerial }
+        if !model.isEmpty { serialDetails[Key.modelId] = model }
+        if !uuid.isEmpty { serialDetails[Key.uuid] = uuid }
+        if let battSerial { serialDetails[Key.batt] = battSerial }
+        if let displaySerial { serialDetails[Key.display] = displaySerial }
+        let modelCross = model == spModel || spModel.isEmpty || model.isEmpty
+            ? L10n.t("hw.serial.match")
+            : L10n.t("hw.serial.mismatch_fmt", model, spModel)
+        if !model.isEmpty || !spModel.isEmpty {
+            serialDetails[Key.modelCross] = modelCross
         }
-
-        // Component serials — helps spot swapped board/battery/panel
-        var componentDetails: [String: String] = [:]
-        if !ioSerial.isEmpty { componentDetails[Key.board] = ioSerial }
-        else if !spSerial.isEmpty { componentDetails[Key.board] = spSerial }
-        if let battSerial { componentDetails[Key.batt] = battSerial }
-        if let displaySerial { componentDetails[Key.display] = displaySerial }
-        if !uuid.isEmpty { componentDetails[Key.uuid] = uuid }
-        let localizedComponents = localizeDetails(componentDetails)
 
         let hasBattery = !ioKitBatteryMissing()
-        if hasBattery && battSerial == nil {
-            results.append(CheckResult(
-                id: "hardware.componentSerials",
-                title: L10n.t("hw.components.title"),
-                status: .warning,
-                summary: L10n.t("hw.components.no_batt_serial"),
-                rawDetails: localizedComponents
-            ))
-        } else if componentDetails.count >= 2 {
+        let serialMismatch = !ioSerial.isEmpty && !spSerial.isEmpty && ioSerial != spSerial
+        let serialMissing = boardSerial.isEmpty
+        let batterySerialMissing = hasBattery && battSerial == nil
+
+        let status: CheckStatus
+        let summary: String
+        let headline: String?
+        if serialMismatch {
+            status = .redFlag
+            summary = L10n.t("hw.serial.mismatch")
+            headline = L10n.t("hw.serial.mismatch.headline")
+        } else if serialMissing {
+            status = .warning
+            summary = L10n.t("hw.serial.missing")
+            headline = nil
+        } else if batterySerialMissing {
+            status = .warning
+            summary = L10n.t("hw.components.no_batt_serial")
+            headline = nil
+        } else {
+            status = .pass
             let battSuffix = battSerial != nil ? L10n.t("hw.components.battery_suffix") : ""
             let displaySuffix = displaySerial != nil ? L10n.t("hw.components.display_suffix") : ""
-            results.append(CheckResult(
-                id: "hardware.componentSerials",
-                title: L10n.t("hw.components.title"),
-                status: .pass,
-                summary: L10n.t("hw.components.ok", battSuffix, displaySuffix),
-                rawDetails: localizedComponents
-            ))
-        } else if !componentDetails.isEmpty {
-            results.append(CheckResult(
-                id: "hardware.componentSerials",
-                title: L10n.t("hw.components.title"),
-                status: .pass,
-                summary: L10n.t("hw.components.recorded"),
-                rawDetails: localizedComponents
-            ))
+            summary = L10n.t("hw.serial.ok_merged", boardSerial, battSuffix, displaySuffix)
+            headline = nil
         }
+
+        results.append(CheckResult(
+            id: "hardware.serial",
+            title: L10n.t("hw.serial.title"),
+            status: status,
+            summary: summary,
+            rawDetails: localizeDetails(serialDetails),
+            isRedFlagHeadline: headline
+        ))
 
         // Model id cross-check: hw.model vs system_profiler
         if !spModel.isEmpty && !model.isEmpty && model != spModel {

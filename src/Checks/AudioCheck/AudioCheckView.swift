@@ -52,8 +52,12 @@ final class AudioCheckModel: ObservableObject {
 }
 
 struct AudioCheckView: View {
+    @EnvironmentObject private var appModel: AppModel
     @StateObject private var model = AudioCheckModel()
+    @State private var sessionActive = false
     let onComplete: (CheckResult) -> Void
+
+    private var existingResult: CheckResult? { appModel.result(id: "audio") }
 
     var body: some View {
         VStack(alignment: .leading, spacing: DS.Spacing.lg) {
@@ -63,57 +67,108 @@ struct AudioCheckView: View {
                 subtitle: L10n.t("check.audio.subtitle")
             )
 
-            HStack(spacing: DS.Spacing.md) {
-                channelButton(title: L10n.t("check.audio.left"), channel: 0, icon: "l.circle.fill")
-                channelButton(title: L10n.t("check.audio.right"), channel: 1, icon: "r.circle.fill")
+            if sessionActive {
+                activeSession
+            } else if let result = existingResult {
+                PreviousResultCard(result: result)
                 Button {
-                    model.stop()
+                    beginSession()
                 } label: {
-                    Label(L10n.t("common.stop"), systemImage: "stop.fill")
+                    Label(L10n.t("detail.retest"), systemImage: "arrow.clockwise")
+                        .frame(minWidth: 160)
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+            } else {
+                Button {
+                    beginSession()
+                } label: {
+                    Label(L10n.t("detail.start_test"), systemImage: "play.fill")
+                        .frame(minWidth: 160)
+                }
+                .buttonStyle(.borderedProminent)
                 .controlSize(.large)
             }
 
-            DS.Divider()
-
-            HStack(spacing: DS.Spacing.md) {
-                Text(L10n.t("result.label")).font(DS.Font.body).foregroundStyle(.secondary)
-                Button(L10n.t("check.audio.ok_btn")) {
-                    model.teardown()
-                    onComplete(CheckResult(id: "audio", title: L10n.t("check.audio.item"), status: .pass,
-                        summary: L10n.t("check.audio.ok"),
-                        rawDetails: RawDetails.localize([
-                            "left": L10n.t("check.audio.normal"),
-                            "right": L10n.t("check.audio.normal"),
-                        ], using: [
-                            "left": "check.audio.ch_left",
-                            "right": "check.audio.ch_right",
-                        ])))
-                }
-                .buttonStyle(.borderedProminent)
-                Button(L10n.t("check.audio.bad_btn")) {
-                    model.teardown()
-                    onComplete(CheckResult(id: "audio", title: L10n.t("check.audio.item"), status: .warning,
-                        summary: L10n.t("check.audio.bad"),
-                        rawDetails: RawDetails.localize(
-                            ["judge": L10n.t("check.audio.abnormal")],
-                            using: ["judge": "check.audio.user_judge"]
-                        )))
-                }
-                .buttonStyle(.bordered)
-            }
-
             Button(L10n.t("common.skip")) {
-                model.teardown()
-                onComplete(CheckResult(id: "audio", title: L10n.t("check.audio.item"), status: .skipped,
-                    summary: L10n.t("check.audio.skip_summary")))
+                finish(CheckResult(
+                    id: "audio",
+                    title: L10n.t("check.audio.item"),
+                    status: .skipped,
+                    summary: L10n.t("check.audio.skip_summary")
+                ))
             }
             .buttonStyle(.bordered)
         }
         .padding(DS.Spacing.xl)
         .checkPane(L10n.t("check.audio.item"))
-        .onDisappear { model.teardown() }
+        .onAppear {
+            if existingResult == nil { beginSession() }
+        }
+        .onDisappear {
+            model.teardown()
+            sessionActive = false
+        }
+    }
+
+    @ViewBuilder
+    private var activeSession: some View {
+        HStack(spacing: DS.Spacing.md) {
+            channelButton(title: L10n.t("check.audio.left"), channel: 0, icon: "l.circle.fill")
+            channelButton(title: L10n.t("check.audio.right"), channel: 1, icon: "r.circle.fill")
+            Button {
+                model.stop()
+            } label: {
+                Label(L10n.t("common.stop"), systemImage: "stop.fill")
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.large)
+        }
+
+        DS.Divider()
+
+        HStack(spacing: DS.Spacing.md) {
+            Text(L10n.t("result.label")).font(DS.Font.body).foregroundStyle(.secondary)
+            Button(L10n.t("check.audio.ok_btn")) {
+                finish(CheckResult(
+                    id: "audio",
+                    title: L10n.t("check.audio.item"),
+                    status: .pass,
+                    summary: L10n.t("check.audio.ok"),
+                    rawDetails: RawDetails.localize([
+                        "left": L10n.t("check.audio.normal"),
+                        "right": L10n.t("check.audio.normal"),
+                    ], using: [
+                        "left": "check.audio.ch_left",
+                        "right": "check.audio.ch_right",
+                    ])
+                ))
+            }
+            .buttonStyle(.borderedProminent)
+            Button(L10n.t("check.audio.bad_btn")) {
+                finish(CheckResult(
+                    id: "audio",
+                    title: L10n.t("check.audio.item"),
+                    status: .warning,
+                    summary: L10n.t("check.audio.bad"),
+                    rawDetails: RawDetails.localize(
+                        ["judge": L10n.t("check.audio.abnormal")],
+                        using: ["judge": "check.audio.user_judge"]
+                    )
+                ))
+            }
+            .buttonStyle(.bordered)
+        }
+    }
+
+    private func beginSession() {
+        sessionActive = true
+    }
+
+    private func finish(_ result: CheckResult) {
+        model.teardown()
+        sessionActive = false
+        onComplete(result)
     }
 
     private func channelButton(title: String, channel: Int, icon: String) -> some View {

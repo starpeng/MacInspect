@@ -76,7 +76,7 @@ enum SidebarItem: String, CaseIterable, Identifiable, Hashable {
             "battery.cycleCount.crosscheck", "battery.capacity.crosscheck", "battery.capacity.integrity",
         ]
         case .security: return [
-            "hardware.serial", "hardware.componentSerials", "hardware.modelIdentity",
+            "hardware.serial", "hardware.modelIdentity",
             "hardware.securityChip", "management.mdm", "management.appleID", "management.activationLock",
         ]
         case .storage: return ["storage"]

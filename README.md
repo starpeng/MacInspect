@@ -1,8 +1,14 @@
 # MacInspect
 
+[English](README.md) · [简体中文](README.zh-Hans.md)
+
 Local macOS inspection tool for used-Mac deals, shop counters, and self-checks. Reads hardware, battery, storage, network, security, and ports; runs interactive tests (keyboard, display, audio, mic, camera, trackpad, disk speed, and more); exports PDF / PNG reports.
 
 Runs fully offline by default — no serial numbers, scan results, or reports are uploaded.
+
+<p align="center">
+  <img src="docs/assets/overview-en.png" alt="MacInspect overview — light (top-left) / dark (bottom-right)" width="900">
+</p>
 
 
 
@@ -67,10 +73,10 @@ Release builds, signing, and notarization: [docs/BUILD.md](docs/BUILD.md).
 Release checklist: [docs/RELEASE.md](docs/RELEASE.md).  
 Manual test list: [docs/TESTING.md](docs/TESTING.md).
 
-Tag a version to publish via GitHub Actions (`v1.1` → notes `docs/RELEASE_NOTES_1.1.md` + three DMGs):
+Tag a version to publish via GitHub Actions (`v1.2` → notes `docs/RELEASE_NOTES_1.2.md` + three DMGs):
 
 ```bash
-git tag v1.1 && git push origin v1.1
+git tag v1.2 && git push origin v1.2
 ```
 
 ```text

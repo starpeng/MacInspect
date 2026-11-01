@@ -18,6 +18,7 @@
 		22148FBCA6F24E9A2957953D /* BatteryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77CA0DBF8142F33712B3144B /* BatteryService.swift */; };
 		33EC5917F88D0D7B173FC225 /* ManagementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA325455CF877E7EB8A26AF0 /* ManagementService.swift */; };
 		3C2304254AA103A26676AA3D /* AppBrand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92C357F5E00E30B017CDEFC3 /* AppBrand.swift */; };
+		A1B2C3D4E5F60718293A4B5C /* AppAbout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F60718293A4B5C6D /* AppAbout.swift */; };
 		400C72E15B703B34405F0D33 /* DiskSpeedCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32269573A9E536841521FF5 /* DiskSpeedCheckView.swift */; };
 		41518E3258143E66DD63F564 /* ScreenCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C281FC71B7C29EA66799D5C /* ScreenCheckView.swift */; };
 		437E390E86CB8CFD954B26EB /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0DD37BBD9ECBAD79C268F /* SidebarView.swift */; };
@@ -39,6 +40,8 @@
 		B1AFECFB1F3111560E38D90B /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4319E97D890B8021CC22AFBE /* AppModel.swift */; };
 		B3B9D13756DB8A2316957B90 /* TouchIDCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 319BDD53BE95F26912E267A8 /* TouchIDCheckView.swift */; };
 		B8BE73756EEF498224070134 /* PerformanceCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73C7B23BD12C41C31AA99755 /* PerformanceCheckView.swift */; };
+		5E6F70819A2B3C4D5E6F7083 /* MetalStressEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D7E8F901A2B3C4D5E6F7082 /* MetalStressEngine.swift */; };
+		9B2D3E4F5A6B7C8D9E0F1A2B /* LoadSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A1C2E3F4B5D6E7F8091A2B3 /* LoadSampler.swift */; };
 		BCCA242A5D9BA8174E8A4656 /* HardwareProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7608D759EB77C62619D856E4 /* HardwareProbe.swift */; };
 		C5DC341614845B2DE26B56C6 /* AIModelAdvisor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC36297D512FCA6410F138F8 /* AIModelAdvisor.swift */; };
 		C5F8BF2C1A81351F8AC3A0F6 /* SecurityChipService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AEA68359BCF342C9039C8D /* SecurityChipService.swift */; };
@@ -84,6 +87,8 @@
 		61F7A3AE2C6726943CCC247A /* DetailViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViews.swift; sourceTree = "<group>"; };
 		6D7BA58D31D1C51FE95699D4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		73C7B23BD12C41C31AA99755 /* PerformanceCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceCheckView.swift; sourceTree = "<group>"; };
+		6D7E8F901A2B3C4D5E6F7082 /* MetalStressEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalStressEngine.swift; sourceTree = "<group>"; };
+		8A1C2E3F4B5D6E7F8091A2B3 /* LoadSampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadSampler.swift; sourceTree = "<group>"; };
 		7608D759EB77C62619D856E4 /* HardwareProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HardwareProbe.swift; sourceTree = "<group>"; };
 		77CA0DBF8142F33712B3144B /* BatteryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryService.swift; sourceTree = "<group>"; };
 		7A109585FBC7AEA5CFB73915 /* AudioCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCheckView.swift; sourceTree = "<group>"; };
@@ -91,6 +96,7 @@
 		7EFD54C500E6CC2E4C6B0187 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		8B37228058295B484485CD1E /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		92C357F5E00E30B017CDEFC3 /* AppBrand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBrand.swift; sourceTree = "<group>"; };
+		B2C3D4E5F60718293A4B5C6D /* AppAbout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAbout.swift; sourceTree = "<group>"; };
 		A32269573A9E536841521FF5 /* DiskSpeedCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskSpeedCheckView.swift; sourceTree = "<group>"; };
 		AD5F5BB80236BA4A9AD6CEE6 /* MacInspect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacInspect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1B63D69397D962EA2458C07 /* Locales */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Locales; path = Resources/Locales; sourceTree = SOURCE_ROOT; };
@@ -164,6 +170,7 @@
 			isa = PBXGroup;
 			children = (
 				92C357F5E00E30B017CDEFC3 /* AppBrand.swift */,
+				B2C3D4E5F60718293A4B5C6D /* AppAbout.swift */,
 				6D7BA58D31D1C51FE95699D4 /* Info.plist */,
 				DC60F63171C236FBE78490FE /* MacInspect.entitlements */,
 				1C5D6BD22CCEFA7CBC2E2720 /* MacInspectApp.swift */,
@@ -189,6 +196,7 @@
 				DDFC95974C98D997830BC164 /* AIAdvisor */,
 				648ABCC709BEBB6DF88E49DF /* BatteryService */,
 				77E8A54D8CFFFAB157E2F77D /* HardwareProbe */,
+				7C8D9E0F1A2B3C4D5E6F7081 /* LoadSampler */,
 				C0348D1840DFEAB80BF67E3F /* ManagementService */,
 				D7E79C4906817084651D73D1 /* NetworkService */,
 				82EB2402B89D894DC9CEAFE2 /* PortService */,
@@ -197,6 +205,14 @@
 				7EF8E9B8181A45BD22773DDB /* StorageService */,
 			);
 			path = Core;
+			sourceTree = "<group>";
+		};
+		7C8D9E0F1A2B3C4D5E6F7081 /* LoadSampler */ = {
+			isa = PBXGroup;
+			children = (
+				8A1C2E3F4B5D6E7F8091A2B3 /* LoadSampler.swift */,
+			);
+			path = LoadSampler;
 			sourceTree = "<group>";
 		};
 		4F8EAC01C73521DB54CC70EF /* DiskSpeedCheck */ = {
@@ -375,6 +391,7 @@
 		EE317E3B04B6E1FF8ECFF4CC /* PerformanceCheck */ = {
 			isa = PBXGroup;
 			children = (
+				6D7E8F901A2B3C4D5E6F7082 /* MetalStressEngine.swift */,
 				73C7B23BD12C41C31AA99755 /* PerformanceCheckView.swift */,
 			);
 			path = PerformanceCheck;
@@ -465,6 +482,7 @@
 				C5DC341614845B2DE26B56C6 /* AIModelAdvisor.swift in Sources */,
 				C9328F40857D69C695E1A7CC /* AIModelsView.swift in Sources */,
 				3C2304254AA103A26676AA3D /* AppBrand.swift in Sources */,
+				A1B2C3D4E5F60718293A4B5C /* AppAbout.swift in Sources */,
 				FE4109AF0C458C3CF183BA3C /* AppLanguage.swift in Sources */,
 				B1AFECFB1F3111560E38D90B /* AppModel.swift in Sources */,
 				6B295057F11D8AE8B6F37D28 /* AudioCheckView.swift in Sources */,
@@ -487,6 +505,8 @@
 				AD13E813B59929A387B05FB2 /* NetworkService.swift in Sources */,
 				6C55AD65DAC3745B47B695CE /* OverviewView.swift in Sources */,
 				B8BE73756EEF498224070134 /* PerformanceCheckView.swift in Sources */,
+				5E6F70819A2B3C4D5E6F7083 /* MetalStressEngine.swift in Sources */,
+				9B2D3E4F5A6B7C8D9E0F1A2B /* LoadSampler.swift in Sources */,
 				84DF74AB3537CA4EFBB1DE3D /* PortLiveCheckView.swift in Sources */,
 				FA226FB084DFF38E830B8AB5 /* PortService.swift in Sources */,
 				DB17242ABC6B610C8B828AD4 /* RawDetails.swift in Sources */,

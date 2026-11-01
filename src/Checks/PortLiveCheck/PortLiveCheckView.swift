@@ -132,8 +132,12 @@ final class PortLiveMonitor: ObservableObject {
 }
 
 struct PortLiveCheckView: View {
+    @EnvironmentObject private var appModel: AppModel
     @StateObject private var monitor = PortLiveMonitor()
+    @State private var sessionActive = false
     let onComplete: (CheckResult) -> Void
+
+    private var existingResult: CheckResult? { appModel.result(id: "portsLive") }
 
     var body: some View {
         VStack(alignment: .leading, spacing: DS.Spacing.lg) {
@@ -143,52 +147,32 @@ struct PortLiveCheckView: View {
                 subtitle: L10n.t("check.ports_live.subtitle")
             )
 
-            Card {
-                HStack {
-                    Circle().fill(monitor.isMonitoring ? .green : .secondary).frame(width: 8, height: 8)
-                    Text(monitor.isMonitoring ? L10n.t("check.ports_live.listening") : L10n.t("check.ports_live.idle"))
-                        .font(DS.Font.body).foregroundStyle(.secondary)
-                    Spacer()
-                    Text(L10n.t("check.ports_live.captured", monitor.insertCount)).font(DS.Font.caption).foregroundStyle(.secondary)
+            if sessionActive {
+                activeSession
+            } else if let result = existingResult {
+                PreviousResultCard(result: result)
+                Button {
+                    beginSession()
+                } label: {
+                    Label(L10n.t("detail.retest"), systemImage: "arrow.clockwise")
+                        .frame(minWidth: 160)
                 }
-                if monitor.events.isEmpty {
-                    Text(L10n.t("check.ports_live.empty")).font(DS.Font.caption).foregroundStyle(.tertiary)
-                        .frame(maxWidth: .infinity, alignment: .center).padding(.vertical, DS.Spacing.md)
-                } else {
-                    ForEach(monitor.events.prefix(12)) { e in
-                        HStack(spacing: DS.Spacing.sm) {
-                            Image(systemName: e.inserted ? "arrow.down.circle.fill" : "arrow.up.circle")
-                                .foregroundStyle(e.inserted ? .green : .secondary)
-                            Text(e.time).font(DS.Font.mono).foregroundStyle(.secondary)
-                            Text(e.inserted ? L10n.t("check.ports_live.in") : L10n.t("check.ports_live.out")).font(DS.Font.bodyEmphasis)
-                            Text(e.name).font(DS.Font.body).lineLimit(1)
-                            Spacer()
-                            if !e.speed.isEmpty {
-                                Text(e.speed).font(DS.Font.caption).foregroundStyle(.blue)
-                            }
-                        }
-                    }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+            } else {
+                Button {
+                    beginSession()
+                } label: {
+                    Label(L10n.t("detail.start_test"), systemImage: "play.fill")
+                        .frame(minWidth: 160)
                 }
-            }
-
-            DS.Divider()
-
-            HStack(spacing: DS.Spacing.md) {
-                if monitor.isMonitoring {
-                    Button(L10n.t("check.ports_live.stop")) { monitor.stop() }.buttonStyle(.bordered)
-                    Button(L10n.t("check.ports_live.clear")) { monitor.reset() }.buttonStyle(.bordered)
-                } else {
-                    Button(L10n.t("check.ports_live.start")) { monitor.start() }.buttonStyle(.borderedProminent)
-                }
-                Spacer()
-                Button(L10n.t("check.ports_live.ok_btn")) {
-                    finish(pass: true)
-                }.buttonStyle(.borderedProminent).disabled(monitor.insertCount == 0)
-                Button(L10n.t("check.ports_live.bad_btn")) { finish(pass: false) }.buttonStyle(.bordered)
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
             }
 
             Button(L10n.t("common.skip")) {
                 monitor.stop()
+                sessionActive = false
                 onComplete(CheckResult(
                     id: "portsLive",
                     title: L10n.t("check.ports_live.title"),
@@ -200,12 +184,72 @@ struct PortLiveCheckView: View {
         }
         .padding(DS.Spacing.xl)
         .checkPane(L10n.t("check.ports_live.title"))
-        .onDisappear { monitor.stop() }
+        .onAppear {
+            if existingResult == nil { beginSession() }
+        }
+        .onDisappear {
+            monitor.stop()
+            sessionActive = false
+        }
+    }
+
+    @ViewBuilder
+    private var activeSession: some View {
+        Card {
+            HStack {
+                Circle().fill(monitor.isMonitoring ? .green : .secondary).frame(width: 8, height: 8)
+                Text(monitor.isMonitoring ? L10n.t("check.ports_live.listening") : L10n.t("check.ports_live.idle"))
+                    .font(DS.Font.body).foregroundStyle(.secondary)
+                Spacer()
+                Text(L10n.t("check.ports_live.captured", monitor.insertCount)).font(DS.Font.caption).foregroundStyle(.secondary)
+            }
+            if monitor.events.isEmpty {
+                Text(L10n.t("check.ports_live.empty")).font(DS.Font.caption).foregroundStyle(.tertiary)
+                    .frame(maxWidth: .infinity, alignment: .center).padding(.vertical, DS.Spacing.md)
+            } else {
+                ForEach(monitor.events.prefix(12)) { e in
+                    HStack(spacing: DS.Spacing.sm) {
+                        Image(systemName: e.inserted ? "arrow.down.circle.fill" : "arrow.up.circle")
+                            .foregroundStyle(e.inserted ? .green : .secondary)
+                        Text(e.time).font(DS.Font.mono).foregroundStyle(.secondary)
+                        Text(e.inserted ? L10n.t("check.ports_live.in") : L10n.t("check.ports_live.out")).font(DS.Font.bodyEmphasis)
+                        Text(e.name).font(DS.Font.body).lineLimit(1)
+                        Spacer()
+                        if !e.speed.isEmpty {
+                            Text(e.speed).font(DS.Font.caption).foregroundStyle(.blue)
+                        }
+                    }
+                }
+            }
+        }
+
+        DS.Divider()
+
+        HStack(spacing: DS.Spacing.md) {
+            if monitor.isMonitoring {
+                Button(L10n.t("check.ports_live.stop")) { monitor.stop() }.buttonStyle(.bordered)
+                Button(L10n.t("check.ports_live.clear")) { monitor.reset() }.buttonStyle(.bordered)
+            } else {
+                Button(L10n.t("check.ports_live.start")) { monitor.start() }.buttonStyle(.borderedProminent)
+            }
+            Spacer()
+            Button(L10n.t("check.ports_live.ok_btn")) {
+                finish(pass: true)
+            }.buttonStyle(.borderedProminent).disabled(monitor.insertCount == 0)
+            Button(L10n.t("check.ports_live.bad_btn")) { finish(pass: false) }.buttonStyle(.bordered)
+        }
+    }
+
+    private func beginSession() {
+        monitor.reset()
+        sessionActive = true
+        monitor.start()
     }
 
     private func finish(pass: Bool) {
         monitor.stop()
         let names = monitor.events.filter(\.inserted).map { "\($0.name) (\($0.speed))" }
+        sessionActive = false
         onComplete(CheckResult(
             id: "portsLive",
             title: L10n.t("check.ports_live.title"),

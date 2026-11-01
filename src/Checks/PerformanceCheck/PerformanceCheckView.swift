@@ -1,5 +1,6 @@
-import SwiftUI
+import Charts
 import Foundation
+import SwiftUI
 
 /// Formal stress duration options (seconds). Default 60; 30 for a quick pass, longer for thermals.
 enum PerformanceDuration: Int, CaseIterable, Identifiable {
@@ -9,24 +10,27 @@ enum PerformanceDuration: Int, CaseIterable, Identifiable {
     case s300 = 300
 
     var id: Int { rawValue }
-    /// Full label for reports / detail rows.
     var label: String { L10n.t("common.seconds_format", rawValue) }
-    /// Compact segmented-control label (4 segments need short text).
     var pickerLabel: String { "\(rawValue)s" }
 
-    /// Warmup seconds (not counted in formal measurement).
     static let warmupSeconds = 4
 }
 
-/// Stress phase: warm-up is full load but excluded from timed samples.
 enum PerformancePhase: Equatable {
     case idle
     case warming(current: Int, total: Int)
     case measuring(current: Int, total: Int)
 }
 
-/// B12: Multi-core stress for N seconds; watch thermalState (public API, no private SMC keys)
-/// for cooling / throttle issues. Relative throughput score.
+/// One chart point (seconds since stress start).
+struct LoadHistoryPoint: Identifiable, Equatable {
+    let id: Int
+    let second: Int
+    let cpu: Double
+    let gpu: Double?
+}
+
+/// B12: Multi-core (+ Metal GPU) stress; thermal / SMC; CPU/GPU load charts.
 @MainActor
 final class PerformanceCheckModel: ObservableObject {
     @Published var isRunning = false
@@ -38,16 +42,38 @@ final class PerformanceCheckModel: ObservableObject {
     @Published var selectedDuration: PerformanceDuration = .s60
     @Published var phase: PerformancePhase = .idle
 
-    // SMC temps / fans
     @Published var currentReading: SMCReading?
     @Published var peakTemp: Double?
     @Published var peakRPM: Double?
-    @Published var idleReading: SMCReading?   // Pre-stress baseline for delta
+    @Published var idleReading: SMCReading?
 
-    private var task: Task<Void, Never>?
+    @Published var cpuPercent: Double = 0
+    @Published var gpuPercent: Double?
+    @Published var loadHistory: [LoadHistoryPoint] = []
+    @Published var peakCPU: Double = 0
+    @Published var peakGPU: Double?
+    @Published var gpuStressEnabled = false
+    @Published var gpuDeviceName: String?
 
-    var coreCount: Int { ProcessInfo.processInfo.activeProcessorCount }
+    private var runTask: Task<Void, Never>?
+    private var tickTimer: Timer?
+    private var phaseContinuation: CheckedContinuation<Void, Never>?
+    private var phaseSecond = 0
+    private var phaseTotal = 0
+    private var phaseRecordMetrics = false
+    private var phaseOnTick: ((Int, Int) -> Void)?
+    private let cancelFlag = CancelFlag()
+    private let opsCounter = OpsCounter()
+    private let loadSampler = LoadSampler()
+    private let metalStress = MetalStressEngine()
+    private var historyIndex = 0
+    private var opsWindowStart: DispatchTime = .now()
+
+    /// Stress all logical CPUs; workers briefly yield so RunLoop timers still fire.
+    var coreCount: Int { ProcessInfo.processInfo.processorCount }
+    var hardwareCoreCount: Int { ProcessInfo.processInfo.processorCount }
     var smcAvailable: Bool { idleReading != nil || currentReading != nil }
+    var hasGPUSeries: Bool { loadHistory.contains { $0.gpu != nil } || gpuPercent != nil }
 
     var worstThermal: ProcessInfo.ThermalState {
         thermalSamples.max(by: { $0.severity < $1.severity }) ?? .nominal
@@ -68,113 +94,214 @@ final class PerformanceCheckModel: ObservableObject {
         guard !isRunning else { return }
         reset()
         isRunning = true
-        task = Task { await run() }
+        gpuStressEnabled = metalStress.isAvailable
+        gpuDeviceName = metalStress.deviceName
+        cancelFlag.value = false
+        loadSampler.reset()
+        runTask = Task { await run() }
     }
 
     func cancel() {
-        task?.cancel()
-        task = nil
+        cancelFlag.value = true
+        metalStress.cancel()
+        stopTickTimer()
+        runTask?.cancel()
+        runTask = nil
+        isRunning = false
+        phase = .idle
+    }
+
+    /// Leave the in-session “finished” UI so the detail pane can show the saved result card.
+    func leaveFinishedSession() {
+        finished = false
         isRunning = false
         phase = .idle
     }
 
     private func reset() {
-        progress = 0; elapsed = 0; opsPerSecond = 0; thermalSamples = []; finished = false
-        currentReading = nil; peakTemp = nil; peakRPM = nil
+        progress = 0
+        elapsed = 0
+        opsPerSecond = 0
+        thermalSamples = []
+        finished = false
+        currentReading = nil
+        peakTemp = nil
+        peakRPM = nil
         phase = .idle
+        cpuPercent = 0
+        gpuPercent = nil
+        loadHistory = []
+        peakCPU = 0
+        peakGPU = nil
+        historyIndex = 0
+        opsCounter.reset()
+        opsWindowStart = .now()
+        gpuStressEnabled = false
+        gpuDeviceName = nil
     }
 
     private func run() async {
         let measureTotal = selectedDuration.rawValue
-        // Idle baseline temps
         idleReading = await Task.detached { SMCService.snapshot() }.value
 
-        // Warm-up: wall-clock full load, not scored
-        let warmupTotal = PerformanceDuration.warmupSeconds
-        await runTimedPhase(durationSeconds: warmupTotal, recordMetrics: false) { current, total in
-            phase = .warming(current: current, total: total)
+        startWorkers()
+        if gpuStressEnabled {
+            metalStress.start()
         }
 
-        guard !Task.isCancelled else {
+        let warmupTotal = PerformanceDuration.warmupSeconds
+        await runTimedPhase(durationSeconds: warmupTotal, recordMetrics: false) { [weak self] current, total in
+            self?.phase = .warming(current: current, total: total)
+        }
+
+        guard !Task.isCancelled, !cancelFlag.value else {
+            tearDownWorkers()
             isRunning = false
             phase = .idle
             return
         }
 
-        // Timed run: wall-clock for the chosen seconds (don't end early by round count)
-        await runTimedPhase(durationSeconds: measureTotal, recordMetrics: true) { current, total in
-            phase = .measuring(current: current, total: total)
-            elapsed = current
-            progress = Double(current) / Double(total)
+        await runTimedPhase(durationSeconds: measureTotal, recordMetrics: true) { [weak self] current, total in
+            guard let self else { return }
+            self.phase = .measuring(current: current, total: total)
+            self.elapsed = current
+            self.progress = Double(current) / Double(total)
         }
 
+        // Capture completion before tearDown — tearDown sets cancelFlag to stop workers.
+        let completedNormally = !Task.isCancelled && !cancelFlag.value
+        tearDownWorkers()
         isRunning = false
         phase = .idle
-        finished = !Task.isCancelled
+        finished = completedNormally
     }
 
-    /// Full load for `durationSeconds` wall-clock; sample sensors ~1/s.
+    private func startWorkers() {
+        let cores = coreCount
+        let flag = cancelFlag
+        let counter = opsCounter
+        opsCounter.reset()
+        opsWindowStart = .now()
+
+        // High load on all cores; short yield every few batches keeps UI/timer alive.
+        for _ in 0..<cores {
+            DispatchQueue.global(qos: .userInitiated).async {
+                var batches = 0
+                while !flag.value {
+                    _ = PerformanceCheckModel.busyCompute(iterations: 250_000)
+                    counter.add(250_000)
+                    batches += 1
+                    if batches & 7 == 0 {
+                        usleep(300) // ~0.3 ms — enough for Main RunLoop, still near-full load
+                    }
+                }
+            }
+        }
+    }
+
+    private func tearDownWorkers() {
+        cancelFlag.value = true
+        metalStress.cancel()
+        stopTickTimer()
+    }
+
+    private func stopTickTimer() {
+        tickTimer?.invalidate()
+        tickTimer = nil
+        if let cont = phaseContinuation {
+            phaseContinuation = nil
+            cont.resume()
+        }
+    }
+
+    /// Drive phase ticks from a RunLoop timer (not Task.sleep) so UI isn't starved by workers.
     private func runTimedPhase(
         durationSeconds: Int,
         recordMetrics: Bool,
-        onTick: (Int, Int) -> Void
+        onTick: @escaping (Int, Int) -> Void
     ) async {
-        let cores = coreCount
-        let start = DispatchTime.now()
-        let deadline = start + .seconds(durationSeconds)
-        var lastSampleSecond = -1
-
+        phaseSecond = 0
+        phaseTotal = durationSeconds
+        phaseRecordMetrics = recordMetrics
+        phaseOnTick = onTick
         onTick(0, durationSeconds)
+        sampleSensors(recordMetrics: recordMetrics)
 
-        while DispatchTime.now() < deadline {
-            if Task.isCancelled { break }
-            await runLoadBatch(cores: cores)
+        await withCheckedContinuation { (cont: CheckedContinuation<Void, Never>) in
+            // Clear any prior timer without resuming (we're about to replace the continuation).
+            tickTimer?.invalidate()
+            tickTimer = nil
+            phaseContinuation = cont
 
-            let wallElapsed = Double(DispatchTime.now().uptimeNanoseconds - start.uptimeNanoseconds) / 1_000_000_000
-            let second = min(durationSeconds, Int(wallElapsed))
-            if second > lastSampleSecond {
-                lastSampleSecond = second
-                await sampleSensors(recordMetrics: recordMetrics)
-                onTick(second, durationSeconds)
+            let timer = Timer(timeInterval: 1.0, repeats: true) { [weak self] _ in
+                // Timer is on the main RunLoop — safe to hop onto MainActor without Task.sleep.
+                MainActor.assumeIsolated {
+                    self?.phaseTickFired()
+                }
             }
+            RunLoop.main.add(timer, forMode: .common)
+            tickTimer = timer
         }
-
-        guard !Task.isCancelled else { return }
-        if lastSampleSecond < durationSeconds {
-            await sampleSensors(recordMetrics: recordMetrics)
-        }
-        onTick(durationSeconds, durationSeconds)
+        phaseOnTick = nil
     }
 
-    /// One all-core compute round; refresh throughput display.
-    private func runLoadBatch(cores: Int) async {
-        let start = DispatchTime.now()
-        let ops = await withTaskGroup(of: Double.self) { group -> Double in
-            for _ in 0..<cores {
-                group.addTask { PerformanceCheckModel.busyCompute(iterations: 4_000_000) }
-            }
-            var sum = 0.0
-            for await r in group { sum += r }
-            return sum
+    private func phaseTickFired() {
+        if Task.isCancelled || cancelFlag.value {
+            stopTickTimer()
+            return
         }
-        let dt = Double(DispatchTime.now().uptimeNanoseconds - start.uptimeNanoseconds) / 1_000_000_000
-        _ = ops
-        let opsCount = Double(cores) * 4_000_000
-        self.opsPerSecond = dt > 0 ? opsCount / dt : 0
+        phaseSecond += 1
+        sampleSensors(recordMetrics: phaseRecordMetrics)
+        phaseOnTick?(min(phaseSecond, phaseTotal), phaseTotal)
+        if phaseSecond >= phaseTotal {
+            stopTickTimer()
+        }
     }
 
-    /// Read thermal + SMC; timed phase records peaks, warm-up only refreshes current.
-    private func sampleSensors(recordMetrics: Bool) async {
-        let reading = await Task.detached { SMCService.snapshot() }.value
-        if let reading {
-            self.currentReading = reading
-            if recordMetrics {
-                if let t = reading.maxTemp { self.peakTemp = max(self.peakTemp ?? 0, t) }
-                if let r = reading.fanRPMs.max() { self.peakRPM = max(self.peakRPM ?? 0, r) }
-            }
+    private func sampleSensors(recordMetrics: Bool) {
+        // Fast path on main — host_statistics / IOKit must not wait on saturated CPU workers.
+        let load = loadSampler.sample()
+        cpuPercent = load.cpu
+        gpuPercent = load.gpu
+        peakCPU = max(peakCPU, load.cpu)
+        if let g = load.gpu {
+            peakGPU = max(peakGPU ?? 0, g)
         }
+
         if recordMetrics {
-            self.thermalSamples.append(ProcessInfo.processInfo.thermalState)
+            thermalSamples.append(ProcessInfo.processInfo.thermalState)
+        }
+
+        let taken = opsCounter.take()
+        let dt = Double(DispatchTime.now().uptimeNanoseconds - opsWindowStart.uptimeNanoseconds) / 1e9
+        if dt > 0, taken > 0 {
+            opsPerSecond = taken / dt
+        }
+        opsWindowStart = .now()
+
+        historyIndex += 1
+        loadHistory.append(LoadHistoryPoint(
+            id: historyIndex,
+            second: historyIndex,
+            cpu: load.cpu,
+            gpu: load.gpu
+        ))
+        if loadHistory.count > 120 {
+            loadHistory.removeFirst(loadHistory.count - 120)
+        }
+
+        // SMC can be slower; refresh off the hot path.
+        let captureMetrics = recordMetrics
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            let reading = SMCService.snapshot()
+            DispatchQueue.main.async {
+                guard let self, self.isRunning, let reading else { return }
+                self.currentReading = reading
+                if captureMetrics {
+                    if let t = reading.maxTemp { self.peakTemp = max(self.peakTemp ?? 0, t) }
+                    if let r = reading.fanRPMs.max() { self.peakRPM = max(self.peakRPM ?? 0, r) }
+                }
+            }
         }
     }
 
@@ -189,17 +316,24 @@ final class PerformanceCheckModel: ObservableObject {
         return acc
     }
 
-    func buildResult() -> CheckResult {
+    func buildResult(userReportedIssue: Bool = false) -> CheckResult {
         let worst = worstThermal
         let throttled = worst.severity >= ProcessInfo.ThermalState.serious.severity
         let mops = opsPerSecond / 1_000_000
         var details: [String: String] = [
-            "cores": "\(coreCount)",
+            "cores": "\(hardwareCoreCount)",
             "duration": L10n.t("check.perf.detail.duration", elapsed, PerformanceDuration.warmupSeconds),
             "throughput": String(format: "%.0f M ops/s", mops),
             "peakThermal": worst.label,
             "samples": thermalSamples.map(\.label).joined(separator: " → "),
+            "peakCPU": String(format: "%.0f%%", peakCPU),
         ]
+        if gpuStressEnabled {
+            details["gpuStress"] = gpuDeviceName ?? L10n.t("common.yes")
+        }
+        if let peakGPU {
+            details["peakGPU"] = String(format: "%.0f%%", peakGPU)
+        }
         if let peakTemp {
             details["peakTemp"] = String(format: "%.1f °C", peakTemp)
         }
@@ -208,6 +342,9 @@ final class PerformanceCheckModel: ObservableObject {
         }
         if let peakRPM {
             details["peakFan"] = String(format: "%.0f RPM", peakRPM)
+        }
+        if userReportedIssue {
+            details["userJudge"] = L10n.t("check.perf.user_bad")
         }
         let localizedDetails = RawDetails.localize(details, using: [
             "cores": "check.perf.detail.cores",
@@ -218,6 +355,10 @@ final class PerformanceCheckModel: ObservableObject {
             "peakTemp": "check.perf.detail.peak_temp",
             "idleTemp": "check.perf.detail.idle_temp",
             "peakFan": "check.perf.detail.peak_fan",
+            "peakCPU": "check.perf.detail.peak_cpu",
+            "peakGPU": "check.perf.detail.peak_gpu",
+            "gpuStress": "check.perf.detail.gpu_stress",
+            "userJudge": "check.perf.detail.user_judge",
         ])
 
         let tempSuffix: String = {
@@ -226,6 +367,15 @@ final class PerformanceCheckModel: ObservableObject {
             return L10n.t("check.perf.temp_suffix", peakTemp, rpm)
         }()
 
+        if userReportedIssue {
+            return CheckResult(
+                id: "performance",
+                title: L10n.t("check.perf.result.title"),
+                status: .warning,
+                summary: L10n.t("check.perf.result.user_bad", elapsed, worst.label),
+                rawDetails: localizedDetails
+            )
+        }
         if throttled {
             return CheckResult(
                 id: "performance",
@@ -242,6 +392,31 @@ final class PerformanceCheckModel: ObservableObject {
             summary: L10n.t("check.perf.result.ok", elapsed, worst.label, tempSuffix),
             rawDetails: localizedDetails
         )
+    }
+}
+
+/// Shared cancel flag for CPU workers (lock-based; safe across concurrency domains).
+final class CancelFlag: @unchecked Sendable {
+    private let lock = NSLock()
+    private var _value = false
+    var value: Bool {
+        get { lock.lock(); defer { lock.unlock() }; return _value }
+        set { lock.lock(); _value = newValue; lock.unlock() }
+    }
+}
+
+final class OpsCounter: @unchecked Sendable {
+    private let lock = NSLock()
+    private var count: Double = 0
+    func add(_ n: Double) {
+        lock.lock(); count += n; lock.unlock()
+    }
+    func take() -> Double {
+        lock.lock(); defer { lock.unlock() }
+        let v = count; count = 0; return v
+    }
+    func reset() {
+        lock.lock(); count = 0; lock.unlock()
     }
 }
 
@@ -276,55 +451,131 @@ extension ProcessInfo.ThermalState {
 }
 
 struct PerformanceCheckView: View {
+    @EnvironmentObject private var appModel: AppModel
     @StateObject private var model = PerformanceCheckModel()
+    @State private var sessionActive = false
     let onComplete: (CheckResult) -> Void
+
+    private var existingResult: CheckResult? { appModel.result(id: "performance") }
 
     var body: some View {
         VStack(alignment: .leading, spacing: DS.Spacing.lg) {
             CheckHeader(
                 icon: "gauge.with.dots.needle.67percent",
                 title: L10n.t("check.perf.title"),
-                subtitle: L10n.t("check.perf.subtitle", PerformanceDuration.warmupSeconds, model.coreCount)
+                subtitle: L10n.t(
+                    "check.perf.subtitle",
+                    PerformanceDuration.warmupSeconds,
+                    model.hardwareCoreCount
+                )
             )
 
-            durationPicker
-
-            gauge
-
-            if model.finished {
-                InlineNotice(icon: model.worstThermal.severity >= 2 ? "exclamationmark.triangle.fill" : "checkmark.circle.fill",
-                             tint: model.worstThermal.tint,
-                             text: L10n.t(model.worstThermal.severity >= 2 ? "check.perf.notice.hot" : "check.perf.notice.ok",
-                                          model.worstThermal.label))
-            }
-
-            DS.Divider()
-
-            HStack(spacing: DS.Spacing.md) {
-                if model.isRunning {
-                    Button(L10n.t("common.stop")) { model.cancel() }.buttonStyle(.bordered)
-                    ProgressView().controlSize(.small)
-                    Text(model.phaseCaption).font(DS.Font.caption).foregroundStyle(.secondary)
-                } else {
-                    Button(model.finished ? L10n.t("check.perf.restart") : L10n.t("check.perf.start")) { model.start() }
-                        .buttonStyle(.borderedProminent)
-                    if model.finished {
-                        Button(L10n.t("check.perf.save")) { onComplete(model.buildResult()) }
-                            .buttonStyle(.bordered)
-                    }
+            if sessionActive || model.isRunning || model.finished {
+                activeSession
+            } else if let result = existingResult {
+                PreviousResultCard(result: result)
+                Button {
+                    beginSession()
+                } label: {
+                    Label(L10n.t("detail.retest"), systemImage: "arrow.clockwise")
+                        .frame(minWidth: 160)
                 }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+            } else {
+                durationPicker
+                Button {
+                    beginSession()
+                } label: {
+                    Label(L10n.t("detail.start_test"), systemImage: "play.fill")
+                        .frame(minWidth: 160)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
             }
 
             Button(L10n.t("common.skip")) {
                 model.cancel()
-                onComplete(CheckResult(id: "performance", title: L10n.t("check.perf.result.title"), status: .skipped,
-                    summary: L10n.t("check.perf.skip_summary")))
+                sessionActive = false
+                onComplete(CheckResult(
+                    id: "performance",
+                    title: L10n.t("check.perf.result.title"),
+                    status: .skipped,
+                    summary: L10n.t("check.perf.skip_summary")
+                ))
             }
             .buttonStyle(.bordered)
         }
         .padding(DS.Spacing.xl)
         .checkPane(L10n.t("sidebar.performance"))
-        .onDisappear { model.cancel() }
+        .onDisappear {
+            model.cancel()
+            sessionActive = false
+        }
+    }
+
+    @ViewBuilder
+    private var activeSession: some View {
+        durationPicker
+        gauge
+
+        if model.finished {
+            InlineNotice(
+                icon: model.worstThermal.severity >= 2
+                    ? "exclamationmark.triangle.fill" : "checkmark.circle.fill",
+                tint: model.worstThermal.tint,
+                text: L10n.t(
+                    model.worstThermal.severity >= 2 ? "check.perf.notice.hot" : "check.perf.notice.ok",
+                    model.worstThermal.label
+                )
+            )
+        }
+
+        DS.Divider()
+
+        if model.isRunning {
+            HStack(spacing: DS.Spacing.md) {
+                Button(L10n.t("common.stop")) {
+                    model.cancel()
+                    sessionActive = false
+                }
+                .buttonStyle(.bordered)
+                ProgressView().controlSize(.small)
+                Text(model.phaseCaption).font(DS.Font.caption).foregroundStyle(.secondary)
+            }
+        } else if model.finished {
+            HStack(spacing: DS.Spacing.md) {
+                Text(L10n.t("result.label")).font(DS.Font.body).foregroundStyle(.secondary)
+                Button(L10n.t("check.perf.ok_btn")) {
+                    finish(userReportedIssue: false)
+                }
+                .buttonStyle(.borderedProminent)
+                Button(L10n.t("check.perf.bad_btn")) {
+                    finish(userReportedIssue: true)
+                }
+                .buttonStyle(.bordered)
+                Button(L10n.t("check.perf.restart")) {
+                    model.start()
+                }
+                .buttonStyle(.bordered)
+            }
+        } else {
+            Button(L10n.t("check.perf.start")) {
+                model.start()
+            }
+            .buttonStyle(.borderedProminent)
+        }
+    }
+
+    private func beginSession() {
+        sessionActive = true
+        model.start()
+    }
+
+    private func finish(userReportedIssue: Bool) {
+        onComplete(model.buildResult(userReportedIssue: userReportedIssue))
+        model.leaveFinishedSession()
+        sessionActive = false
     }
 
     private var durationPicker: some View {
@@ -346,29 +597,42 @@ struct PerformanceCheckView: View {
         Card {
             HStack(spacing: DS.Spacing.xl) {
                 stat(title: L10n.t("check.perf.stat.progress"), value: progressLabel)
-                stat(title: L10n.t("check.perf.stat.throughput"),
-                     value: model.opsPerSecond > 0 ? String(format: "%.0f M/s", model.opsPerSecond / 1_000_000) : "—")
-                stat(title: L10n.t("check.perf.stat.thermal"),
-                     value: (model.thermalSamples.last ?? .nominal).label,
-                     tint: (model.thermalSamples.last ?? .nominal).tint)
+                stat(
+                    title: L10n.t("check.perf.stat.throughput"),
+                    value: model.opsPerSecond > 0
+                        ? String(format: "%.0f M/s", model.opsPerSecond / 1_000_000) : "—"
+                )
+                stat(
+                    title: L10n.t("check.perf.stat.thermal"),
+                    value: (model.thermalSamples.last ?? .nominal).label,
+                    tint: (model.thermalSamples.last ?? .nominal).tint
+                )
                 Spacer()
             }
             ProgressView(value: model.progress)
 
-            // SMC temps / fans
+            loadChart
+
             if model.smcAvailable {
                 DS.Divider()
                 HStack(spacing: DS.Spacing.xl) {
-                    stat(title: L10n.t("check.perf.stat.soc"),
-                         value: model.currentReading?.maxTemp.map { String(format: "%.0f °C", $0) } ?? "—",
-                         tint: tempTint(model.currentReading?.maxTemp))
+                    stat(
+                        title: L10n.t("check.perf.stat.soc"),
+                        value: model.currentReading?.maxTemp.map { String(format: "%.0f °C", $0) } ?? "—",
+                        tint: tempTint(model.currentReading?.maxTemp)
+                    )
                     if let rpm = model.currentReading?.fanRPMs, !rpm.isEmpty {
-                        stat(title: rpm.count > 1 ? L10n.t("check.perf.stat.fans") : L10n.t("check.perf.stat.fan"),
-                             value: rpm.map { String(format: "%.0f", $0) }.joined(separator: " / ") + " RPM")
+                        stat(
+                            title: rpm.count > 1 ? L10n.t("check.perf.stat.fans") : L10n.t("check.perf.stat.fan"),
+                            value: rpm.map { String(format: "%.0f", $0) }.joined(separator: " / ") + " RPM"
+                        )
                     }
                     if let peak = model.peakTemp {
-                        stat(title: L10n.t("check.perf.stat.peak_temp"),
-                             value: String(format: "%.0f °C", peak), tint: tempTint(peak))
+                        stat(
+                            title: L10n.t("check.perf.stat.peak_temp"),
+                            value: String(format: "%.0f °C", peak),
+                            tint: tempTint(peak)
+                        )
                     }
                     Spacer()
                 }
@@ -376,6 +640,91 @@ struct PerformanceCheckView: View {
                 Text(L10n.t("check.perf.smc_unavailable"))
                     .font(DS.Font.caption).foregroundStyle(.tertiary)
             }
+        }
+    }
+
+    private var loadChart: some View {
+        VStack(alignment: .leading, spacing: DS.Spacing.sm) {
+            HStack(alignment: .firstTextBaseline, spacing: DS.Spacing.xl) {
+                loadPercentLabel(
+                    title: L10n.t("check.perf.stat.cpu"),
+                    value: model.cpuPercent,
+                    tint: .accentColor
+                )
+                if model.gpuStressEnabled || model.hasGPUSeries {
+                    loadPercentLabel(
+                        title: L10n.t("check.perf.stat.gpu"),
+                        value: model.gpuPercent,
+                        tint: .green
+                    )
+                }
+                Spacer()
+                if model.gpuStressEnabled, let name = model.gpuDeviceName {
+                    Text(name)
+                        .font(DS.Font.caption)
+                        .foregroundStyle(.tertiary)
+                        .lineLimit(1)
+                }
+            }
+
+            Chart {
+                ForEach(model.loadHistory) { point in
+                    AreaMark(
+                        x: .value("t", point.second),
+                        yStart: .value("base", 0),
+                        yEnd: .value("CPU", point.cpu),
+                        series: .value("series", "CPU")
+                    )
+                    .foregroundStyle(Color.accentColor.opacity(0.22))
+                    .interpolationMethod(.linear)
+
+                    LineMark(
+                        x: .value("t", point.second),
+                        y: .value("CPU", point.cpu),
+                        series: .value("series", "CPU")
+                    )
+                    .foregroundStyle(Color.accentColor)
+                    .interpolationMethod(.linear)
+                    .lineStyle(StrokeStyle(lineWidth: 1.5))
+                }
+
+                ForEach(model.loadHistory.filter { $0.gpu != nil }) { point in
+                    LineMark(
+                        x: .value("t", point.second),
+                        y: .value("GPU", point.gpu ?? 0),
+                        series: .value("series", "GPU")
+                    )
+                    .foregroundStyle(Color.green)
+                    .interpolationMethod(.linear)
+                    .lineStyle(StrokeStyle(lineWidth: 1.5))
+                }
+            }
+            .chartYScale(domain: 0...100)
+            .chartYAxis {
+                AxisMarks(values: [0, 50, 100]) { value in
+                    AxisGridLine()
+                    AxisValueLabel {
+                        if let v = value.as(Double.self) {
+                            Text("\(Int(v))%")
+                                .font(.system(size: 9))
+                        }
+                    }
+                }
+            }
+            .chartXAxis(.hidden)
+            .frame(height: 120)
+            .padding(.top, DS.Spacing.xs)
+        }
+        .padding(.top, DS.Spacing.sm)
+    }
+
+    private func loadPercentLabel(title: String, value: Double?, tint: Color) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title).font(DS.Font.caption).foregroundStyle(.secondary)
+            Text(value.map { String(format: "%.0f%%", $0) } ?? "—")
+                .font(.system(size: 22, weight: .semibold, design: .rounded))
+                .foregroundStyle(tint)
+                .monospacedDigit()
         }
     }
 

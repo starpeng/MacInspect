@@ -302,6 +302,43 @@ struct StatusPill: View {
     }
 }
 
+/// Shared “last result” card for interactive checks (mic / audio / trackpad / …).
+struct PreviousResultCard: View {
+    let result: CheckResult
+    var showDetails: Bool = true
+
+    var body: some View {
+        Card {
+            VStack(alignment: .leading, spacing: DS.Spacing.sm) {
+                HStack(spacing: DS.Spacing.md) {
+                    Image(systemName: result.status.symbolName)
+                        .font(.system(size: 20)).foregroundStyle(result.status.tint)
+                    VStack(alignment: .leading, spacing: 2) {
+                        HStack(spacing: DS.Spacing.sm) {
+                            Text(L10n.t("detail.last_result")).font(DS.Font.bodyEmphasis)
+                            StatusPill(status: result.status)
+                        }
+                        Text(result.summary).font(DS.Font.body).foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                }
+                if showDetails, !result.rawDetails.isEmpty {
+                    DS.Divider()
+                    ForEach(result.rawDetails.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
+                        HStack(alignment: .firstTextBaseline) {
+                            Text(key).font(DS.Font.caption).foregroundStyle(.secondary)
+                            Spacer(minLength: DS.Spacing.sm)
+                            Text(value)
+                                .font(DS.Font.mono)
+                                .multilineTextAlignment(.trailing)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 // MARK: - Fullscreen test launch
 
 struct FullscreenLaunchPane: View {
@@ -318,20 +355,7 @@ struct FullscreenLaunchPane: View {
                 CheckHeader(icon: icon, title: title, subtitle: subtitle)
 
                 if let result = model.result(id: item.resultIDs.first ?? "") {
-                    Card {
-                        HStack(spacing: DS.Spacing.md) {
-                            Image(systemName: result.status.symbolName)
-                                .font(.system(size: 20)).foregroundStyle(result.status.tint)
-                            VStack(alignment: .leading, spacing: 2) {
-                                HStack(spacing: DS.Spacing.sm) {
-                                    Text(L10n.t("detail.last_result")).font(DS.Font.bodyEmphasis)
-                                    StatusPill(status: result.status)
-                                }
-                                Text(result.summary).font(DS.Font.body).foregroundStyle(.secondary)
-                            }
-                            Spacer()
-                        }
-                    }
+                    PreviousResultCard(result: result, showDetails: false)
                 }
 
                 HStack(spacing: DS.Spacing.md) {

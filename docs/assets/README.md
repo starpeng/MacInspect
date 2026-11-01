@@ -1,10 +1,6 @@
 # Screenshots
 
-Replace with fresh MacInspect captures (redact serials):
+Overview composites (crop past desktop margins + window corner radius, then diagonal split — **light** top-left, **dark** bottom-right; seam from window top-right → bottom-left):
 
-- `overview.png`
-- `hardware.png`
-- `security.png`
-- `keyboard.png`
-
-Then uncomment the image block in the root `README.md`.
+- `overview-cn.png` — used in [README.zh-Hans.md](../../README.zh-Hans.md)
+- `overview-en.png` — used in [README.md](../../README.md)
