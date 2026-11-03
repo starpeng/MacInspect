@@ -34,6 +34,7 @@ enum AppTheme: String, CaseIterable, Identifiable {
     }
 
     /// Whether macOS itself is in Dark mode (ignores our forced light/dark lock).
+    @MainActor
     static var systemInterfaceIsDark: Bool {
         // When we are not overriding NSApp.appearance, effectiveAppearance tracks the OS
         // and updates earlier than AppleInterfaceStyle UserDefaults after a theme switch.
@@ -44,6 +45,7 @@ enum AppTheme: String, CaseIterable, Identifiable {
     }
 
     /// Always a concrete scheme. On macOS, preferredColorScheme(nil) often sticks after light/dark.
+    @MainActor
     var resolvedColorScheme: ColorScheme {
         switch self {
         case .light: return .light
