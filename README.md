@@ -10,17 +10,21 @@ Runs fully offline by default — no serial numbers, scan results, or reports ar
   <img src="docs/assets/overview-en.png" alt="MacInspect overview — light (top-left) / dark (bottom-right)" width="900">
 </p>
 
+<p align="center">
+  <img src="docs/assets/security-en.png" alt="MacInspect Security &amp; Lock — MDM, enterprise signals, Apple ID, Find My / Activation Lock" width="900">
+</p>
+
 
 
 ## Features
 
-- Model, chip, memory, macOS version, serial, and related identity info
+- Model, chip, memory, macOS version, serial, board identity, and specs-library cross-check
 - Battery health, storage, network, Bluetooth, and port discovery
-- MDM / Activation Lock / security-chip flags for trade risk
+- Security & Lock: MDM / DEP, enterprise-lock signals, Apple ID, Find My / Activation Lock, security chip
 - Interactive checks: keyboard, display patterns, audio, mic, camera, Touch ID, trackpad
 - Disk speed, short performance stress, per-port live checks
 - Local LLM fit hints from installed RAM
-- PDF / PNG report export; system / light / dark appearance
+- PDF / PNG report export; toolbar appearance quick switch (system / light / dark)
 - In-app language: English, Simplified Chinese, Traditional Chinese
 
 
@@ -73,10 +77,10 @@ Release builds, signing, and notarization: [docs/BUILD.md](docs/BUILD.md).
 Release checklist: [docs/RELEASE.md](docs/RELEASE.md).  
 Manual test list: [docs/TESTING.md](docs/TESTING.md).
 
-Tag a version to publish via GitHub Actions (`v1.2` → notes `docs/RELEASE_NOTES_1.2.md` + three DMGs):
+Tag a version to publish via GitHub Actions (`v1.3` → notes `docs/RELEASE_NOTES_1.3.md` + three DMGs):
 
 ```bash
-git tag v1.2 && git push origin v1.2
+git tag v1.3 && git push origin v1.3
 ```
 
 ```text
@@ -109,8 +113,16 @@ docs/
 
 
 
+## License
+
+MIT © 2026 Star Peng — see [LICENSE](LICENSE).
+
+**Retention:** forks, modifications, and redistributions (including derivative works) must keep the `LICENSE` file and the Star Peng copyright notice. See also [NOTICE](NOTICE) for third-party attributions.
+
 ## Credits
 
 Independently maintained. Inspiration and prototype from open-source [MacCheck](https://github.com/andyhuo520/MacCheck).
+
+Bundled `MacSpecs.json` is a slim identity catalog (identifier / A-number / SoC / board), built mainly from [AppleDB](https://github.com/littlebyteorg/appledb) (MIT) with Apple Silicon board codes cross-checked against the [Asahi Linux device list](https://asahilinux.org/docs/hw/devices/device-list/). Regenerate with `scripts/generate_mac_device_catalog.py`. Details: [NOTICE](NOTICE).
 
 App icon generated with Google Gemini — see [design/README.md](design/README.md) for the prompt.

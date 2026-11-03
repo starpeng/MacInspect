@@ -10,17 +10,21 @@
   <img src="docs/assets/overview-cn.png" alt="MacInspect 概览 — 左上浅色 / 右下深色" width="900">
 </p>
 
+<p align="center">
+  <img src="docs/assets/security-cn.png" alt="MacInspect 安全与锁定 — MDM、企业锁信号、Apple ID、查找我的 Mac / 激活锁" width="900">
+</p>
+
 
 
 ## 功能
 
-- 机型、芯片、内存、系统版本、序列号等身份信息
+- 机型、芯片、内存、系统版本、序列号、主板标识与规格库交叉对照
 - 电池健康、存储、网络、蓝牙、接口枚举
-- MDM / 激活锁（查找我的 Mac）/ 安全芯片等交易风险提示
+- 安全与锁定：MDM / DEP、企业锁附加信号、Apple ID、查找我的 Mac / 激活锁、安全芯片
 - 交互检测：键盘、屏幕色块、扬声器、麦克风、摄像头、Touch ID、触控板
 - 磁盘速度、短时性能压测、逐口插入检测
 - 按本机内存给出本地大模型适配参考
-- PDF / PNG 报告导出；跟随系统 / 浅色 / 深色外观
+- PDF / PNG 报告导出；顶栏外观快捷切换（跟随系统 / 浅色 / 深色）
 - 应用内语言：英文、简体中文、繁体中文
 
 
@@ -73,10 +77,10 @@ cd MacInspect
 发布清单：[docs/RELEASE.md](docs/RELEASE.md)  
 手工测试项：[docs/TESTING.md](docs/TESTING.md)
 
-打标签后由 GitHub Actions 发布（例如 `v1.2` → 说明见 `docs/RELEASE_NOTES_1.2.md`，并产出三份 DMG）：
+打标签后由 GitHub Actions 发布（例如 `v1.3` → 说明见 `docs/RELEASE_NOTES_1.3.md`，并产出三份 DMG）：
 
 ```bash
-git tag v1.2 && git push origin v1.2
+git tag v1.3 && git push origin v1.3
 ```
 
 ```text
@@ -109,8 +113,16 @@ docs/
 
 
 
+## 许可
+
+MIT © 2026 Star Peng — 见 [LICENSE](LICENSE)。
+
+**保留要求：** fork、修改、再发布（含衍生作品）必须保留 `LICENSE` 文件及 Star Peng 版权声明。第三方归属见 [NOTICE](NOTICE)。
+
 ## 致谢
 
 独立维护。灵感与原型来自开源项目 [MacCheck](https://github.com/andyhuo520/MacCheck)。
+
+内置 `MacSpecs.json` 为精简身份对照表（机型标识 / A 编号 / SoC / 主板代号），主要来自 [AppleDB](https://github.com/littlebyteorg/appledb)（MIT），Apple Silicon 主板代号参考 [Asahi Linux device list](https://asahilinux.org/docs/hw/devices/device-list/) 交叉核对。可用 `scripts/generate_mac_device_catalog.py` 重新生成。详见 [NOTICE](NOTICE)。
 
 应用图标由 Google Gemini 生成，提示词见 [design/README.md](design/README.md)。

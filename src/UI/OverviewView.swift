@@ -169,6 +169,9 @@ struct OverviewView: View {
                         HStack(spacing: DS.Spacing.sm) {
                             metaChip(icon: "barcode",
                                      text: p.serialNumber.isEmpty ? L10n.t("overview.serial_unknown") : p.serialNumber)
+                            if !p.modelNumber.isEmpty {
+                                metaChip(icon: "number", text: p.modelNumber)
+                            }
                             metaChip(icon: "cpu", text: p.architecture)
                             if !p.modelYear.isEmpty {
                                 metaChip(icon: "calendar", text: L10n.t("overview.year_format", p.modelYear))
@@ -305,6 +308,7 @@ struct OverviewView: View {
                         AppBrand.name,
                         model.report.appVersion))
             Text(L10n.t("privacy.footer"))
+            Text(L10n.t("license.retain.footer"))
         }
         .font(DS.Font.caption).foregroundStyle(.secondary)
         .padding(.top, DS.Spacing.sm)

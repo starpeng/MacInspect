@@ -77,7 +77,22 @@ struct SpecsView: View {
                 KVRow(icon: "macbook", key: L10n.t("specs.model"), value: p.marketingName)
                 KVRow(icon: "barcode", key: L10n.t("specs.serial"), value: p.serialNumber, mono: true, copyable: true)
                 KVRow(icon: "tag", key: L10n.t("specs.model_id"), value: p.modelIdentifier, mono: true)
+                if !p.modelNumber.isEmpty {
+                    KVRow(icon: "number", key: L10n.t("specs.model_number"), value: p.modelNumber, mono: true)
+                }
+                if !p.boardID.isEmpty {
+                    KVRow(icon: "internaldrive", key: L10n.t("specs.board_id"), value: p.boardID, mono: true)
+                }
+                if !p.specsName.isEmpty, p.specsName != p.marketingName {
+                    KVRow(icon: "text.book.closed", key: L10n.t("specs.catalog_name"), value: p.specsName)
+                }
                 KVRow(icon: "cpu", key: L10n.t("specs.chip"), value: p.chip)
+                if !p.specsChip.isEmpty, p.specsChip != p.chip {
+                    KVRow(icon: "cpu.fill", key: L10n.t("specs.specs_chip"), value: p.specsChip)
+                }
+                if !p.specsScreen.isEmpty {
+                    KVRow(icon: "display", key: L10n.t("specs.specs_screen"), value: p.specsScreen)
+                }
                 KVRow(icon: "memorychip", key: L10n.t("specs.memory"), value: p.memory)
                 KVRow(icon: "square.stack.3d.up", key: L10n.t("specs.arch"), value: p.architecture, last: true)
             }
@@ -284,6 +299,26 @@ struct CategoryDetailView: View {
                     ForEach(Array(pairs.enumerated()), id: \.element.key) { index, pair in
                         InfoRow(key: pair.key, value: pair.value, mono: true, index: index)
                     }
+                }
+            }
+            if model.mdmProfilesNeedAdmin(result) {
+                DS.Divider()
+                VStack(alignment: .leading, spacing: DS.Spacing.sm) {
+                    Text(L10n.t("mgmt.mdm.profiles_admin_hint"))
+                        .font(DS.Font.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Button {
+                        Task { await model.refreshProfilesWithAdmin() }
+                    } label: {
+                        if model.isElevatingProfiles {
+                            ProgressView()
+                                .controlSize(.small)
+                        } else {
+                            Label(L10n.t("mgmt.mdm.authorize_profiles"), systemImage: "lock.open")
+                        }
+                    }
+                    .disabled(model.isElevatingProfiles)
                 }
             }
         }

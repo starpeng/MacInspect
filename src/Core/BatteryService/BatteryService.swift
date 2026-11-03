@@ -70,13 +70,32 @@ enum BatteryService {
         return props
     }
 
-    /// Parse an int field from ioreg text (second data path).
-    private static func ioregInt(_ key: String) -> Int? {
-        let output = ShellRunner.run("/usr/sbin/ioreg", ["-rd1", "-c", "AppleSmartBattery"])
-        guard let range = output.range(of: "\"\(key)\" = ") else { return nil }
-        let tail = output[range.upperBound...]
-        let numberString = tail.prefix { $0.isNumber || $0 == "-" }
-        return Int(numberString)
+    /// Int from top-level props, then `BatteryData` (Apple Silicon often nests DesignCapacity there).
+    private static func intValue(_ props: [String: Any], keys: [String]) -> Int? {
+        let batteryData = props["BatteryData"] as? [String: Any]
+        for key in keys {
+            if let n = props[key] as? Int { return n }
+            if let n = props[key] as? NSNumber { return n.intValue }
+            if let n = batteryData?[key] as? Int { return n }
+            if let n = batteryData?[key] as? NSNumber { return n.intValue }
+        }
+        return nil
+    }
+
+    /// Parse an int field from ioreg text. Accepts both `"Key" = 123` and `"Key"=123`.
+    private static func ioregInt(_ key: String, in output: String) -> Int? {
+        let patterns = ["\"\(key)\" = ", "\"\(key)\"="]
+        for pattern in patterns {
+            guard let range = output.range(of: pattern) else { continue }
+            let tail = output[range.upperBound...]
+            let numberString = tail.prefix { $0.isNumber || $0 == "-" }
+            if let value = Int(numberString) { return value }
+        }
+        return nil
+    }
+
+    private static func ioregBatteryDump() -> String {
+        ShellRunner.run("/usr/sbin/ioreg", ["-rd1", "-c", "AppleSmartBattery"])
     }
 
     /// Battery serial: top-level BatterySerialNumber or BatteryData.Serial.
@@ -86,6 +105,18 @@ enum BatteryService {
         if let data = props["BatteryData"] as? [String: Any],
            let s = data["Serial"] as? String, !s.isEmpty {
             return s
+        }
+        return nil
+    }
+
+    /// Prefer IOKit Temperature (centi-°C); on modern Macs fall back to SMC battery probes.
+    private static func batteryTemperatureCelsius(from props: [String: Any]) -> Double? {
+        if let raw = intValue(props, keys: ["Temperature"]), raw > 0 {
+            let celsius = Double(raw) / 100.0
+            if celsius > 0, celsius < 100 { return celsius }
+        }
+        if let smc = SMCService.snapshot()?.batteryTemp, smc > 0, smc < 100 {
+            return smc
         }
         return nil
     }
@@ -102,18 +133,20 @@ enum BatteryService {
         }
 
         var results: [CheckResult] = []
+        let ioregDump = ioregBatteryDump()
 
-        let cycleCount = props["CycleCount"] as? Int ?? 0
-        let designCapacity = props["DesignCapacity"] as? Int ?? 0
-        let rawMaxCapacity = props["AppleRawMaxCapacity"] as? Int
-            ?? (props["MaxCapacity"] as? Int).flatMap { $0 > 200 ? $0 : nil }
+        let cycleCount = intValue(props, keys: ["CycleCount", "AppleRawCycleCount"]) ?? 0
+        let designCapacity = intValue(props, keys: ["DesignCapacity", "AppleRawDesignCapacity"]) ?? 0
+        let rawMaxCapacity = intValue(props, keys: ["AppleRawMaxCapacity"])
+            ?? intValue(props, keys: ["MaxCapacity"]).flatMap { $0 > 200 ? $0 : nil }
             ?? 0
         // MaxCapacity is mAh on some models, percent on others; treat as % only if ≤100.
-        let maxCapacityPercentRaw = (props["MaxCapacity"] as? Int).flatMap { $0 > 0 && $0 <= 100 ? $0 : nil }
+        let maxCapacityPercentRaw = intValue(props, keys: ["MaxCapacity"])
+            .flatMap { $0 > 0 && $0 <= 100 ? $0 : nil }
         let isCharging = props["IsCharging"] as? Bool ?? false
         let externalConnected = props["ExternalConnected"] as? Bool ?? false
-        let temperatureRaw = props["Temperature"] as? Int ?? 0
-        let temperatureC = Double(temperatureRaw) / 100.0
+        // IOKit `Temperature` (centi-°C) is often missing on Apple Silicon — fall back to SMC.
+        let temperatureC = batteryTemperatureCelsius(from: props)
         let battSerial = batterySerial(from: props)
 
         var healthFromRaw: Double?
@@ -132,9 +165,9 @@ enum BatteryService {
         ]
 
         var healthDetails: [String: String] = [
-            Key.designCap: designCapacity > 0 ? "\(designCapacity)" : L10n.t("common.na"),
-            Key.maxCap: rawMaxCapacity > 0 ? "\(rawMaxCapacity)" : L10n.t("common.na"),
-            Key.temp: String(format: "%.1f °C", temperatureC),
+            Key.designCap: designCapacity > 0 ? "\(designCapacity) mAh" : L10n.t("common.na"),
+            Key.maxCap: rawMaxCapacity > 0 ? "\(rawMaxCapacity) mAh" : L10n.t("common.na"),
+            Key.temp: temperatureC.map { String(format: "%.1f °C", $0) } ?? L10n.t("common.na"),
             Key.charging: isCharging ? L10n.t("common.yes") : L10n.t("common.no"),
             Key.ac: externalConnected ? L10n.t("common.yes") : L10n.t("common.no"),
         ]
@@ -145,7 +178,8 @@ enum BatteryService {
         }
 
         // Cycle-count cross-check
-        if let ioregCount = ioregInt("CycleCount"), ioregCount != cycleCount {
+        if let ioregCount = ioregInt("CycleCount", in: ioregDump) ?? ioregInt("AppleRawCycleCount", in: ioregDump),
+           ioregCount != cycleCount {
             results.append(CheckResult(
                 id: "battery.cycleCount.crosscheck",
                 title: L10n.t("battery.cycle.cross.title"),
@@ -165,7 +199,8 @@ enum BatteryService {
             rawMaxCapacity: rawMaxCapacity,
             healthFromRaw: healthFromRaw,
             maxCapacityPercentRaw: maxCapacityPercentRaw,
-            cycleCount: cycleCount
+            cycleCount: cycleCount,
+            ioregDump: ioregDump
         ))
 
         // Cycle count
@@ -227,16 +262,20 @@ enum BatteryService {
     }
 
     /// Design capacity vs current max — authenticity checks.
+    /// Always surfaces a design-capacity cross-check row when both IOKit and ioreg values exist.
     private static func capacityAuthenticityResults(
         designCapacity: Int,
         rawMaxCapacity: Int,
         healthFromRaw: Double?,
         maxCapacityPercentRaw: Int?,
-        cycleCount: Int
+        cycleCount: Int,
+        ioregDump: String
     ) -> [CheckResult] {
         var results: [CheckResult] = []
-        let ioregDesign = ioregInt("DesignCapacity")
-        let ioregRawMax = ioregInt("AppleRawMaxCapacity") ?? ioregInt("MaxCapacity").flatMap { $0 > 200 ? $0 : nil }
+        let ioregDesign = ioregInt("DesignCapacity", in: ioregDump)
+            ?? ioregInt("AppleRawDesignCapacity", in: ioregDump)
+        let ioregRawMax = ioregInt("AppleRawMaxCapacity", in: ioregDump)
+            ?? ioregInt("MaxCapacity", in: ioregDump).flatMap { $0 > 200 ? $0 : nil }
 
         var details: [String: String] = [
             Key.iokitDesign: designCapacity > 0 ? "\(designCapacity) mAh" : L10n.t("common.na"),
@@ -252,7 +291,8 @@ enum BatteryService {
         }
         let localizedDetails = localizeDetails(details)
 
-        // Design capacity mismatch across paths
+        // Design capacity cross-check: only a dedicated card on mismatch / partial read.
+        // When both agree, the authenticity card below already shows IOKit + ioreg details.
         if let ioregDesign, designCapacity > 0, ioregDesign != designCapacity {
             results.append(CheckResult(
                 id: "battery.capacity.crosscheck",
@@ -262,7 +302,22 @@ enum BatteryService {
                 rawDetails: localizedDetails,
                 isRedFlagHeadline: L10n.t("battery.cap.design_cross.headline")
             ))
-            return results
+        } else if designCapacity > 0, ioregDesign == nil {
+            results.append(CheckResult(
+                id: "battery.capacity.crosscheck",
+                title: L10n.t("battery.cap.design_cross.title"),
+                status: .warning,
+                summary: L10n.t("battery.cap.design_cross.partial"),
+                rawDetails: localizedDetails
+            ))
+        } else if designCapacity == 0, ioregDesign != nil {
+            results.append(CheckResult(
+                id: "battery.capacity.crosscheck",
+                title: L10n.t("battery.cap.design_cross.title"),
+                status: .warning,
+                summary: L10n.t("battery.cap.design_cross.partial"),
+                rawDetails: localizedDetails
+            ))
         }
 
         // Max capacity mismatch across paths (±2% tolerance)
@@ -271,14 +326,13 @@ enum BatteryService {
             let tol = max(50, Int(Double(rawMaxCapacity) * 0.02))
             if delta > tol {
                 results.append(CheckResult(
-                    id: "battery.capacity.crosscheck",
+                    id: "battery.capacity.max_crosscheck",
                     title: L10n.t("battery.cap.max_cross.title"),
                     status: .redFlag,
                     summary: L10n.t("battery.cap.max_cross.summary", rawMaxCapacity, ioregRawMax),
                     rawDetails: localizedDetails,
                     isRedFlagHeadline: L10n.t("battery.cap.max_cross.headline")
                 ))
-                return results
             }
         }
 

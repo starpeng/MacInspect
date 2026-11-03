@@ -8,9 +8,17 @@ struct RootView: View {
     @State private var testWindow: NSWindow?
     @State private var enteredFullScreenForTest = false
     @State private var screenTestWindow: NSWindow?
+    /// Bumped when macOS appearance changes so `preferredColorScheme` re-reads the system value.
+    @State private var systemAppearanceRevision = 0
 
     private var currentTheme: AppTheme {
         AppTheme(rawValue: themeRawValue) ?? .system
+    }
+
+    private var preferredScheme: ColorScheme {
+        // Depend on revision so Follow System updates without changing appTheme storage.
+        _ = systemAppearanceRevision
+        return currentTheme.resolvedColorScheme
     }
 
     private var appLocale: Locale {
@@ -26,6 +34,11 @@ struct RootView: View {
             }
             .id(languageRawValue)
             .disabled(model.fullscreenTest != nil)
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    ThemeToolbarButton()
+                }
+            }
 
             if let test = model.fullscreenTest, test.id == "keyboard" {
                 fullscreenOverlay(test)
@@ -33,8 +46,13 @@ struct RootView: View {
                     .zIndex(1)
             }
         }
-        .preferredColorScheme(currentTheme.resolvedColorScheme)
-        .background(WindowAppearanceBridge(theme: currentTheme).frame(width: 0, height: 0))
+        .preferredColorScheme(preferredScheme)
+        .background(
+            WindowAppearanceBridge(theme: currentTheme) {
+                systemAppearanceRevision &+= 1
+            }
+            .frame(width: 0, height: 0)
+        )
         .environmentObject(model)
         .environment(\.locale, appLocale)
         .animation(.easeInOut(duration: 0.2), value: model.fullscreenTest?.id)

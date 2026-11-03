@@ -63,6 +63,16 @@ struct DeviceProfile: Codable, Sendable {
     var modelYear: String        // "2021" parsed from marketing name
     var productionDate: String   // Estimated date, or randomized-serial note
     var graphics: [DeviceGraphicsInfo] = []
+    /// Official Model Number (Axxxx), when present.
+    var modelNumber: String = ""
+    /// Device-tree board-id (e.g. Mac-… or hex blob).
+    var boardID: String = ""
+    /// Catalog expected chip string (may be empty if unknown).
+    var specsChip: String = ""
+    /// Catalog screen size token (e.g. "16-inch"; may be empty).
+    var specsScreen: String = ""
+    /// Catalog English marketing name (may be empty).
+    var specsName: String = ""
 }
 
 /// Full inspection report.

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C74FFE055F747FEB58A086E /* MacSpecsDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8F2BB2FBF24EC3975AD0BE /* MacSpecsDatabase.swift */; };
+		A3584E42ACFC467D9D8EEDDF /* MacSpecs.json in Resources */ = {isa = PBXBuildFile; fileRef = 1B424108793D4AC3B2A78939 /* MacSpecs.json */; };
 		019472AA6C1370693C47ED6F /* TrackpadCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1EB8A3EA2E3AB8E16B25E0B /* TrackpadCheckView.swift */; };
 		06DE01AB6050B356122FCB77 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B782B3CF2FBBBE61EADCD9D1 /* SettingsView.swift */; };
 		07D607FD11A3548E44A55487 /* ReportModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D57CE7BD7AD360F8784A9645 /* ReportModel.swift */; };
@@ -90,6 +92,8 @@
 		6D7E8F901A2B3C4D5E6F7082 /* MetalStressEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalStressEngine.swift; sourceTree = "<group>"; };
 		8A1C2E3F4B5D6E7F8091A2B3 /* LoadSampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadSampler.swift; sourceTree = "<group>"; };
 		7608D759EB77C62619D856E4 /* HardwareProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HardwareProbe.swift; sourceTree = "<group>"; };
+		AA8F2BB2FBF24EC3975AD0BE /* MacSpecsDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSpecsDatabase.swift; sourceTree = "<group>"; };
+		1B424108793D4AC3B2A78939 /* MacSpecs.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = MacSpecs.json; path = Resources/MacSpecs.json; sourceTree = SOURCE_ROOT; };
 		77CA0DBF8142F33712B3144B /* BatteryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryService.swift; sourceTree = "<group>"; };
 		7A109585FBC7AEA5CFB73915 /* AudioCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCheckView.swift; sourceTree = "<group>"; };
 		7C281FC71B7C29EA66799D5C /* ScreenCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenCheckView.swift; sourceTree = "<group>"; };
@@ -124,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				B1B63D69397D962EA2458C07 /* Locales */,
+				1B424108793D4AC3B2A78939 /* MacSpecs.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -237,6 +242,7 @@
 				430B830FD21C5F4964F66321 /* DeviceNaming.swift */,
 				5B751DDD8998D3C77D35DC9D /* GraphicsProbe.swift */,
 				7608D759EB77C62619D856E4 /* HardwareProbe.swift */,
+				AA8F2BB2FBF24EC3975AD0BE /* MacSpecsDatabase.swift */,
 				43AEA68359BCF342C9039C8D /* SecurityChipService.swift */,
 				543020D7B63305639B5421B4 /* SerialDecoder.swift */,
 			);
@@ -469,6 +475,7 @@
 				D587E407BAC55285B9B8B1D0 /* Assets.xcassets in Resources */,
 				D352C70790E769C0811052B4 /* InfoPlist.strings in Resources */,
 				1DA43F6F89E10B43DD23827D /* Locales in Resources */,
+				A3584E42ACFC467D9D8EEDDF /* MacSpecs.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -494,6 +501,7 @@
 				400C72E15B703B34405F0D33 /* DiskSpeedCheckView.swift in Sources */,
 				AC79C5DB2FE192ADD3BFD081 /* GraphicsProbe.swift in Sources */,
 				BCCA242A5D9BA8174E8A4656 /* HardwareProbe.swift in Sources */,
+				2C74FFE055F747FEB58A086E /* MacSpecsDatabase.swift in Sources */,
 				E98CA041BF261B8B8D29B961 /* KeyboardCheckView.swift in Sources */,
 				D17DBAA15CFF959E2BF5089D /* KeyboardLayout.swift in Sources */,
 				77C16D41CA9D629D9BCBA2B5 /* KeyboardTestModel.swift in Sources */,

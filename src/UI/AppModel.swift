@@ -73,11 +73,13 @@ enum SidebarItem: String, CaseIterable, Identifiable, Hashable {
         case .overview, .specs: return []
         case .battery: return [
             "battery.cycleCount", "battery.health",
-            "battery.cycleCount.crosscheck", "battery.capacity.crosscheck", "battery.capacity.integrity",
+            "battery.cycleCount.crosscheck", "battery.capacity.crosscheck",
+            "battery.capacity.max_crosscheck", "battery.capacity.integrity",
         ]
         case .security: return [
-            "hardware.serial", "hardware.modelIdentity",
-            "hardware.securityChip", "management.mdm", "management.appleID", "management.activationLock",
+            "hardware.serial", "hardware.modelIdentity", "hardware.boardID", "hardware.specs",
+            "hardware.securityChip", "management.mdm", "management.enterpriseLocks",
+            "management.appleID", "management.activationLock",
         ]
         case .storage: return ["storage"]
         case .network: return ["network.wifi", "network.bluetooth"]
@@ -111,6 +113,7 @@ final class AppModel: ObservableObject {
     @Published var selection: SidebarItem? = .overview
     @Published var fullscreenTest: FullscreenTest?
     @Published var isScanning = true
+    @Published var isElevatingProfiles = false
     @Published var profile: DeviceProfile?
     @Published private(set) var autoResults: [String: CheckResult] = [:]
     @Published private(set) var testResults: [String: CheckResult] = [:]
@@ -151,6 +154,28 @@ final class AppModel: ObservableObject {
     func recordTest(_ result: CheckResult) {
         testResults[result.id] = result
         generatedAt = Date()
+    }
+
+    /// Prompt for admin and re-read `profiles list` (enrollment status already works without root).
+    func refreshProfilesWithAdmin() async {
+        guard !isElevatingProfiles else { return }
+        isElevatingProfiles = true
+        let results = await Task.detached(priority: .userInitiated) {
+            ManagementService.runAll(elevatedProfileList: true)
+        }.value
+        for result in results {
+            autoResults[result.id] = result
+        }
+        generatedAt = Date()
+        isElevatingProfiles = false
+    }
+
+    /// True when MDM card could list more profiles after an admin password prompt.
+    func mdmProfilesNeedAdmin(_ result: CheckResult) -> Bool {
+        guard result.id == "management.mdm" else { return false }
+        let denied = L10n.t("mgmt.mdm.profiles_denied")
+        let cancelled = L10n.t("mgmt.mdm.profiles_cancelled")
+        return result.rawDetails.values.contains { $0 == denied || $0 == cancelled }
     }
 
     func result(id: String) -> CheckResult? {

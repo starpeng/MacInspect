@@ -62,7 +62,11 @@ enum SMCService {
         // Intel: iGPU / dGPU
         "TG0P","TG0D","TG0H","TG0T"
     ]
-    private static let batteryKeys = ["TB1T","TB2T","TB0T"]
+    // Battery / gas-gauge probes (names vary by generation).
+    private static let batteryKeys = [
+        "TB0T", "TB1T", "TB2T", "TB3T",
+        "TW0P", "Th0H", "TH0x",
+    ]
 
     private static func fourCC(_ s: String) -> UInt32 {
         var r: UInt32 = 0
@@ -130,8 +134,9 @@ enum SMCService {
                 if let rpm = number(conn, "F\(i)Ac"), rpm >= 0 { reading.fanRPMs.append(rpm) }
             }
         }
-        // Fanless / desktop: temps OK with empty fanRPMs
-        if reading.cpuTemp == nil && reading.gpuTemp == nil && reading.fanRPMs.isEmpty {
+        // Fanless / desktop: temps OK with empty fanRPMs; battery-only still useful.
+        if reading.cpuTemp == nil && reading.gpuTemp == nil
+            && reading.batteryTemp == nil && reading.fanRPMs.isEmpty {
             return nil
         }
         return reading

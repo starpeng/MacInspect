@@ -1,0 +1,26 @@
+MacInspect
+Copyright (c) 2026 Star Peng
+Licensed under the MIT License — see LICENSE.
+Modifications and redistributions must retain LICENSE and the copyright notice.
+
+Third-party notices
+-------------------
+
+MacCheck (inspiration / prototype)
+  https://github.com/andyhuo520/MacCheck
+
+MacSpecs.json (bundled Mac identity catalog)
+  Slim structured table (model identifier ↔ A-number ↔ SoC ↔ board code ↔ English name).
+  Regenerated via scripts/generate_mac_device_catalog.py.
+
+  Primary source — AppleDB (MIT)
+    https://github.com/littlebyteorg/appledb
+    https://appledb.dev
+    Copyright (c) 2022 emiyl and contributors
+
+  Supplementary — Asahi Linux device list
+    https://asahilinux.org/docs/hw/devices/device-list/
+    Used to cross-check / fill Apple Silicon board codes (JxxxAP)
+
+  This catalog is not an Apple official specification dump. Prefer live
+  system_profiler / IOKit readings for the machine under test.

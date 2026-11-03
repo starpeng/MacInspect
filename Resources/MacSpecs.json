@@ -1,0 +1,1717 @@
+{
+ "version": 2,
+ "updated": "2026-11-03",
+ "total": 212,
+ "sources": [
+  {
+   "name": "AppleDB",
+   "url": "https://github.com/littlebyteorg/appledb",
+   "license": "MIT",
+   "note": "Primary: model identifier, A-number, SoC, board code, English marketing name"
+  },
+  {
+   "name": "Asahi Linux device list",
+   "url": "https://asahilinux.org/docs/hw/devices/device-list/",
+   "license": "Documentation (project)",
+   "note": "Supplementary Apple Silicon board codes (JxxxAP) cross-check / fill"
+  }
+ ],
+ "models": {
+  "ADP2,1": {
+   "name": "Developer Transition Kit",
+   "model_no": "A1093",
+   "chip": "",
+   "board": "EV91510A",
+   "screen": "",
+   "released": "2005-06-06"
+  },
+  "ADP3,1": {
+   "name": "Developer Transition Kit",
+   "model_no": "",
+   "chip": "A12Z",
+   "board": "J273AP",
+   "screen": "",
+   "released": ""
+  },
+  "ADP3,2": {
+   "name": "Developer Transition Kit",
+   "model_no": "A2330",
+   "chip": "A12Z",
+   "board": "J273aAP",
+   "screen": "",
+   "released": "2020-06-22"
+  },
+  "ComputeModule14,2": {
+   "name": "Apple PCC Research Environment Virtual Machine 1",
+   "model_no": "",
+   "chip": "",
+   "board": "VRESEARCH101AP",
+   "screen": "",
+   "released": "2024-10-24"
+  },
+  "Mac13,1": {
+   "name": "Mac Studio (M1 Max)",
+   "model_no": "A2615",
+   "chip": "M1 Max",
+   "board": "J375cAP",
+   "screen": "",
+   "released": "2022-03-18"
+  },
+  "Mac13,2": {
+   "name": "Mac Studio (M1 Ultra)",
+   "model_no": "A2615",
+   "chip": "M1 Ultra",
+   "board": "J375dAP",
+   "screen": "",
+   "released": "2022-03-18"
+  },
+  "Mac14,10": {
+   "name": "MacBook Pro (16-inch, M2 Pro, 2023)",
+   "model_no": "A2780",
+   "chip": "M2 Pro",
+   "board": "J416sAP",
+   "screen": "16-inch",
+   "released": "2023-01-24"
+  },
+  "Mac14,12": {
+   "name": "Mac mini (M2 Pro, 2023)",
+   "model_no": "A2816",
+   "chip": "M2 Pro",
+   "board": "J474sAP",
+   "screen": "",
+   "released": "2023-01-24"
+  },
+  "Mac14,13": {
+   "name": "Mac Studio (M2 Max, 2023)",
+   "model_no": "A2901",
+   "chip": "M2 Max",
+   "board": "J475cAP",
+   "screen": "",
+   "released": "2023-06-13"
+  },
+  "Mac14,14": {
+   "name": "Mac Studio (M2 Ultra, 2023)",
+   "model_no": "A2901",
+   "chip": "M2 Ultra",
+   "board": "J475dAP",
+   "screen": "",
+   "released": "2023-06-13"
+  },
+  "Mac14,15": {
+   "name": "MacBook Air (15-inch, M2, 2023)",
+   "model_no": "A2941",
+   "chip": "M2",
+   "board": "J415AP",
+   "screen": "15-inch",
+   "released": "2023-06-13"
+  },
+  "Mac14,2": {
+   "name": "MacBook Air (M2, 2022)",
+   "model_no": "A2681",
+   "chip": "M2",
+   "board": "J413AP",
+   "screen": "",
+   "released": "2022-07-15"
+  },
+  "Mac14,3": {
+   "name": "Mac mini (M2, 2023)",
+   "model_no": "A2686",
+   "chip": "M2",
+   "board": "J473AP",
+   "screen": "",
+   "released": "2023-01-24"
+  },
+  "Mac14,5": {
+   "name": "MacBook Pro (14-inch, M2 Max, 2023)",
+   "model_no": "A2779",
+   "chip": "M2 Max",
+   "board": "J414cAP",
+   "screen": "14-inch",
+   "released": "2023-01-24"
+  },
+  "Mac14,6": {
+   "name": "MacBook Pro (16-inch, M2 Max, 2023)",
+   "model_no": "A2780",
+   "chip": "M2 Max",
+   "board": "J416cAP",
+   "screen": "16-inch",
+   "released": "2023-01-24"
+  },
+  "Mac14,7": {
+   "name": "MacBook Pro (13-inch, M2, 2022)",
+   "model_no": "A2338",
+   "chip": "M2",
+   "board": "J493AP",
+   "screen": "13-inch",
+   "released": "2022-06-24"
+  },
+  "Mac14,8": {
+   "name": "Mac Pro (Rack, 2023)",
+   "model_no": "A2787",
+   "chip": "M2 Ultra",
+   "board": "J180dAP",
+   "screen": "",
+   "released": "2023-06-13"
+  },
+  "Mac14,9": {
+   "name": "MacBook Pro (14-inch, M2 Pro, 2023)",
+   "model_no": "A2779",
+   "chip": "M2 Pro",
+   "board": "J414sAP",
+   "screen": "14-inch",
+   "released": "2023-01-24"
+  },
+  "Mac15,1": {
+   "name": "Unreleased MacBook Air",
+   "model_no": "",
+   "chip": "M3",
+   "board": "J513AP",
+   "screen": "",
+   "released": ""
+  },
+  "Mac15,10": {
+   "name": "MacBook Pro (14-inch, 14-core M3 Max, Nov 2023)",
+   "model_no": "A2992",
+   "chip": "M3 Max",
+   "board": "J514mAP",
+   "screen": "14-inch",
+   "released": "2023-11-09"
+  },
+  "Mac15,11": {
+   "name": "MacBook Pro (16-inch, 14-core M3 Max, Nov 2023)",
+   "model_no": "A2991",
+   "chip": "M3 Max",
+   "board": "J516mAP",
+   "screen": "16-inch",
+   "released": "2023-11-09"
+  },
+  "Mac15,12": {
+   "name": "MacBook Air (13-inch, M3, 2024)",
+   "model_no": "A3113",
+   "chip": "M3",
+   "board": "J613AP",
+   "screen": "13-inch",
+   "released": "2024-03-08"
+  },
+  "Mac15,13": {
+   "name": "MacBook Air (15-inch, M3, 2024)",
+   "model_no": "A3114",
+   "chip": "M3",
+   "board": "J615AP",
+   "screen": "15-inch",
+   "released": "2024-03-08"
+  },
+  "Mac15,14": {
+   "name": "Mac Studio (M3 Ultra, 2025)",
+   "model_no": "A3389",
+   "chip": "M3 Ultra",
+   "board": "J575dAP",
+   "screen": "",
+   "released": "2025-03-12"
+  },
+  "Mac15,2": {
+   "name": "Unreleased MacBook Air",
+   "model_no": "",
+   "chip": "M3",
+   "board": "J515AP",
+   "screen": "",
+   "released": ""
+  },
+  "Mac15,3": {
+   "name": "MacBook Pro (14-inch, M3, Nov 2023)",
+   "model_no": "A2918",
+   "chip": "M3",
+   "board": "J504AP",
+   "screen": "14-inch",
+   "released": "2023-11-07"
+  },
+  "Mac15,4": {
+   "name": "iMac (24-inch, M3, 2023, Two Ports)",
+   "model_no": "A2873",
+   "chip": "M3",
+   "board": "J433AP",
+   "screen": "24-inch",
+   "released": "2023-11-07"
+  },
+  "Mac15,5": {
+   "name": "iMac (24-inch, M3, 2023, Four Ports)",
+   "model_no": "A2874",
+   "chip": "M3",
+   "board": "J434AP",
+   "screen": "24-inch",
+   "released": "2023-11-07"
+  },
+  "Mac15,6": {
+   "name": "MacBook Pro (14-inch, M3 Pro, Nov 2023)",
+   "model_no": "A2992",
+   "chip": "M3 Pro",
+   "board": "J514sAP",
+   "screen": "14-inch",
+   "released": "2023-11-07"
+  },
+  "Mac15,7": {
+   "name": "MacBook Pro (16-inch, M3 Pro, Nov 2023)",
+   "model_no": "A2991",
+   "chip": "M3 Pro",
+   "board": "J516sAP",
+   "screen": "16-inch",
+   "released": "2023-11-07"
+  },
+  "Mac15,8": {
+   "name": "MacBook Pro (14-inch, 16-core M3 Max, Nov 2023)",
+   "model_no": "A2992",
+   "chip": "M3 Max",
+   "board": "J514cAP",
+   "screen": "14-inch",
+   "released": "2023-11-09"
+  },
+  "Mac15,9": {
+   "name": "MacBook Pro (16-inch, 16-core M3 Max, Nov 2023)",
+   "model_no": "A2991",
+   "chip": "M3 Max",
+   "board": "J516cAP",
+   "screen": "16-inch",
+   "released": "2023-11-09"
+  },
+  "Mac16,1": {
+   "name": "MacBook Pro (14-inch, M4, Nov 2024)",
+   "model_no": "A3112",
+   "chip": "M4",
+   "board": "J604AP",
+   "screen": "14-inch",
+   "released": "2024-11-08"
+  },
+  "Mac16,10": {
+   "name": "Mac mini (M4, 2024)",
+   "model_no": "A3238",
+   "chip": "M4",
+   "board": "J773gAP",
+   "screen": "",
+   "released": "2024-11-08"
+  },
+  "Mac16,11": {
+   "name": "Mac mini (M4 Pro, 2024)",
+   "model_no": "A3239",
+   "chip": "M4 Pro",
+   "board": "J773sAP",
+   "screen": "",
+   "released": "2024-11-08"
+  },
+  "Mac16,12": {
+   "name": "MacBook Air (13-inch, M4, 2025)",
+   "model_no": "A3240",
+   "chip": "M4",
+   "board": "J713AP",
+   "screen": "13-inch",
+   "released": "2025-03-12"
+  },
+  "Mac16,13": {
+   "name": "MacBook Air (15-inch, M4, 2025)",
+   "model_no": "A3241",
+   "chip": "M4",
+   "board": "J715AP",
+   "screen": "15-inch",
+   "released": "2025-03-12"
+  },
+  "Mac16,2": {
+   "name": "iMac (24-inch, M4, 2024, Two Ports)",
+   "model_no": "A3247",
+   "chip": "M4",
+   "board": "J623AP",
+   "screen": "24-inch",
+   "released": "2024-11-08"
+  },
+  "Mac16,3": {
+   "name": "iMac (24-inch, M4, 2024, Four Ports)",
+   "model_no": "A3137",
+   "chip": "M4",
+   "board": "J624AP",
+   "screen": "24-inch",
+   "released": "2024-11-08"
+  },
+  "Mac16,4": {
+   "name": "MacBook Air (15-inch, M5, 2026)",
+   "model_no": "",
+   "chip": "",
+   "board": "J815AP",
+   "screen": "15-inch",
+   "released": ""
+  },
+  "Mac16,5": {
+   "name": "MacBook Pro (16-inch, M4 Max, Nov 2024)",
+   "model_no": "A3186",
+   "chip": "M4 Max",
+   "board": "J616cAP",
+   "screen": "16-inch",
+   "released": "2024-11-08"
+  },
+  "Mac16,6": {
+   "name": "MacBook Pro (14-inch, M4 Max, Nov 2024)",
+   "model_no": "A3185",
+   "chip": "M4 Max",
+   "board": "J614cAP",
+   "screen": "14-inch",
+   "released": "2024-11-08"
+  },
+  "Mac16,7": {
+   "name": "MacBook Pro (16-inch, M4 Pro, Nov 2024)",
+   "model_no": "A3403",
+   "chip": "M4 Pro",
+   "board": "J616sAP",
+   "screen": "16-inch",
+   "released": "2024-11-08"
+  },
+  "Mac16,8": {
+   "name": "MacBook Pro (14-inch, M4 Pro, Nov 2024)",
+   "model_no": "A3401",
+   "chip": "M4 Pro",
+   "board": "J614sAP",
+   "screen": "14-inch",
+   "released": "2024-11-08"
+  },
+  "Mac16,9": {
+   "name": "Mac Studio (M4 Max, 2025)",
+   "model_no": "A3143",
+   "chip": "M4 Max",
+   "board": "J575cAP",
+   "screen": "",
+   "released": "2025-03-12"
+  },
+  "Mac17,10": {
+   "name": "MacBook Pro (16-inch PROLED XDR, M5 Max)",
+   "model_no": "A3376",
+   "chip": "M5 Max",
+   "board": "K116cAP",
+   "screen": "16-inch",
+   "released": "2026-11-06"
+  },
+  "Mac17,11": {
+   "name": "MacBook Pro (14-inch PROLED XDR, M5 Max)",
+   "model_no": "A3375",
+   "chip": "M5 Max",
+   "board": "K114cAP",
+   "screen": "14-inch",
+   "released": "2026-11-06"
+  },
+  "Mac17,12": {
+   "name": "MacBook Pro (16-inch PROLED XDR, M5 Pro)",
+   "model_no": "A3469",
+   "chip": "M5 Pro",
+   "board": "K116sAP",
+   "screen": "16-inch",
+   "released": "2026-11-06"
+  },
+  "Mac17,13": {
+   "name": "MacBook Pro (14-inch PROLED XDR, M5 Pro)",
+   "model_no": "A3468",
+   "chip": "M5 Pro",
+   "board": "K114sAP",
+   "screen": "14-inch",
+   "released": "2026-11-06"
+  },
+  "Mac17,14": {
+   "name": "Mac Studio (M5 Max)",
+   "model_no": "A3545",
+   "chip": "M5 Max",
+   "board": "J775cAP",
+   "screen": "",
+   "released": "2026-09-22"
+  },
+  "Mac17,15": {
+   "name": "Mac Studio (M5 Ultra)",
+   "model_no": "A3546",
+   "chip": "M5 Ultra",
+   "board": "J775dAP",
+   "screen": "",
+   "released": "2026-09-22"
+  },
+  "Mac17,16": {
+   "name": "Mac mini (M5 Pro)",
+   "model_no": "A3535",
+   "chip": "M5 Pro",
+   "board": "J873sAP",
+   "screen": "",
+   "released": "2026-09-22"
+  },
+  "Mac17,2": {
+   "name": "MacBook Pro 14-inch (M5)",
+   "model_no": "A3434",
+   "chip": "M5",
+   "board": "J704AP",
+   "screen": "14-inch",
+   "released": "2025-10-22"
+  },
+  "Mac17,3": {
+   "name": "MacBook Air (13-inch, M5)",
+   "model_no": "A3449",
+   "chip": "M5",
+   "board": "J813AP",
+   "screen": "13-inch",
+   "released": "2026-03-11"
+  },
+  "Mac17,4": {
+   "name": "MacBook Air (15-inch, M5)",
+   "model_no": "A3448",
+   "chip": "M5",
+   "board": "J815AP",
+   "screen": "15-inch",
+   "released": "2026-03-11"
+  },
+  "Mac17,5": {
+   "name": "MacBook Neo",
+   "model_no": "A3404",
+   "chip": "A18 Pro",
+   "board": "J700AP",
+   "screen": "",
+   "released": "2026-03-11"
+  },
+  "Mac17,6": {
+   "name": "MacBook Pro (16-inch, M5 Max)",
+   "model_no": "A3429",
+   "chip": "M5 Max",
+   "board": "J716cAP",
+   "screen": "16-inch",
+   "released": "2026-03-11"
+  },
+  "Mac17,7": {
+   "name": "MacBook Pro (14-inch, M5 Max)",
+   "model_no": "A3427",
+   "chip": "M5 Max",
+   "board": "J714cAP",
+   "screen": "14-inch",
+   "released": "2026-03-11"
+  },
+  "Mac17,8": {
+   "name": "MacBook Pro (16-inch, M5 Pro)",
+   "model_no": "A3428",
+   "chip": "M5 Pro",
+   "board": "J716sAP",
+   "screen": "16-inch",
+   "released": "2026-03-11"
+  },
+  "Mac17,9": {
+   "name": "MacBook Pro (14-inch, M5 Pro)",
+   "model_no": "A3426",
+   "chip": "M5 Pro",
+   "board": "J714sAP",
+   "screen": "14-inch",
+   "released": "2026-03-11"
+  },
+  "Mac18,1": {
+   "name": "MacBook Pro 14-inch (M6)",
+   "model_no": "A3536",
+   "chip": "M6",
+   "board": "J804AP",
+   "screen": "14-inch",
+   "released": "2026-11-06"
+  },
+  "Mac18,2": {
+   "name": "iMac (24-inch, M6, 2026)",
+   "model_no": "A3589",
+   "chip": "M6",
+   "board": "J833CTAP",
+   "screen": "24-inch",
+   "released": "2026-11-06"
+  },
+  "Mac18,5": {
+   "name": "Mac mini (M6)",
+   "model_no": "A3534",
+   "chip": "M6",
+   "board": "J873gAP",
+   "screen": "",
+   "released": "2026-09-22"
+  },
+  "MacBook1,1": {
+   "name": "MacBook (13-inch, Mid 2006)",
+   "model_no": "A1181",
+   "chip": "",
+   "board": "Mac-F4208CC8",
+   "screen": "13-inch",
+   "released": "2006-05-16"
+  },
+  "MacBook10,1": {
+   "name": "MacBook (Retina, 12-inch, 2017)",
+   "model_no": "A1534",
+   "chip": "Intel",
+   "board": "Mac-EE2EBD4B90B839A8",
+   "screen": "12-inch",
+   "released": "['2017-06-07', '2018-11-07']"
+  },
+  "MacBook2,1": {
+   "name": "MacBook (13-inch, Late 2006)",
+   "model_no": "A1181",
+   "chip": "Intel",
+   "board": "Mac-F4208CA9",
+   "screen": "13-inch",
+   "released": "2006-11-08"
+  },
+  "MacBook3,1": {
+   "name": "MacBook (13-inch, Late 2007)",
+   "model_no": "A1181",
+   "chip": "Intel",
+   "board": "Mac-F22788C8",
+   "screen": "13-inch",
+   "released": "2007-11-01"
+  },
+  "MacBook4,1": {
+   "name": "MacBook (13-inch, Early 2008)",
+   "model_no": "A1181",
+   "chip": "Intel",
+   "board": "Mac-F22788A9",
+   "screen": "13-inch",
+   "released": "2008-02-26"
+  },
+  "MacBook5,1": {
+   "name": "MacBook (13-inch, Aluminum, Late 2008)",
+   "model_no": "A1278",
+   "chip": "Intel",
+   "board": "Mac-F42D89A9",
+   "screen": "13-inch",
+   "released": "2008-10-14"
+  },
+  "MacBook5,2": {
+   "name": "MacBook (13-inch, Early 2009)",
+   "model_no": "A1181",
+   "chip": "Intel",
+   "board": "Mac-F22788AA",
+   "screen": "13-inch",
+   "released": "2009-01-20"
+  },
+  "MacBook6,1": {
+   "name": "MacBook (13-inch, Late 2009)",
+   "model_no": "A1342",
+   "chip": "Intel",
+   "board": "Mac-F22C8AC8",
+   "screen": "13-inch",
+   "released": "2009-10-20"
+  },
+  "MacBook7,1": {
+   "name": "MacBook (13-inch, Mid 2010)",
+   "model_no": "A1342",
+   "chip": "Intel",
+   "board": "Mac-F22C89C8",
+   "screen": "13-inch",
+   "released": "2010-05-18"
+  },
+  "MacBook8,1": {
+   "name": "MacBook (Retina, 12-inch, Early 2015)",
+   "model_no": "A1534",
+   "chip": "Intel",
+   "board": "Mac-BE0E8AC46FE800CC",
+   "screen": "12-inch",
+   "released": "2015-04-10"
+  },
+  "MacBook9,1": {
+   "name": "MacBook (Retina, 12-inch, Early 2016)",
+   "model_no": "A1534",
+   "chip": "Intel",
+   "board": "Mac-9AE82516C7C6B903",
+   "screen": "12-inch",
+   "released": "2016-04-20"
+  },
+  "MacBookAir1,1": {
+   "name": "MacBook Air (Early 2008)",
+   "model_no": "A1237",
+   "chip": "Intel",
+   "board": "Mac-F42C8CC8",
+   "screen": "",
+   "released": "2008-01-30"
+  },
+  "MacBookAir10,1": {
+   "name": "MacBook Air (M1, 2020)",
+   "model_no": "A2337",
+   "chip": "M1",
+   "board": "J313AP",
+   "screen": "",
+   "released": "2020-11-17"
+  },
+  "MacBookAir2,1": {
+   "name": "MacBook Air (Late 2008)",
+   "model_no": "A1304",
+   "chip": "Intel",
+   "board": "Mac-F42D88C8",
+   "screen": "",
+   "released": "2008-10-31"
+  },
+  "MacBookAir3,1": {
+   "name": "MacBook Air (11-inch, Late 2010)",
+   "model_no": "A1370",
+   "chip": "Intel",
+   "board": "Mac-942452F5819B1C1B",
+   "screen": "11-inch",
+   "released": "2010-10-20"
+  },
+  "MacBookAir3,2": {
+   "name": "MacBook Air (13-inch, Late 2010)",
+   "model_no": "A1369",
+   "chip": "Intel",
+   "board": "Mac-942C5DF58193131B",
+   "screen": "13-inch",
+   "released": "2010-10-20"
+  },
+  "MacBookAir4,1": {
+   "name": "MacBook Air (11-inch, Mid 2011)",
+   "model_no": "A1370",
+   "chip": "Intel",
+   "board": "Mac-C08A6BB70A942AC2",
+   "screen": "11-inch",
+   "released": "2011-07-21"
+  },
+  "MacBookAir4,2": {
+   "name": "MacBook Air (13-inch, Mid 2011)",
+   "model_no": "A1369",
+   "chip": "Intel",
+   "board": "Mac-742912EFDBEE19B3",
+   "screen": "13-inch",
+   "released": "['2011-07-21', '2012-02-10']"
+  },
+  "MacBookAir5,1": {
+   "name": "MacBook Air (11-inch, Mid 2012)",
+   "model_no": "A1465",
+   "chip": "Intel",
+   "board": "Mac-66F35F19FE2A0D05",
+   "screen": "11-inch",
+   "released": "2012-06-11"
+  },
+  "MacBookAir5,2": {
+   "name": "MacBook Air (13-inch, Mid 2012)",
+   "model_no": "A1466",
+   "chip": "Intel",
+   "board": "Mac-2E6FAB96566FE58C",
+   "screen": "13-inch",
+   "released": "['2012-06-11', '2012-09-12']"
+  },
+  "MacBookAir6,1": {
+   "name": "MacBook Air (11-inch, Early 2014)",
+   "model_no": "A1465",
+   "chip": "Intel",
+   "board": "Mac-35C1E88140C3E6CF",
+   "screen": "11-inch",
+   "released": "2013-06-10"
+  },
+  "MacBookAir6,2": {
+   "name": "MacBook Air (13-inch, Early 2014)",
+   "model_no": "A1466",
+   "chip": "Intel",
+   "board": "Mac-7DF21CB3ED6977E5",
+   "screen": "13-inch",
+   "released": "2013-06-10"
+  },
+  "MacBookAir7,1": {
+   "name": "MacBook Air (11-inch, Early 2015)",
+   "model_no": "A1465",
+   "chip": "Intel",
+   "board": "Mac-9F18E312C5C2BF0B",
+   "screen": "11-inch",
+   "released": "2015-03-09"
+  },
+  "MacBookAir7,2": {
+   "name": "MacBook Air (13-inch, Early 2015)",
+   "model_no": "A1466",
+   "chip": "Intel",
+   "board": "Mac-937CB26E2E02BB01",
+   "screen": "13-inch",
+   "released": "2015-03-09"
+  },
+  "MacBookAir8,1": {
+   "name": "MacBook Air (Retina, 13-inch, 2018)",
+   "model_no": "A1932",
+   "chip": "Intel",
+   "board": "Mac-827FAC58A8FDFA22",
+   "screen": "13-inch",
+   "released": "2018-11-07"
+  },
+  "MacBookAir8,2": {
+   "name": "MacBook Air (Retina, 13-inch, 2019)",
+   "model_no": "A1932",
+   "chip": "Intel",
+   "board": "Mac-226CB3C6A851A671",
+   "screen": "13-inch",
+   "released": "2019-07-09"
+  },
+  "MacBookAir9,1": {
+   "name": "MacBook Air (Retina, 13-inch, 2020)",
+   "model_no": "A2179",
+   "chip": "Intel",
+   "board": "Mac-0CFF9C7C2B63DF8D",
+   "screen": "13-inch",
+   "released": "2020-03-25"
+  },
+  "MacBookPro1,1": {
+   "name": "MacBook Pro (15-inch, Early 2006)",
+   "model_no": "A1150",
+   "chip": "",
+   "board": "Mac-F425BEC8",
+   "screen": "15-inch",
+   "released": "2006-02-14"
+  },
+  "MacBookPro1,2": {
+   "name": "MacBook Pro (17-inch, Early 2006)",
+   "model_no": "A1151",
+   "chip": "",
+   "board": "Mac-F42DBEC8",
+   "screen": "17-inch",
+   "released": "2006-04-24"
+  },
+  "MacBookPro10,1": {
+   "name": "MacBook Pro (Retina, 15-inch, Early 2013)",
+   "model_no": "A1398",
+   "chip": "Intel",
+   "board": "Mac-C3EC7CD22292981F",
+   "screen": "15-inch",
+   "released": "2013-02-13"
+  },
+  "MacBookPro10,2": {
+   "name": "MacBook Pro (Retina, 13-inch, Early 2013)",
+   "model_no": "A1425",
+   "chip": "Intel",
+   "board": "Mac-AFD8A9D944EA4843",
+   "screen": "13-inch",
+   "released": "2013-02-13"
+  },
+  "MacBookPro11,1": {
+   "name": "MacBook Pro (Retina, 13-inch, Late 2013)",
+   "model_no": "A1502",
+   "chip": "Intel",
+   "board": "Mac-189A3D4F975D5FFC",
+   "screen": "13-inch",
+   "released": "2013-10-22"
+  },
+  "MacBookPro11,2": {
+   "name": "MacBook Pro (Retina, 15-inch, Late 2013, Integrated graphics)",
+   "model_no": "A1398",
+   "chip": "Intel",
+   "board": "Mac-3CBD00234E554E41",
+   "screen": "15-inch",
+   "released": "2013-10-22"
+  },
+  "MacBookPro11,3": {
+   "name": "MacBook Pro (Retina, 15-inch, Late 2013, Dedicated graphics)",
+   "model_no": "A1398",
+   "chip": "Intel",
+   "board": "Mac-2BD1B31983FE1663",
+   "screen": "15-inch",
+   "released": "2013-10-22"
+  },
+  "MacBookPro11,4": {
+   "name": "MacBook Pro (Retina, 15-inch, Mid 2015, Integrated graphics)",
+   "model_no": "A1398",
+   "chip": "Intel",
+   "board": "Mac-06F11FD93F0323C5",
+   "screen": "15-inch",
+   "released": "2015-05-19"
+  },
+  "MacBookPro11,5": {
+   "name": "MacBook Pro (Retina, 15-inch, Mid 2015, Dedicated graphics)",
+   "model_no": "A1398",
+   "chip": "Intel",
+   "board": "Mac-06F11F11946D27C5",
+   "screen": "15-inch",
+   "released": "2015-05-19"
+  },
+  "MacBookPro12,1": {
+   "name": "MacBook Pro (Retina, 13-inch, Early 2015)",
+   "model_no": "A1502",
+   "chip": "Intel",
+   "board": "Mac-E43C1C25D4880AD6",
+   "screen": "13-inch",
+   "released": "2015-03-09"
+  },
+  "MacBookPro13,1": {
+   "name": "MacBook Pro (13-inch, 2016, Two Thunderbolt 3 ports)",
+   "model_no": "A1708",
+   "chip": "Intel",
+   "board": "Mac-473D31EABEB93F9B",
+   "screen": "13-inch",
+   "released": "2016-10-27"
+  },
+  "MacBookPro13,2": {
+   "name": "MacBook Pro (13-inch, 2016, Four Thunderbolt 3 ports)",
+   "model_no": "A1706",
+   "chip": "Intel",
+   "board": "Mac-66E35819EE2D0D05",
+   "screen": "13-inch",
+   "released": "2016-10-27"
+  },
+  "MacBookPro13,3": {
+   "name": "MacBook Pro (15-inch, 2016)",
+   "model_no": "A1707",
+   "chip": "Intel",
+   "board": "Mac-A5C67F76ED83108C",
+   "screen": "15-inch",
+   "released": "2016-10-27"
+  },
+  "MacBookPro14,1": {
+   "name": "MacBook Pro (13-inch, 2017, Two Thunderbolt 3 ports)",
+   "model_no": "A1708",
+   "chip": "Intel",
+   "board": "Mac-B4831CEBD52A0C4C",
+   "screen": "13-inch",
+   "released": "2017-06-07"
+  },
+  "MacBookPro14,2": {
+   "name": "MacBook Pro (13-inch, 2017, Four Thunderbolt 3 ports)",
+   "model_no": "A1706",
+   "chip": "Intel",
+   "board": "Mac-CAD6701F7CEA0921",
+   "screen": "13-inch",
+   "released": "2017-06-07"
+  },
+  "MacBookPro14,3": {
+   "name": "MacBook Pro (15-inch, 2017)",
+   "model_no": "A1707",
+   "chip": "Intel",
+   "board": "Mac-551B86E5744E2388",
+   "screen": "15-inch",
+   "released": "2017-06-07"
+  },
+  "MacBookPro15,1": {
+   "name": "MacBook Pro (15-inch, Mid 2018)",
+   "model_no": "A1990",
+   "chip": "Intel",
+   "board": "Mac-937A206F2EE63C01",
+   "screen": "15-inch",
+   "released": "2018-07-12"
+  },
+  "MacBookPro15,2": {
+   "name": "MacBook Pro (13-inch, 2019, Four Thunderbolt 3 ports)",
+   "model_no": "A1989",
+   "chip": "Intel",
+   "board": "Mac-827FB448E656EC26",
+   "screen": "13-inch",
+   "released": "2018-07-12"
+  },
+  "MacBookPro15,3": {
+   "name": "MacBook Pro (15-inch, Late 2018, Radeon Pro Vega Graphics)",
+   "model_no": "A1990",
+   "chip": "Intel",
+   "board": "Mac-1E7E29AD0135F9BC",
+   "screen": "15-inch",
+   "released": "2018-11-14"
+  },
+  "MacBookPro15,4": {
+   "name": "MacBook Pro (13-inch, 2019, Two Thunderbolt 3 ports)",
+   "model_no": "A2159",
+   "chip": "Intel",
+   "board": "Mac-53FDB3D8DB8CA971",
+   "screen": "13-inch",
+   "released": "2019-07-09"
+  },
+  "MacBookPro16,1": {
+   "name": "MacBook Pro (16-inch, 2019)",
+   "model_no": "A2141",
+   "chip": "Intel",
+   "board": "Mac-E1008331FDC96864",
+   "screen": "16-inch",
+   "released": "2019-11-13"
+  },
+  "MacBookPro16,2": {
+   "name": "MacBook Pro (13-inch, 2020, Four Thunderbolt 3 ports)",
+   "model_no": "A2251",
+   "chip": "Intel",
+   "board": "Mac-5F9802EFE386AA28",
+   "screen": "13-inch",
+   "released": "2020-05-04"
+  },
+  "MacBookPro16,3": {
+   "name": "MacBook Pro (13-inch, 2020, Two Thunderbolt 3 ports)",
+   "model_no": "A2289",
+   "chip": "Intel",
+   "board": "Mac-E7203C0F68AA0004",
+   "screen": "13-inch",
+   "released": "2020-05-04"
+  },
+  "MacBookPro16,4": {
+   "name": "MacBook Pro (16-inch, 2019, Radeon Pro 5600M Graphics)",
+   "model_no": "A2141",
+   "chip": "Intel",
+   "board": "Mac-A61BADE1FDAD7B05",
+   "screen": "16-inch",
+   "released": "2020-06-15"
+  },
+  "MacBookPro17,1": {
+   "name": "MacBook Pro (13-inch, M1, 2020)",
+   "model_no": "A2338",
+   "chip": "M1",
+   "board": "J293AP",
+   "screen": "13-inch",
+   "released": "2020-11-17"
+  },
+  "MacBookPro18,1": {
+   "name": "MacBook Pro (16-inch, M1 Pro, 2021)",
+   "model_no": "A2485",
+   "chip": "M1 Pro",
+   "board": "J316sAP",
+   "screen": "16-inch",
+   "released": "2021-10-18"
+  },
+  "MacBookPro18,2": {
+   "name": "MacBook Pro (16-inch, M1 Max, 2021)",
+   "model_no": "A2485",
+   "chip": "M1 Max",
+   "board": "J316cAP",
+   "screen": "16-inch",
+   "released": "2021-10-18"
+  },
+  "MacBookPro18,3": {
+   "name": "MacBook Pro (14-inch, M1 Pro, 2021)",
+   "model_no": "A2442",
+   "chip": "M1 Pro",
+   "board": "J314sAP",
+   "screen": "14-inch",
+   "released": "2021-10-18"
+  },
+  "MacBookPro18,4": {
+   "name": "MacBook Pro (14-inch, M1 Max, 2021)",
+   "model_no": "A2442",
+   "chip": "M1 Max",
+   "board": "J314cAP",
+   "screen": "14-inch",
+   "released": "2021-10-18"
+  },
+  "MacBookPro2,1": {
+   "name": "MacBook Pro (17-inch, Late 2006)",
+   "model_no": "A1212",
+   "chip": "Intel",
+   "board": "Mac-F42189C8",
+   "screen": "17-inch",
+   "released": "2006-10-24"
+  },
+  "MacBookPro2,2": {
+   "name": "MacBook Pro (15-inch, Late 2006)",
+   "model_no": "A1211",
+   "chip": "Intel",
+   "board": "Mac-F42187C8",
+   "screen": "15-inch",
+   "released": "2006-10-24"
+  },
+  "MacBookPro3,1": {
+   "name": "MacBook Pro (15-inch, Late 2007)",
+   "model_no": "A1226",
+   "chip": "Intel",
+   "board": "Mac-F4238BC8",
+   "screen": "15-inch",
+   "released": "2007-11-01"
+  },
+  "MacBookPro4,1": {
+   "name": "MacBook Pro (15-inch, Early 2008)",
+   "model_no": "A1260",
+   "chip": "Intel",
+   "board": "Mac-F42C89C8",
+   "screen": "15-inch",
+   "released": "2008-02-26"
+  },
+  "MacBookPro5,1": {
+   "name": "MacBook Pro (15-inch, Early 2009)",
+   "model_no": "A1286",
+   "chip": "Intel",
+   "board": "Mac-F42D86C8",
+   "screen": "15-inch",
+   "released": "2008-10-14"
+  },
+  "MacBookPro5,2": {
+   "name": "MacBook Pro (17-inch, Early 2009)",
+   "model_no": "A1297",
+   "chip": "Intel",
+   "board": "Mac-F2268EC8",
+   "screen": "17-inch",
+   "released": "2009-02-06"
+  },
+  "MacBookPro5,3": {
+   "name": "MacBook Pro (15-inch, Mid 2009, Dedicated Graphics)",
+   "model_no": "A1286",
+   "chip": "Intel",
+   "board": "Mac-F22587C8",
+   "screen": "15-inch",
+   "released": "2009-06-08"
+  },
+  "MacBookPro5,4": {
+   "name": "MacBook Pro (15-inch, Mid 2009, Integrated Graphics)",
+   "model_no": "A1286",
+   "chip": "Intel",
+   "board": "Mac-F22587A1",
+   "screen": "15-inch",
+   "released": "2009-06-08"
+  },
+  "MacBookPro5,5": {
+   "name": "MacBook Pro (13-inch, Mid 2009)",
+   "model_no": "A1278",
+   "chip": "Intel",
+   "board": "Mac-F2268AC8",
+   "screen": "13-inch",
+   "released": "2009-06-08"
+  },
+  "MacBookPro6,1": {
+   "name": "MacBook Pro (17-inch, Mid 2010)",
+   "model_no": "A1297",
+   "chip": "Intel",
+   "board": "Mac-F22589C8",
+   "screen": "17-inch",
+   "released": "['2010-04-13', '2010-10-20']"
+  },
+  "MacBookPro6,2": {
+   "name": "MacBook Pro (15-inch, Mid 2010)",
+   "model_no": "A1286",
+   "chip": "Intel",
+   "board": "Mac-F22586C8",
+   "screen": "15-inch",
+   "released": "2010-04-13"
+  },
+  "MacBookPro7,1": {
+   "name": "MacBook Pro (13-inch, Mid 2010)",
+   "model_no": "A1278",
+   "chip": "Intel",
+   "board": "Mac-F222BEC8",
+   "screen": "13-inch",
+   "released": "2010-04-13"
+  },
+  "MacBookPro8,1": {
+   "name": "MacBook Pro (13-inch, Early 2011)",
+   "model_no": "A1278",
+   "chip": "Intel",
+   "board": "Mac-94245B3640C91C81",
+   "screen": "13-inch",
+   "released": "2011-02-24"
+  },
+  "MacBookPro8,2": {
+   "name": "MacBook Pro (15-inch, Early 2011)",
+   "model_no": "A1286",
+   "chip": "Intel",
+   "board": "Mac-94245A3940C91C80",
+   "screen": "15-inch",
+   "released": "2011-02-24"
+  },
+  "MacBookPro8,3": {
+   "name": "MacBook Pro (17-inch, Early 2011)",
+   "model_no": "A1297",
+   "chip": "Intel",
+   "board": "Mac-942459F5819B171B",
+   "screen": "17-inch",
+   "released": "2011-02-24"
+  },
+  "MacBookPro9,1": {
+   "name": "MacBook Pro (15-inch, Mid 2012)",
+   "model_no": "A1286",
+   "chip": "Intel",
+   "board": "Mac-4B7AC7E43945597E",
+   "screen": "15-inch",
+   "released": "2012-06-11"
+  },
+  "MacBookPro9,2": {
+   "name": "MacBook Pro (13-inch, Mid 2012)",
+   "model_no": "A1278",
+   "chip": "Intel",
+   "board": "Mac-6F01561E16C75D06",
+   "screen": "13-inch",
+   "released": "2012-06-11"
+  },
+  "MacPro1,1": {
+   "name": "Mac Pro (Mid 2006)",
+   "model_no": "A1186",
+   "chip": "Intel",
+   "board": "Mac-F4208DC8",
+   "screen": "",
+   "released": "2006-08-07"
+  },
+  "MacPro2,1": {
+   "name": "Mac Pro (Early 2007)",
+   "model_no": "A1186",
+   "chip": "Intel",
+   "board": "Mac-F4208DA9",
+   "screen": "",
+   "released": "2007-04-04"
+  },
+  "MacPro3,1": {
+   "name": "Mac Pro (Early 2008)",
+   "model_no": "A1186",
+   "chip": "Intel",
+   "board": "Mac-F42C88C8",
+   "screen": "",
+   "released": "2008-01-08"
+  },
+  "MacPro4,1": {
+   "name": "Mac Pro (Early 2009)",
+   "model_no": "A1289",
+   "chip": "Intel",
+   "board": "Mac-F221BEC8",
+   "screen": "",
+   "released": "['2009-03-09', '2009-12-04']"
+  },
+  "MacPro5,1": {
+   "name": "Mac Pro Server (Mid 2010)",
+   "model_no": "A1289",
+   "chip": "Intel",
+   "board": "Mac-F221BEC8",
+   "screen": "",
+   "released": "2010-08-16"
+  },
+  "MacPro6,1": {
+   "name": "Mac Pro (Late 2013)",
+   "model_no": "A1481",
+   "chip": "Intel",
+   "board": "Mac-F60DEB81FF30ACF6",
+   "screen": "",
+   "released": "['2013-11-23', '2013-12-19']"
+  },
+  "MacPro7,1": {
+   "name": "Mac Pro (Rack, 2019)",
+   "model_no": "A2304",
+   "chip": "Intel",
+   "board": "Mac-27AD2F918AE68F61",
+   "screen": "",
+   "released": "2020-01-23"
+  },
+  "Macmini1,1": {
+   "name": "Mac mini (Early 2006)",
+   "model_no": "A1176",
+   "chip": "",
+   "board": "Mac-F4208EC8",
+   "screen": "",
+   "released": "2006-02-28"
+  },
+  "Macmini10,1": {
+   "name": "Unreleased Mac mini (M1 Pro)",
+   "model_no": "",
+   "chip": "M1 Pro",
+   "board": "J374sAP",
+   "screen": "",
+   "released": ""
+  },
+  "Macmini10,2": {
+   "name": "Unreleased Mac mini (M1 Max)",
+   "model_no": "",
+   "chip": "M1 Max",
+   "board": "J374cAP",
+   "screen": "",
+   "released": ""
+  },
+  "Macmini2,1": {
+   "name": "Mac mini (Mid 2007)",
+   "model_no": "A1176",
+   "chip": "Intel",
+   "board": "Mac-F4208EAA",
+   "screen": "",
+   "released": "2007-08-07"
+  },
+  "Macmini3,1": {
+   "name": "Mac mini (Mac OS X Server)",
+   "model_no": "A1283",
+   "chip": "Intel",
+   "board": "Mac-F22C86C8",
+   "screen": "",
+   "released": "2009-03-03"
+  },
+  "Macmini4,1": {
+   "name": "Mac mini Server (Mid 2010)",
+   "model_no": "A1347",
+   "chip": "Intel",
+   "board": "Mac-F2208EC8",
+   "screen": "",
+   "released": "2010-06-15"
+  },
+  "Macmini5,1": {
+   "name": "Mac mini (Mid 2011, Integrated graphics)",
+   "model_no": "A1347",
+   "chip": "Intel",
+   "board": "Mac-8ED6AF5B48C039E1",
+   "screen": "",
+   "released": "2011-07-21"
+  },
+  "Macmini5,2": {
+   "name": "Mac mini (Mid 2011, Dedicated graphics)",
+   "model_no": "A1347",
+   "chip": "Intel",
+   "board": "Mac-4BC72D62AD45599E",
+   "screen": "",
+   "released": "2011-07-21"
+  },
+  "Macmini5,3": {
+   "name": "Mac mini (Mid 2011, Server)",
+   "model_no": "A1347",
+   "chip": "Intel",
+   "board": "Mac-7BA5B2794B2CDB12",
+   "screen": "",
+   "released": "2011-07-21"
+  },
+  "Macmini6,1": {
+   "name": "Mac mini (Late 2012, Core i5)",
+   "model_no": "A1347",
+   "chip": "Intel",
+   "board": "Mac-031AEE4D24BFF0B1",
+   "screen": "",
+   "released": "2012-10-23"
+  },
+  "Macmini6,2": {
+   "name": "Mac mini (Late 2012, Core i7)",
+   "model_no": "A1347",
+   "chip": "Intel",
+   "board": "Mac-F65AE981FFA204ED",
+   "screen": "",
+   "released": "2012-10-23"
+  },
+  "Macmini6,3": {
+   "name": "Unreleased Mac mini",
+   "model_no": "",
+   "chip": "Intel",
+   "board": "",
+   "screen": "",
+   "released": ""
+  },
+  "Macmini7,1": {
+   "name": "Mac mini (Late 2014)",
+   "model_no": "A1347",
+   "chip": "Intel",
+   "board": "Mac-35C5E08120C7EEAF",
+   "screen": "",
+   "released": "2014-10-16"
+  },
+  "Macmini7,2": {
+   "name": "Unreleased Mac mini",
+   "model_no": "",
+   "chip": "Intel",
+   "board": "",
+   "screen": "",
+   "released": ""
+  },
+  "Macmini7,3": {
+   "name": "Unreleased Mac mini",
+   "model_no": "",
+   "chip": "Intel",
+   "board": "",
+   "screen": "",
+   "released": ""
+  },
+  "Macmini8,1": {
+   "name": "Mac mini (Late 2018)",
+   "model_no": "A1993",
+   "chip": "Intel",
+   "board": "Mac-7BA5B2DFE22DDD8C",
+   "screen": "",
+   "released": "2018-11-07"
+  },
+  "Macmini8,2": {
+   "name": "Unreleased Mac mini",
+   "model_no": "",
+   "chip": "Intel",
+   "board": "",
+   "screen": "",
+   "released": ""
+  },
+  "Macmini9,1": {
+   "name": "Mac mini (M1, Late 2020)",
+   "model_no": "A2348",
+   "chip": "M1",
+   "board": "J274AP",
+   "screen": "",
+   "released": "2020-11-17"
+  },
+  "PowerMac10,1": {
+   "name": "Mac mini (Early 2005)",
+   "model_no": "A1103",
+   "chip": "",
+   "board": "",
+   "screen": "",
+   "released": "2005-01-11"
+  },
+  "PowerMac10,2": {
+   "name": "Mac mini (Late 2005)",
+   "model_no": "A1103",
+   "chip": "",
+   "board": "",
+   "screen": "",
+   "released": "2005-09-27"
+  },
+  "PowerMac12,1": {
+   "name": "iMac G5 (17-inch, iSight)",
+   "model_no": "A1144",
+   "chip": "",
+   "board": "",
+   "screen": "17-inch",
+   "released": "2005-10-12"
+  },
+  "PowerMac2,1": {
+   "name": "iMac (Slot Loading)",
+   "model_no": "M5521",
+   "chip": "",
+   "board": "",
+   "screen": "",
+   "released": "1999-10-05"
+  },
+  "PowerMac2,2": {
+   "name": "iMac (Summer 2000)",
+   "model_no": "M5521",
+   "chip": "",
+   "board": "",
+   "screen": "",
+   "released": "2000-07-19"
+  },
+  "PowerMac4,1": {
+   "name": "iMac (Summer 2001)",
+   "model_no": "M5521",
+   "chip": "",
+   "board": "",
+   "screen": "",
+   "released": "2001-02-22"
+  },
+  "PowerMac4,2": {
+   "name": "iMac (15-inch Early 2003)",
+   "model_no": "M6498",
+   "chip": "",
+   "board": "",
+   "screen": "15-inch",
+   "released": "2002-01-07"
+  },
+  "PowerMac4,5": {
+   "name": "iMac (17-inch Flat Panel)",
+   "model_no": "M6498",
+   "chip": "",
+   "board": "",
+   "screen": "17-inch",
+   "released": "2002-07-18"
+  },
+  "PowerMac6,1": {
+   "name": "iMac (17-inch)",
+   "model_no": "M6498",
+   "chip": "",
+   "board": "",
+   "screen": "17-inch",
+   "released": "2003-02-04"
+  },
+  "PowerMac6,3": {
+   "name": "iMac (15-inch USB 2.0)",
+   "model_no": "M6498",
+   "chip": "",
+   "board": "",
+   "screen": "15-inch",
+   "released": "2003-09-08"
+  },
+  "PowerMac8,1": {
+   "name": "iMac G5 (17-inch)",
+   "model_no": "A1058",
+   "chip": "",
+   "board": "",
+   "screen": "17-inch",
+   "released": "2004-08-31"
+  },
+  "PowerMac8,2": {
+   "name": "iMac G5 (17-inch, ALS)",
+   "model_no": "A1058",
+   "chip": "",
+   "board": "",
+   "screen": "17-inch",
+   "released": "2005-05-03"
+  },
+  "VirtualMac1,1": {
+   "name": "Apple Virtual Machine",
+   "model_no": "",
+   "chip": "",
+   "board": "",
+   "screen": "",
+   "released": ""
+  },
+  "VirtualMac2,1": {
+   "name": "Apple Virtual Machine 1",
+   "model_no": "",
+   "chip": "",
+   "board": "VMA2MACOSAP",
+   "screen": "",
+   "released": "2021-06-28"
+  },
+  "VirtualMac2,3": {
+   "name": "Apple Virtual Machine 3",
+   "model_no": "",
+   "chip": "",
+   "board": "VMAC300AP",
+   "screen": "",
+   "released": ""
+  },
+  "iMac,1": {
+   "name": "iMac (Revision A)",
+   "model_no": "M4984",
+   "chip": "",
+   "board": "",
+   "screen": "",
+   "released": "1998-08-15"
+  },
+  "iMac10,1": {
+   "name": "iMac (27-inch, Late 2009, Core 2 Duo)",
+   "model_no": "A1311",
+   "chip": "Intel",
+   "board": "Mac-F2268CC8",
+   "screen": "21.5-inch",
+   "released": "2009-10-20"
+  },
+  "iMac11,1": {
+   "name": "iMac (27-inch, Late 2009, Core i5/i7)",
+   "model_no": "A1312",
+   "chip": "Intel",
+   "board": "Mac-F2268DAE",
+   "screen": "27-inch",
+   "released": "2009-10-20"
+  },
+  "iMac11,2": {
+   "name": "iMac (21.5-inch, Mid 2010)",
+   "model_no": "A1311",
+   "chip": "Intel",
+   "board": "Mac-F2238AC8",
+   "screen": "21.5-inch",
+   "released": "2010-07-27"
+  },
+  "iMac11,3": {
+   "name": "iMac (27-inch, Mid 2010)",
+   "model_no": "A1312",
+   "chip": "Intel",
+   "board": "Mac-F2238BAE",
+   "screen": "27-inch",
+   "released": "2010-07-27"
+  },
+  "iMac12,1": {
+   "name": "iMac (21.5-inch, Late 2011)",
+   "model_no": "A1311",
+   "chip": "Intel",
+   "board": "Mac-942B5BF58194151B",
+   "screen": "21.5-inch",
+   "released": "2011-08-08"
+  },
+  "iMac12,2": {
+   "name": "iMac (27-inch, Mid 2011)",
+   "model_no": "A1312",
+   "chip": "Intel",
+   "board": "Mac-942B59F58194171B",
+   "screen": "27-inch",
+   "released": "2011-05-03"
+  },
+  "iMac13,1": {
+   "name": "iMac (21.5-inch, Late 2012)",
+   "model_no": "A1418",
+   "chip": "Intel",
+   "board": "Mac-00BE6ED71E35EB86",
+   "screen": "21.5-inch",
+   "released": "2012-10-23"
+  },
+  "iMac13,2": {
+   "name": "iMac (27-inch, Late 2012)",
+   "model_no": "A1419",
+   "chip": "Intel",
+   "board": "Mac-FC02E91DDD3FA6A4",
+   "screen": "27-inch",
+   "released": "2012-10-23"
+  },
+  "iMac13,3": {
+   "name": "iMac (21.5-inch, Early 2013)",
+   "model_no": "A1418",
+   "chip": "Intel",
+   "board": "Mac-7DF2A3B5E5D671ED",
+   "screen": "21.5-inch",
+   "released": "2013-03-05"
+  },
+  "iMac14,1": {
+   "name": "iMac (21.5-inch, Late 2013, Integrated Graphics)",
+   "model_no": "A1418",
+   "chip": "Intel",
+   "board": "Mac-031B6874CF7F642A",
+   "screen": "21.5-inch",
+   "released": "2013-09-24"
+  },
+  "iMac14,2": {
+   "name": "iMac (27-inch, Late 2013)",
+   "model_no": "A1419",
+   "chip": "Intel",
+   "board": "Mac-27ADBB7B4CEE8E61",
+   "screen": "27-inch",
+   "released": "2013-09-24"
+  },
+  "iMac14,3": {
+   "name": "iMac (21.5-inch, Late 2013, Dedicated Graphics)",
+   "model_no": "A1418",
+   "chip": "Intel",
+   "board": "Mac-77EB7D7DAF985301",
+   "screen": "21.5-inch",
+   "released": "2013-09-24"
+  },
+  "iMac14,4": {
+   "name": "iMac (21.5-inch, Mid 2014)",
+   "model_no": "A1418",
+   "chip": "Intel",
+   "board": "Mac-81E3E92DD6088272",
+   "screen": "21.5-inch",
+   "released": "2014-06-18"
+  },
+  "iMac15,1": {
+   "name": "iMac (Retina 5K, 27-inch, Late 2014)",
+   "model_no": "A1419",
+   "chip": "Intel",
+   "board": "Mac-FA842E06C61E91C5",
+   "screen": "27-inch",
+   "released": "2014-10-16"
+  },
+  "iMac16,1": {
+   "name": "iMac (21.5-inch, Late 2015)",
+   "model_no": "A1418",
+   "chip": "Intel",
+   "board": "Mac-A369DDC4E67F1C45",
+   "screen": "21.5-inch",
+   "released": "2015-10-13"
+  },
+  "iMac16,2": {
+   "name": "iMac (Retina 4K, 21.5-inch, Late 2015)",
+   "model_no": "A1418",
+   "chip": "Intel",
+   "board": "Mac-FFE5EF870D7BA81A",
+   "screen": "21.5-inch",
+   "released": "2015-10-13"
+  },
+  "iMac17,1": {
+   "name": "iMac (Retina 5K, 27-inch, Late 2015)",
+   "model_no": "A1419",
+   "chip": "Intel",
+   "board": "Mac-65CE76090165799A",
+   "screen": "27-inch",
+   "released": "2015-10-13"
+  },
+  "iMac18,1": {
+   "name": "iMac (21.5-inch, 2017)",
+   "model_no": "A1418",
+   "chip": "Intel",
+   "board": "Mac-4B682C642B45593E",
+   "screen": "21.5-inch",
+   "released": "2017-06-07"
+  },
+  "iMac18,2": {
+   "name": "iMac (Retina 4K, 21.5-inch, 2017)",
+   "model_no": "A1418",
+   "chip": "Intel",
+   "board": "Mac-77F17D7DA9285301",
+   "screen": "21.5-inch",
+   "released": "2017-06-07"
+  },
+  "iMac18,3": {
+   "name": "iMac (Retina 5K, 27-inch, 2017)",
+   "model_no": "A1419",
+   "chip": "Intel",
+   "board": "Mac-BE088AF8C5EB4FA2",
+   "screen": "27-inch",
+   "released": "2017-06-07"
+  },
+  "iMac19,1": {
+   "name": "iMac (Retina 5K, 27-inch, 2019)",
+   "model_no": "A2115",
+   "chip": "Intel",
+   "board": "Mac-AA95B1DDAB278B95",
+   "screen": "27-inch",
+   "released": "2019-03-19"
+  },
+  "iMac19,2": {
+   "name": "iMac (Retina 4K, 21.5-inch, 2019)",
+   "model_no": "A2116",
+   "chip": "Intel",
+   "board": "Mac-63001698E7A34814",
+   "screen": "21.5-inch",
+   "released": "2019-03-19"
+  },
+  "iMac20,1": {
+   "name": "iMac (Retina 5K, 27-inch, 2020)",
+   "model_no": "A2115",
+   "chip": "Intel",
+   "board": "Mac-CFF7D910A743CAAF",
+   "screen": "27-inch",
+   "released": "2020-08-04"
+  },
+  "iMac20,2": {
+   "name": "iMac (Retina 5K, 27-inch, 2020, RX 5700/XT)",
+   "model_no": "A2115",
+   "chip": "Intel",
+   "board": "Mac-AF89B6D9451A490B",
+   "screen": "27-inch",
+   "released": "2020-08-04"
+  },
+  "iMac21,1": {
+   "name": "iMac (24-inch, M1, 2021, Four Ports)",
+   "model_no": "A2438",
+   "chip": "M1",
+   "board": "J456AP",
+   "screen": "24-inch",
+   "released": "2021-05-21"
+  },
+  "iMac21,2": {
+   "name": "iMac (24-inch, M1, 2021, Two Ports)",
+   "model_no": "A2439",
+   "chip": "M1",
+   "board": "J457AP",
+   "screen": "24-inch",
+   "released": "2021-05-21"
+  },
+  "iMac4,1": {
+   "name": "iMac (17-inch, Early 2006)",
+   "model_no": "A1173",
+   "chip": "",
+   "board": "Mac-F42786C8",
+   "screen": "17-inch",
+   "released": "2006-01-10"
+  },
+  "iMac4,2": {
+   "name": "iMac (17-inch, Mid 2006)",
+   "model_no": "A1195",
+   "chip": "",
+   "board": "Mac-F4218EC8",
+   "screen": "17-inch",
+   "released": "2006-07-05"
+  },
+  "iMac5,1": {
+   "name": "iMac (17-inch, Late 2006, Dedicated Graphics)",
+   "model_no": "A1208",
+   "chip": "Intel",
+   "board": "Mac-F4228EC8",
+   "screen": "17-inch",
+   "released": "2006-09-06"
+  },
+  "iMac5,2": {
+   "name": "iMac (17-inch, Late 2006, Integrated Graphics)",
+   "model_no": "A1195",
+   "chip": "Intel",
+   "board": "Mac-F4218EC8",
+   "screen": "17-inch",
+   "released": "2006-09-06"
+  },
+  "iMac6,1": {
+   "name": "iMac (24-inch, Late 2006)",
+   "model_no": "A1200",
+   "chip": "Intel",
+   "board": "Mac-F4218FC8",
+   "screen": "24-inch",
+   "released": "2006-09-06"
+  },
+  "iMac7,1": {
+   "name": "iMac (20-inch, Mid 2007)",
+   "model_no": "A1224",
+   "chip": "Intel",
+   "board": "Mac-F4238CC8",
+   "screen": "20-inch",
+   "released": "2007-08-07"
+  },
+  "iMac8,1": {
+   "name": "iMac (20-inch, Early 2008)",
+   "model_no": "A1224",
+   "chip": "Intel",
+   "board": "Mac-F226BEC8",
+   "screen": "20-inch",
+   "released": "2008-04-28"
+  },
+  "iMac9,1": {
+   "name": "iMac (20-inch, Early 2009)",
+   "model_no": "A1224",
+   "chip": "Intel",
+   "board": "Mac-F2218EA9",
+   "screen": "20-inch",
+   "released": "2009-03-03"
+  },
+  "iMacPro1,1": {
+   "name": "iMac Pro (Retina 5K, 27-inch, Late 2017)",
+   "model_no": "A1862",
+   "chip": "Intel",
+   "board": "Mac-7BA5B2D9E42DDD94",
+   "screen": "27-inch",
+   "released": "2017-12-14"
+  }
+ }
+}

@@ -24,9 +24,23 @@ enum AppTheme: String, CaseIterable, Identifiable {
         }
     }
 
-    /// System dark mode from AppleInterfaceStyle (ignores NSApp.appearance override).
+    /// Toolbar cycle order: Auto → Light → Dark → Auto.
+    var next: AppTheme {
+        switch self {
+        case .system: return .light
+        case .light: return .dark
+        case .dark: return .system
+        }
+    }
+
+    /// Whether macOS itself is in Dark mode (ignores our forced light/dark lock).
     static var systemInterfaceIsDark: Bool {
-        UserDefaults.standard.string(forKey: "AppleInterfaceStyle") == "Dark"
+        // When we are not overriding NSApp.appearance, effectiveAppearance tracks the OS
+        // and updates earlier than AppleInterfaceStyle UserDefaults after a theme switch.
+        if NSApp.appearance == nil {
+            return NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+        }
+        return UserDefaults.standard.string(forKey: "AppleInterfaceStyle") == "Dark"
     }
 
     /// Always a concrete scheme. On macOS, preferredColorScheme(nil) often sticks after light/dark.
@@ -38,8 +52,9 @@ enum AppTheme: String, CaseIterable, Identifiable {
         }
     }
 
-    /// Sync AppKit. For system: clear NSApp.appearance, set each window to effectiveAppearance
-    /// (window.appearance = nil leaves the previous lock until focus changes).
+    /// Sync AppKit with the selected theme.
+    /// For `.system`: clear app/window appearance so they track the OS, then match
+    /// `effectiveAppearance` once to force an immediate redraw after light/dark lock.
     @MainActor
     func applyToApp() {
         switch self {
@@ -49,6 +64,10 @@ enum AppTheme: String, CaseIterable, Identifiable {
             Self.apply(NSAppearance(named: .darkAqua))
         case .system:
             NSApp.appearance = nil
+            // Clear any previous light/dark pin first.
+            Self.applyWindows(nil)
+            // Then pin to the *current* effective appearance so the window redraws now.
+            // SwiftUI still needs a body refresh (see RootView systemAppearanceRevision).
             Self.applyWindows(NSApp.effectiveAppearance)
         }
     }
@@ -67,17 +86,21 @@ enum AppTheme: String, CaseIterable, Identifiable {
     }
 }
 
-/// Pins theme onto the host NSWindow; re-applies when the system appearance changes.
+/// Pins theme onto the host NSWindow; notifies SwiftUI when the system appearance changes.
 struct WindowAppearanceBridge: NSViewRepresentable {
     let theme: AppTheme
+    /// Bump SwiftUI state so `preferredColorScheme` re-resolves after OS theme changes.
+    var onSystemAppearanceChange: () -> Void = {}
 
     func makeNSView(context: Context) -> TrackerView {
         let view = TrackerView()
+        context.coordinator.onSystemAppearanceChange = onSystemAppearanceChange
         context.coordinator.attach(view: view, theme: theme)
         return view
     }
 
     func updateNSView(_ nsView: TrackerView, context: Context) {
+        context.coordinator.onSystemAppearanceChange = onSystemAppearanceChange
         context.coordinator.apply(theme: theme)
     }
 
@@ -96,6 +119,7 @@ struct WindowAppearanceBridge: NSViewRepresentable {
         private weak var view: TrackerView?
         private var theme: AppTheme = .system
         private var systemThemeObserver: NSObjectProtocol?
+        var onSystemAppearanceChange: () -> Void = {}
 
         func attach(view: TrackerView, theme: AppTheme) {
             self.view = view
@@ -109,8 +133,12 @@ struct WindowAppearanceBridge: NSViewRepresentable {
                     object: nil,
                     queue: .main
                 ) { [weak self] _ in
-                    // Notification can arrive before prefs update; apply on next turn.
-                    DispatchQueue.main.async { self?.onSystemThemeChanged() }
+                    // Prefs often lag the notification by a turn (or two).
+                    DispatchQueue.main.async {
+                        DispatchQueue.main.async {
+                            self?.onSystemThemeChanged()
+                        }
+                    }
                 }
             }
             apply(theme: theme)
@@ -126,6 +154,7 @@ struct WindowAppearanceBridge: NSViewRepresentable {
             case .dark:
                 window.appearance = NSAppearance(named: .darkAqua)
             case .system:
+                window.appearance = nil
                 window.appearance = NSApp.effectiveAppearance
             }
         }
@@ -133,7 +162,37 @@ struct WindowAppearanceBridge: NSViewRepresentable {
         private func onSystemThemeChanged() {
             guard theme == .system else { return }
             apply(theme: .system)
+            onSystemAppearanceChange()
         }
+    }
+}
+
+/// Toolbar control: click cycles Auto → Light → Dark; menu picks explicitly.
+struct ThemeToolbarButton: View {
+    @AppStorage("appTheme") private var themeRawValue = AppTheme.system.rawValue
+
+    private var current: AppTheme {
+        AppTheme(rawValue: themeRawValue) ?? .system
+    }
+
+    var body: some View {
+        Menu {
+            ForEach(AppTheme.allCases) { option in
+                Button {
+                    themeRawValue = option.rawValue
+                } label: {
+                    Label(option.title, systemImage: option == current ? "checkmark" : option.icon)
+                }
+            }
+        } label: {
+            Label(current.title, systemImage: current.icon)
+        } primaryAction: {
+            themeRawValue = current.next.rawValue
+        }
+        .help(L10n.t("toolbar.theme.help", current.title))
+        .accessibilityLabel(L10n.t("settings.theme"))
+        .accessibilityValue(current.title)
+        .accessibilityHint(L10n.t("toolbar.theme.hint"))
     }
 }
 

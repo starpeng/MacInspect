@@ -95,6 +95,7 @@ struct ReportDocumentView: View {
             Text(L10n.t("report.fingerprint", fingerprint))
                 .font(.system(size: 10, design: .monospaced))
             Text(L10n.t("report.generated_by", AppBrand.name))
+            Text(L10n.t("license.retain.footer"))
         }
         .font(.system(size: 10)).foregroundStyle(.gray)
     }

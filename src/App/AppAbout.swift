@@ -14,6 +14,8 @@ enum AppAbout {
             "",
             L10n.t("about.credits.notes"),
             "",
+            L10n.t("about.credits.license"),
+            "",
             AppBrand.repositoryURL.absoluteString,
         ].joined(separator: "\n")
 
